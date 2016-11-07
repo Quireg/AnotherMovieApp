@@ -47,26 +47,25 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ama_main_activity);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         try {
             JSON_fetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=" + BuildConfig.MOVIE_DATABASE_API_KEY));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//        // Create the adapter that will return a fragment for each of the three
+//        // primary sections of the activity.
+//        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//
+//        // Set up the ViewPager with the sections adapter.
+//        mViewPager = (ViewPager) findViewById(R.id.container);
+//        mViewPager.setAdapter(mSectionsPagerAdapter);
+//
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(mViewPager);
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        getSupportFragmentManager().beginTransaction().add(R.id.main_content, new MovieFragment()).commit();
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

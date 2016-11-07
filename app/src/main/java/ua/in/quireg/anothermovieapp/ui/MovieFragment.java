@@ -21,8 +21,6 @@ import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.core.MovieItemList;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
