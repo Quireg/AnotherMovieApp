@@ -3,6 +3,7 @@ package ua.in.quireg.anothermovieapp.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.core.EventBusEvents;
 import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.core.MovieItemList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +31,24 @@ import java.util.List;
  * interface.
  */
 public class MovieFragment extends Fragment {
+    RecyclerView recyclerView;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onMessageEvent(EventBusEvents.Movies_List_Updated event) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
+    };
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,6 +57,7 @@ public class MovieFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     private MyMovieRecyclerViewAdapter mmrva = new MyMovieRecyclerViewAdapter(MovieItemList.getInstance().getITEMS(), mListener);
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -65,7 +91,7 @@ public class MovieFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -92,10 +118,6 @@ public class MovieFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void reloadAdapter(){
-        mmrva.notifyDataSetChanged();
     }
 
     /**

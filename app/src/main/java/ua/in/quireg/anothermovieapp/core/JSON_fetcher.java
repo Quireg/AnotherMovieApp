@@ -15,7 +15,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class JSON_fetcher {
@@ -58,6 +61,7 @@ public class JSON_fetcher {
     }
 
 
+
     public void requestMovieList(URL url) {
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -69,10 +73,14 @@ public class JSON_fetcher {
                             Log.d(LOG_TAG, response.toString());
                             Log.d(LOG_TAG, "Parse started");
                             JSONArray arr = response.getJSONArray("results");
+
+
                             MovieItemList mil = MovieItemList.getInstance();
+                            List<MovieItem> temp = new ArrayList<>();
+
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject movie = arr.getJSONObject(i);
-                                mil.addItem(new MovieItem(
+                                temp.add(new MovieItem(
                                         movie.optString("original_title"),
                                         movie.optString("id"),
                                         movie.optDouble("vote_average"),
@@ -81,6 +89,9 @@ public class JSON_fetcher {
                                 );
                             }
                             Log.d(LOG_TAG, "Parse finished");
+                            mil.reInitialize(temp);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -97,5 +108,6 @@ public class JSON_fetcher {
         this.addToRequestQueue(jsObjRequest);
 
     }
+
 
 }

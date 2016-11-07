@@ -3,6 +3,8 @@ package ua.in.quireg.anothermovieapp.core;
 
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,12 +52,29 @@ public class MovieItemList {
         return ITEM_MAP;
     }
 
-    public void addItem(MovieItem item){
-        Log.d(LOG_TAG, "New item placed to list");
-        ITEMS.add(item);
-        ITEM_MAP.put(item.getId(), item);
+    public void reInitialize(List<MovieItem> newList){
+        Log.d(LOG_TAG, "New list provided");
+
+        ITEMS.clear();
+        ITEM_MAP.clear();
+
+        for (MovieItem item:newList
+             ) {
+            ITEMS.add(item);
+            ITEM_MAP.put(item.getId(), item);
+
+        }
         if(!isInitalized){
             isInitalized = true;
         }
+        EventBus.getDefault().post(new EventBusEvents.Movies_List_Updated());
+    }
+
+    public ArrayList<MovieItem> requestFakeMovieList(){
+        ArrayList<MovieItem> fakeList = new ArrayList<>();
+        for (int i = 0; i <20 ; i++) {
+            fakeList.add(new MovieItem("fake", "fake"));
+        }
+        return fakeList;
     }
 }

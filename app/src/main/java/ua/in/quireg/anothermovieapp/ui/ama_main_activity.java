@@ -1,9 +1,6 @@
 package ua.in.quireg.anothermovieapp.ui;
 
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,22 +10,19 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import ua.in.quireg.anothermovieapp.BuildConfig;
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.core.EventBusEvents;
 import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.core.MovieItemList;
 
 public class ama_main_activity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener {
 
@@ -46,6 +40,8 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +98,9 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if (id == R.id.action_refresh) {
+            EventBus.getDefault().post(new EventBusEvents.Movies_List_Updated());
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,7 +127,7 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             //return PlaceholderFragment.newInstance(position + 1);
-            return MovieFragment.newInstance(2);
+            return new MovieFragment();
         }
 
         @Override

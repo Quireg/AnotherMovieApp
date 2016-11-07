@@ -1,11 +1,15 @@
 package ua.in.quireg.anothermovieapp.ui;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
@@ -16,12 +20,14 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */ 
+ */
+
 public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
 
     private final List<MovieItem> mValues;
     private final OnListFragmentInteractionListener mListener;
+
+    private Context appContext;
 
     public MyMovieRecyclerViewAdapter(List<MovieItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -30,6 +36,7 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        appContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_movie_item, parent, false);
         return new ViewHolder(view);
@@ -38,8 +45,9 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getId());
-        //holder.mImageView.setImageBitmap(mValues.get(position).image);
+        holder.mIdView.setText(mValues.get(position).getName());
+        String url = "http://image.tmdb.org/t/p/" + "w185/" + mValues.get(position).getImageFullSize();
+        Picasso.with(appContext).load(url).into(holder.mImageView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -10,6 +10,11 @@ public class MovieItem {
     private String imagePreview;
     private String imageFullSize;
 
+    public MovieItem(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
+
     public MovieItem(String name, String id, double rating, String imagePreview, String imageFullSize) {
         this.name = name;
         this.id = id;
