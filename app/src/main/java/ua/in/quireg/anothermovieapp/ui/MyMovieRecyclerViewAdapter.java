@@ -8,22 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.ui.MovieFragment.OnListFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
- */
+ */ 
 public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<MovieItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyMovieRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyMovieRecyclerViewAdapter(List<MovieItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +39,8 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mImageView.setImageBitmap(mValues.get(position).image);
+        holder.mIdView.setText(mValues.get(position).getId());
+        //holder.mImageView.setImageBitmap(mValues.get(position).image);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +63,7 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
         public final View mView;
         public final TextView mIdView;
         public final ImageView mImageView;
-        public DummyItem mItem;
+        public MovieItem mItem;
 
         public ViewHolder(View view) {
             super(view);

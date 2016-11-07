@@ -1,5 +1,6 @@
 package ua.in.quireg.anothermovieapp.ui;
 
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,7 +21,13 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
+import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.core.MovieItemList;
 import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent;
 
 public class ama_main_activity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener {
@@ -47,6 +54,13 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        try {
+            JSON_fetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=bf1abe889f5978e510a283454334aa21"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -58,14 +72,15 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
     }
 
@@ -93,50 +108,8 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(MovieItem item) {
         Log.d(this.getClass().getSimpleName(), "Item pressed");
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            int fragmentNumber = getArguments().getInt(ARG_SECTION_NUMBER);
-
-            switch (fragmentNumber){
-                case 1:
-
-            }
-
-            View rootView = inflater.inflate(R.layout.fragment_ama_main_activity, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
     }
 
     /**
@@ -155,7 +128,7 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             //return PlaceholderFragment.newInstance(position + 1);
-            return new MovieFragment();
+            return MovieFragment.newInstance(2);
         }
 
         @Override

@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
+import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.core.MovieItemList;
 import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent;
 import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent.DummyItem;
 
@@ -30,6 +33,7 @@ public class MovieFragment extends Fragment {
     private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
 
+    private MyMovieRecyclerViewAdapter mmrva = new MyMovieRecyclerViewAdapter(MovieItemList.getInstance().getITEMS(), mListener);
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -38,7 +42,6 @@ public class MovieFragment extends Fragment {
     }
 
     // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static MovieFragment newInstance(int columnCount) {
         MovieFragment fragment = new MovieFragment();
         Bundle args = new Bundle();
@@ -70,8 +73,8 @@ public class MovieFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyMovieRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+            recyclerView.setAdapter(mmrva);
+    }
         return view;
     }
 
@@ -93,6 +96,10 @@ public class MovieFragment extends Fragment {
         mListener = null;
     }
 
+    public void reloadAdapter(){
+        mmrva.notifyDataSetChanged();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -105,6 +112,6 @@ public class MovieFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(MovieItem item);
     }
 }
