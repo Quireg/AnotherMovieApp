@@ -24,11 +24,11 @@ import android.widget.TextView;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ua.in.quireg.anothermovieapp.BuildConfig;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.core.MovieItemList;
-import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent;
 
 public class ama_main_activity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener {
 
@@ -56,7 +56,7 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
         setSupportActionBar(toolbar);
 
         try {
-            JSON_fetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=bf1abe889f5978e510a283454334aa21"));
+            JSON_fetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=" + BuildConfig.MOVIE_DATABASE_API_KEY));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

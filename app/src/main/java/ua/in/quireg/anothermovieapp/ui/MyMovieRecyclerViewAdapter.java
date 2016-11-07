@@ -10,7 +10,6 @@ import android.widget.TextView;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.ui.MovieFragment.OnListFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 

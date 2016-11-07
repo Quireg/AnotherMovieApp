@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent;
-
 public class MovieItemList {
 
     private static final String LOG_TAG = MovieItemList.class.getSimpleName();

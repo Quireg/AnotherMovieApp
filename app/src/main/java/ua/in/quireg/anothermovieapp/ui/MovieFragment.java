@@ -14,8 +14,6 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.JSON_fetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.core.MovieItemList;
-import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent;
-import ua.in.quireg.anothermovieapp.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
