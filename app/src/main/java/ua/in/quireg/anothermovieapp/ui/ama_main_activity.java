@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,11 +43,11 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
     private ViewPager mViewPager;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ama_main_activity);
+
         try {
             JSON_fetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=" + BuildConfig.MOVIE_DATABASE_API_KEY));
         } catch (MalformedURLException e) {
@@ -65,7 +66,7 @@ public class ama_main_activity extends AppCompatActivity implements MovieFragmen
 //        tabLayout.setupWithViewPager(mViewPager);
 
 
-        getSupportFragmentManager().beginTransaction().add(R.id.main_content, new MovieFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.nested_view, new MovieFragment()).commit();
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
