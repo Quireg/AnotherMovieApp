@@ -1,6 +1,7 @@
 package ua.in.quireg.anothermovieapp.core;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -8,36 +9,41 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
-public class JSON_fetcher {
 
-    private static final String LOG_TAG = JSON_fetcher.class.getSimpleName();
+public class MovieFetcher {
 
-    private static JSON_fetcher mInstance;
+    private static final String LOG_TAG = MovieFetcher.class.getSimpleName();
+
+    private static MovieFetcher mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
+    private IMovieListListener callback;
 
-    private JSON_fetcher(Context context) {
+
+    private MovieFetcher(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
+        if (context instanceof IMovieListListener) {
+            callback = (IMovieListListener) context;
+        }
 
     }
 
-    public static synchronized JSON_fetcher getInstance(Context context) {
+    public static synchronized MovieFetcher getInstance(Context context) {
+
         if (mInstance == null) {
-            mInstance = new JSON_fetcher(context);
+            mInstance = new MovieFetcher(context);
             Log.d(LOG_TAG, "JSON Fetcher created");
         }
         return mInstance;
@@ -56,16 +62,19 @@ public class JSON_fetcher {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
-        Log.d(LOG_TAG, "Request placed to queue");
+        Log.d(LOG_TAG, "Request placed to queue " + req.toString());
 
     }
 
 
 
-    public void requestMovieList(URL url) {
-
+    public void requestMovieList(final IMovieListListener callback, final String requstedList) {
+        Uri uri = UriHelper.getMoviesListUri(requstedList);
+        if(uri == null){
+            return;
+        }
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -75,7 +84,6 @@ public class JSON_fetcher {
                             JSONArray arr = response.getJSONArray("results");
 
 
-                            MovieItemList mil = MovieItemList.getInstance();
                             List<MovieItem> temp = new ArrayList<>();
 
                             for (int i = 0; i < arr.length(); i++) {
@@ -89,8 +97,8 @@ public class JSON_fetcher {
                                 );
                             }
                             Log.d(LOG_TAG, "Parse finished");
-                            mil.reInitialize(temp);
 
+                            callback.setMoviesList(temp, requstedList);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

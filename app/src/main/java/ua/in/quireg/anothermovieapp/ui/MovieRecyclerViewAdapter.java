@@ -1,7 +1,6 @@
 package ua.in.quireg.anothermovieapp.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.ui.MovieFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
@@ -22,15 +22,17 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  */
 
-public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
+public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
 
-    private final List<MovieItem> mValues;
+    private final IMovieListListener callback;
     private final OnListFragmentInteractionListener mListener;
+    private List<MovieItem> mValues;
 
     private Context appContext;
 
-    public MyMovieRecyclerViewAdapter(List<MovieItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MovieRecyclerViewAdapter(IMovieListListener callback, OnListFragmentInteractionListener listener, String listType) {
+        this.callback = callback;
+        this.mValues = callback.getMoviesList(listType);
         mListener = listener;
     }
 
@@ -63,8 +65,12 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
 
     @Override
     public int getItemCount() {
+        if(mValues == null){
+            return 0;
+        }
         return mValues.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;

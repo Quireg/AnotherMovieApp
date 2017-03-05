@@ -1,7 +1,6 @@
 package ua.in.quireg.anothermovieapp.core;
 
 
-import java.net.URI;
 
 public class MovieItem {
     private String name;
