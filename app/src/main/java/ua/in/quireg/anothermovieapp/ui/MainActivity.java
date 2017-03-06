@@ -1,14 +1,13 @@
 package ua.in.quireg.anothermovieapp.ui;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +19,6 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constrains;
 import ua.in.quireg.anothermovieapp.core.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.core.UriHelper;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener, IMovieListListener {
@@ -62,38 +60,22 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
         fetcher = MovieFetcher.getInstance(getApplicationContext());
 
-//        try {
-//            //MovieFetcher.getInstance(getApplicationContext()).requestMovieList(new URL("https://api.themoviedb.org/3/movie/popular?api_key=" + BuildConfig.MOVIE_DATABASE_API_KEY));
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this.getApplicationContext());
-
-        popularMoviesFragment = (MovieFragment)mSectionsPagerAdapter.getItem(0);
-        topRatedMoviesFragment = (MovieFragment)mSectionsPagerAdapter.getItem(1);
 
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
+
+
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 //        tabLayout.setupWithViewPager(mViewPager);
 
-
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
     }
 
@@ -115,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }else if (id == R.id.action_refresh) {
+        } else if (id == R.id.action_refresh) {
             return true;
         }
 
@@ -129,45 +111,60 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
     @Override
     public List<MovieItem> getMoviesList(String requestedList) {
-        if(requestedList.equals(Constrains.POPULAR)){
+        if (requestedList.equals(Constrains.POPULAR)) {
             return getPopularMoviesList();
-        }else if(requestedList.equals(Constrains.TOP_RATED)){
+        } else if (requestedList.equals(Constrains.TOP_RATED)) {
             return getTopRatedMoviesList();
         }
         return null;
     }
 
-    public List<MovieItem> getPopularMoviesList(){
-        if(this.popularMoviesList == null){
-            if(BuildConfig.DEBUG) Log.d(LOG_TAG, "Popular movies list requested for the first time");
+    public List<MovieItem> getPopularMoviesList() {
+        if (this.popularMoviesList == null) {
+            if (BuildConfig.DEBUG)
+                Log.d(LOG_TAG, "Popular movies list requested for the first time");
             fetcher.requestMovieList(this, Constrains.POPULAR);
             return null;
-        }else {
+        } else {
             return this.popularMoviesList;
         }
     }
-    public List<MovieItem> getTopRatedMoviesList(){
-        if(this.topRatedMoviesList == null){
-            if(BuildConfig.DEBUG) Log.d(LOG_TAG, "Top rated movies list requested for the first time");
+
+    public List<MovieItem> getTopRatedMoviesList() {
+        if (this.topRatedMoviesList == null) {
+            if (BuildConfig.DEBUG)
+                Log.d(LOG_TAG, "Top rated movies list requested for the first time");
             fetcher.requestMovieList(this, Constrains.TOP_RATED);
             return null;
-        }else {
+        } else {
             return this.topRatedMoviesList;
         }
     }
 
     @Override
-    public void setMoviesList(List<MovieItem> list, String requestedList) {
-        if(requestedList.equals(Constrains.POPULAR)){
-            if(BuildConfig.DEBUG) Log.d(LOG_TAG, "Popular movies list updated");
+    public void setMoviesList(List<MovieItem> list, String tag) {
+        if (tag.equals(Constrains.POPULAR)) {
+            if (BuildConfig.DEBUG) Log.d(LOG_TAG, "Popular movies list updated");
             this.popularMoviesList = list;
-            popularMoviesFragment.reload();
-        }else if(requestedList.equals(Constrains.TOP_RATED)){
-            if(BuildConfig.DEBUG) Log.d(LOG_TAG, "Top rated movies list updated");
+            reloadFragment(tag);
+        } else if (tag.equals(Constrains.TOP_RATED)) {
+            if (BuildConfig.DEBUG) Log.d(LOG_TAG, "Top rated movies list updated");
             this.topRatedMoviesList = list;
-            topRatedMoviesFragment.reload();
+            reloadFragment(tag);
         }
 
+    }
+
+    public void reloadFragment(String tag) {
+        if (tag.equals(Constrains.POPULAR)) {
+            if (popularMoviesFragment != null) {
+                popularMoviesFragment.reload();
+            }
+        }else if(tag.equals(Constrains.TOP_RATED)){
+            if(topRatedMoviesFragment != null){
+                topRatedMoviesFragment.reload();
+            }
+        }
     }
 
 
@@ -179,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
         private Context mContext;
 
+
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
             this.mContext = context;
@@ -188,9 +186,11 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
         public Fragment getItem(int position) {
             switch(position){
                 case POPULAR_MOVIES_TAB_POSITION:
-                    return MovieFragment.newInstance(2, Constrains.POPULAR);
+                    popularMoviesFragment = MovieFragment.newInstance(2, Constrains.POPULAR);
+                    return popularMoviesFragment;
                 case TOP_RATED_MOVIES_TAB_POSITION:
-                    return MovieFragment.newInstance(2, Constrains.TOP_RATED);
+                    topRatedMoviesFragment = MovieFragment.newInstance(2, Constrains.TOP_RATED);
+                    return topRatedMoviesFragment;
             }
 
             return null;

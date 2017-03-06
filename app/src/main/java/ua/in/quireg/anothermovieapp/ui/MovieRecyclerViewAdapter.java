@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.ui.MovieFragment.OnListFragmentInteractionListener;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
@@ -24,16 +24,16 @@ import java.util.List;
 
 public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
 
-    private final IMovieListListener callback;
     private final OnListFragmentInteractionListener mListener;
     private List<MovieItem> mValues;
+    private String tag;
 
     private Context appContext;
 
-    public MovieRecyclerViewAdapter(IMovieListListener callback, OnListFragmentInteractionListener listener, String listType) {
-        this.callback = callback;
-        this.mValues = callback.getMoviesList(listType);
-        mListener = listener;
+    public MovieRecyclerViewAdapter(OnListFragmentInteractionListener listener, String tag) {
+        this.mValues = new ArrayList<>();
+        this.mListener = listener;
+        this.tag = tag;
     }
 
     @Override
@@ -72,6 +72,18 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
     }
 
 
+    public void addAll(List<MovieItem> items){
+        if(items != null){
+            mValues.clear();
+            mValues.addAll(items);
+        }
+    }
+
+    public String getType(){
+        return this.tag;
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
@@ -90,4 +102,6 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
             return super.toString() + " '" + mIdView.getText() + "'";
         }
     }
+
+
 }

@@ -10,10 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.common.Constrains;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
@@ -42,10 +39,10 @@ public class MovieFragment extends Fragment {
     }
 
     // TODO: Customize parameter initialization
-    public static MovieFragment newInstance(int columnCount, String name) {
+    public static MovieFragment newInstance(int columnCount, String tag) {
         MovieFragment fragment = new MovieFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NAME, name);
+        args.putString(ARG_NAME, tag);
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
@@ -75,14 +72,18 @@ public class MovieFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MovieRecyclerViewAdapter(callback, mListener, getArguments().getString(ARG_NAME)));
+            recyclerView.setAdapter(new MovieRecyclerViewAdapter(mListener, getArguments().getString(ARG_NAME)));
         }
+        reload();
         return view;
     }
 
     public void reload(){
+        System.out.println("Stub");
         if(recyclerView != null && recyclerView.getAdapter() != null){
-            recyclerView.getAdapter().notifyDataSetChanged();
+            MovieRecyclerViewAdapter adapter =  (MovieRecyclerViewAdapter)recyclerView.getAdapter();
+            adapter.addAll(callback.getMoviesList(adapter.getType()));
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -95,6 +96,7 @@ public class MovieFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+        reload();
     }
 
     @Override
