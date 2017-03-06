@@ -21,7 +21,7 @@ import ua.in.quireg.anothermovieapp.core.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
-public class MainActivity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener, IMovieListListener {
+public class MainActivity extends AppCompatActivity implements PopularMovieFragment.OnListFragmentInteractionListener, TopRatedMovieFragment.OnListFragmentInteractionListener, IMovieListListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     /**
@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
      */
     private ViewPager mViewPager;
 
+
     private List<MovieItem> popularMoviesList;
     private List<MovieItem> topRatedMoviesList;
 
-    private MovieFragment popularMoviesFragment;
-    private MovieFragment topRatedMoviesFragment;
+    private PopularMovieFragment popularMoviesFragment;
+    private TopRatedMovieFragment topRatedMoviesFragment;
 
     MovieFetcher fetcher;
 
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Set title to "Popular" as it is the first fragment to be shown.
+        getSupportActionBar().setTitle(getResources().getString(R.string.popular_tab_name));
 
         fetcher = MovieFetcher.getInstance(getApplicationContext());
 
@@ -186,10 +189,10 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
         public Fragment getItem(int position) {
             switch(position){
                 case POPULAR_MOVIES_TAB_POSITION:
-                    popularMoviesFragment = MovieFragment.newInstance(2, Constrains.POPULAR);
+                    popularMoviesFragment = new PopularMovieFragment();
                     return popularMoviesFragment;
                 case TOP_RATED_MOVIES_TAB_POSITION:
-                    topRatedMoviesFragment = MovieFragment.newInstance(2, Constrains.TOP_RATED);
+                    topRatedMoviesFragment = new TopRatedMovieFragment();
                     return topRatedMoviesFragment;
             }
 

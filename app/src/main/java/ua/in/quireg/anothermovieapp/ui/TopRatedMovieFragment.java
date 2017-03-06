@@ -3,59 +3,39 @@ package ua.in.quireg.anothermovieapp.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.adapters.TopRatedMovieRecyclerViewAdapter;
+import ua.in.quireg.anothermovieapp.common.Constrains;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class MovieFragment extends Fragment {
-    RecyclerView recyclerView;
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String ARG_NAME = "name";
-    // TODO: Customize parameters
-    private int mColumnCount = 2;
+public class TopRatedMovieFragment extends Fragment {
+
+    private RecyclerView recyclerView;
     private OnListFragmentInteractionListener mListener;
     private IMovieListListener callback;
+    private Context mContext;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public MovieFragment() {
+
+    public TopRatedMovieFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    public static MovieFragment newInstance(int columnCount, String tag) {
-        MovieFragment fragment = new MovieFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_NAME, tag);
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        callback = (IMovieListListener)getContext();
+        callback = (IMovieListListener) getContext();
+        mContext = getContext();
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -67,29 +47,41 @@ public class MovieFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MovieRecyclerViewAdapter(mListener, getArguments().getString(ARG_NAME)));
+
+            recyclerView.setLayoutManager(new GridLayoutManager(context, Constrains.COLUMN_NUMBER));
+            recyclerView.setAdapter(new TopRatedMovieRecyclerViewAdapter(mListener, Constrains.TOP_RATED));
         }
         reload();
         return view;
     }
 
-    public void reload(){
+    public void reload() {
         System.out.println("Stub");
-        if(recyclerView != null && recyclerView.getAdapter() != null){
-            MovieRecyclerViewAdapter adapter =  (MovieRecyclerViewAdapter)recyclerView.getAdapter();
+        if (recyclerView != null && recyclerView.getAdapter() != null) {
+            TopRatedMovieRecyclerViewAdapter adapter = (TopRatedMovieRecyclerViewAdapter) recyclerView.getAdapter();
             adapter.addAll(callback.getMoviesList(adapter.getType()));
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity != null) {
+                ActionBar abar = activity.getSupportActionBar();
+                if (abar != null) {
+                    abar.setTitle(mContext.getResources().getString(R.string.top_rated_tab_name));
+                }
+            }
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {

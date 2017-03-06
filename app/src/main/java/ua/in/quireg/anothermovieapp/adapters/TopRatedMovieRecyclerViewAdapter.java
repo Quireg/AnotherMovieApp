@@ -1,4 +1,4 @@
-package ua.in.quireg.anothermovieapp.ui;
+package ua.in.quireg.anothermovieapp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -15,14 +15,14 @@ import java.util.List;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.ui.MovieFragment.OnListFragmentInteractionListener;
+import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment.OnListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 
-public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
+public class TopRatedMovieRecyclerViewAdapter extends RecyclerView.Adapter<TopRatedMovieRecyclerViewAdapter.ViewHolder> {
 
     private final OnListFragmentInteractionListener mListener;
     private List<MovieItem> mValues;
@@ -30,11 +30,12 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
 
     private Context appContext;
 
-    public MovieRecyclerViewAdapter(OnListFragmentInteractionListener listener, String tag) {
+    public TopRatedMovieRecyclerViewAdapter(OnListFragmentInteractionListener listener, String tag) {
         this.mValues = new ArrayList<>();
         this.mListener = listener;
         this.tag = tag;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
