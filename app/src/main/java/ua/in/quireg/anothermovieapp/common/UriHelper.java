@@ -11,7 +11,7 @@ public class UriHelper {
 
     public static Uri getMoviesListUri(String tag){
         switch (tag){
-            case Constrains.POPULAR:
+            case Constants.POPULAR:
                 return new Uri.Builder()
                         .scheme("https")
                         .authority("api.themoviedb.org")
@@ -20,7 +20,7 @@ public class UriHelper {
                         .appendPath("popular")
                         .appendQueryParameter("api_key", API_KEY)
                         .build();
-            case Constrains.TOP_RATED:
+            case Constants.TOP_RATED:
                 return new Uri.Builder()
                         .scheme("https")
                         .authority("api.themoviedb.org")

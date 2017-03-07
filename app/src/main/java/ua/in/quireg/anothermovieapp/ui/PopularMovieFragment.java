@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.PopularMovieRecyclerViewAdapter;
-import ua.in.quireg.anothermovieapp.common.Constrains;
+import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
@@ -50,8 +50,8 @@ public class PopularMovieFragment extends Fragment {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new GridLayoutManager(context, Constrains.COLUMN_NUMBER));
-            recyclerView.setAdapter(new PopularMovieRecyclerViewAdapter(mListener, Constrains.POPULAR));
+            recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
+            recyclerView.setAdapter(new PopularMovieRecyclerViewAdapter(mListener, Constants.POPULAR));
         }
         reload();
         return view;

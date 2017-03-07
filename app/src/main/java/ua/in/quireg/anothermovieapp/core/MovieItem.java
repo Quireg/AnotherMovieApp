@@ -1,8 +1,9 @@
 package ua.in.quireg.anothermovieapp.core;
 
 
+import java.io.Serializable;
 
-public class MovieItem {
+public class MovieItem implements Serializable {
     private String name;
     private String id;
     private double rating;

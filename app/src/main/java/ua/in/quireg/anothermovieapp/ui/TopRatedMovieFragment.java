@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.TopRatedMovieRecyclerViewAdapter;
-import ua.in.quireg.anothermovieapp.common.Constrains;
+import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
@@ -48,8 +48,8 @@ public class TopRatedMovieFragment extends Fragment {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new GridLayoutManager(context, Constrains.COLUMN_NUMBER));
-            recyclerView.setAdapter(new TopRatedMovieRecyclerViewAdapter(mListener, Constrains.TOP_RATED));
+            recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
+            recyclerView.setAdapter(new TopRatedMovieRecyclerViewAdapter(mListener, Constants.TOP_RATED));
         }
         reload();
         return view;
