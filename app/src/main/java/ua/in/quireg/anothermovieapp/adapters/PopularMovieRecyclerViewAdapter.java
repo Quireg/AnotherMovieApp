@@ -51,7 +51,7 @@ public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<Popula
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
+        holder.mIdView.setText(mValues.get(position).getOriginalTitle());
 
         Uri uri = UriHelper.getW185SizeBitmapUri(mValues.get(position).getImageFullSize());
         MLog.d(LOG_TAG, "Fetching: " + uri.toString());

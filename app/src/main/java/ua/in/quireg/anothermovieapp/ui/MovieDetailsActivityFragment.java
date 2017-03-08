@@ -43,14 +43,17 @@ public class MovieDetailsActivityFragment extends Fragment {
         if (activity != null) {
             ActionBar abar = activity.getSupportActionBar();
             if (abar != null) {
-                abar.setTitle(movie.getName());
+                abar.setTitle(movie.getOriginalTitle());
             }
         }
-
+        //Set movie title
         TextView movie_title_textview = (TextView) rootView.findViewById(R.id.movie_title);
         movie_title_textview.getBackground().setAlpha(95);
-        movie_title_textview.setText(movie.getName());
+        movie_title_textview.setText(movie.getTitle());
 
+        //Set movie description
+        TextView movie_description_textview = (TextView) rootView.findViewById(R.id.movie_decription);
+        movie_description_textview.setText(movie.getDescription());
 
         new FetchImage().execute(UriHelper.getOriginalSizeBitmapUri(movie.getImageFullSize()));
         return rootView;

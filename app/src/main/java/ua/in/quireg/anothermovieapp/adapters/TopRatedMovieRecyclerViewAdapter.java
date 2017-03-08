@@ -48,7 +48,7 @@ public class TopRatedMovieRecyclerViewAdapter extends RecyclerView.Adapter<TopRa
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
+        holder.mIdView.setText(mValues.get(position).getOriginalTitle());
         String url = "http://image.tmdb.org/t/p/" + "w185/" + mValues.get(position).getImageFullSize();
         Picasso.with(appContext).load(url).into(holder.mImageView);
 

@@ -4,23 +4,48 @@ package ua.in.quireg.anothermovieapp.core;
 import java.io.Serializable;
 
 public class MovieItem implements Serializable {
-    private String name;
+    private String originalTitle;
+    private String title;
     private String id;
+    private String description;
     private double rating;
+    private boolean adult;
     private String imagePreview;
     private String imageFullSize;
 
-    public MovieItem(String name, String id) {
-        this.name = name;
+    public MovieItem(String originalTitle, String title, String id, String description, boolean adult, double rating, String imagePreview, String imageFullSize) {
+        this.originalTitle = originalTitle;
+        this.title = title;
         this.id = id;
-    }
-
-    public MovieItem(String name, String id, double rating, String imagePreview, String imageFullSize) {
-        this.name = name;
-        this.id = id;
+        this.description = description;
+        this.adult = adult;
         this.rating = rating;
         this.imagePreview = imagePreview;
         this.imageFullSize = imageFullSize;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getId() {
@@ -31,12 +56,12 @@ public class MovieItem implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getOriginalTitle() {
+        return originalTitle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
     public double getRating() {

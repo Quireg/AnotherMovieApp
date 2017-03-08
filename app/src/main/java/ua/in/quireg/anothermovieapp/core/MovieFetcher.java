@@ -91,7 +91,10 @@ public class MovieFetcher {
                                 JSONObject movie = arr.getJSONObject(i);
                                 temp.add(new MovieItem(
                                         movie.optString("original_title"),
+                                        movie.optString("title"),
                                         movie.optString("id"),
+                                        movie.optString("overview"),
+                                        movie.optBoolean("adult"),
                                         movie.optDouble("vote_average"),
                                         movie.optString("backdrop_path").replace("/", ""),
                                         movie.optString("poster_path").replace("/", ""))
