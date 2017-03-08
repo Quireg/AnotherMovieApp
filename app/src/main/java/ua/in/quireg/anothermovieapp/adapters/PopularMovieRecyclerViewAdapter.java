@@ -1,6 +1,7 @@
 package ua.in.quireg.anothermovieapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.common.MLog;
+import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment.OnListFragmentInteractionListener;
 
@@ -23,7 +26,7 @@ import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment.OnListFragmentIntera
  */
 
 public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<PopularMovieRecyclerViewAdapter.ViewHolder> {
-
+    private static final String LOG_TAG = PopularMovieRecyclerViewAdapter.class.getSimpleName();
     private final OnListFragmentInteractionListener mListener;
     private List<MovieItem> mValues;
     private String tag;
@@ -49,8 +52,10 @@ public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<Popula
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getName());
-        String url = "http://image.tmdb.org/t/p/" + "w185/" + mValues.get(position).getImageFullSize();
-        Picasso.with(appContext).load(url).into(holder.mImageView);
+
+        Uri uri = UriHelper.getW185SizeBitmapUri(mValues.get(position).getImageFullSize());
+        MLog.d(LOG_TAG, "Fetching: " + uri.toString());
+        Picasso.with(appContext).load(uri).into(holder.mImageView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

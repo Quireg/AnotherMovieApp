@@ -93,8 +93,8 @@ public class MovieFetcher {
                                         movie.optString("original_title"),
                                         movie.optString("id"),
                                         movie.optDouble("vote_average"),
-                                        movie.optString("backdrop_path"),
-                                        movie.optString("poster_path"))
+                                        movie.optString("backdrop_path").replace("/", ""),
+                                        movie.optString("poster_path").replace("/", ""))
                                 );
                             }
                             Log.d(LOG_TAG, "Parse finished");
