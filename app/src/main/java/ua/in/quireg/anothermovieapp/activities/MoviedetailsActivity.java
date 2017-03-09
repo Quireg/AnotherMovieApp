@@ -1,6 +1,10 @@
 package ua.in.quireg.anothermovieapp.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +12,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.async.ImageFetcher;
+import ua.in.quireg.anothermovieapp.common.Constants;
+import ua.in.quireg.anothermovieapp.common.UriHelper;
+import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements FetchImageCallback{
+
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        MovieItem movie = (MovieItem) getIntent().getExtras().getSerializable(Constants.MOVIE);
+
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(movie.getTitle());
+
+        new ImageFetcher(this, getApplicationContext()).execute(UriHelper.getImageUri(movie.getImageBackdrop(), Constants.IMAGE_SIZE_ORIGINAL));
+
         MovieDetailsActivityFragment movieDetailsActivityFragment = new MovieDetailsActivityFragment();
         movieDetailsActivityFragment.setArguments(getIntent().getExtras());
 
@@ -36,4 +55,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void setImage(Bitmap bitmap) {
+        if (collapsingToolbar != null) {
+            Drawable background = new BitmapDrawable(getResources(), bitmap);
+            collapsingToolbar.setBackground(background);
+        }
+    }
 }

@@ -33,26 +33,16 @@ public class UriHelper {
         return null;
     }
 
-    public static Uri getOriginalSizeBitmapUri(String imagePath){
+    public static Uri getImageUri(String imagePath, String imageSize){
         return new Uri.Builder()
                 .scheme("https")
                 .authority("image.tmdb.org")
                 .appendPath("t")
                 .appendPath("p")
-                .appendPath("original")
+                .appendPath(imageSize)
                 .appendPath(imagePath)
                 .build();
     }
 
-    public static Uri getW185SizeBitmapUri(String imagePath){
-        return new Uri.Builder()
-                .scheme("https")
-                .authority("image.tmdb.org")
-                .appendPath("t")
-                .appendPath("p")
-                .appendPath("w185")
-                .appendPath(imagePath)
-                .build();
-    }
 
 }

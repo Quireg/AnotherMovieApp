@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
@@ -27,10 +28,10 @@ import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment.OnListFragmentIntera
 
 public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<PopularMovieRecyclerViewAdapter.ViewHolder> {
     private static final String LOG_TAG = PopularMovieRecyclerViewAdapter.class.getSimpleName();
+
     private final OnListFragmentInteractionListener mListener;
     private List<MovieItem> mValues;
     private String tag;
-
     private Context appContext;
 
     public PopularMovieRecyclerViewAdapter(OnListFragmentInteractionListener listener, String tag) {
@@ -53,7 +54,7 @@ public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<Popula
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getOriginalTitle());
 
-        Uri uri = UriHelper.getW185SizeBitmapUri(mValues.get(position).getImageFullSize());
+        Uri uri = UriHelper.getImageUri(mValues.get(position).getImageFullSize(), Constants.IMAGE_SIZE_W185);
         MLog.d(LOG_TAG, "Fetching: " + uri.toString());
         Picasso.with(appContext).load(uri).into(holder.mImageView);
 

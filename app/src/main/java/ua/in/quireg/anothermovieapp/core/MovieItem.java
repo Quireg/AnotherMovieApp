@@ -10,17 +10,17 @@ public class MovieItem implements Serializable {
     private String description;
     private double rating;
     private boolean adult;
-    private String imagePreview;
+    private String imageBackdrop;
     private String imageFullSize;
 
-    public MovieItem(String originalTitle, String title, String id, String description, boolean adult, double rating, String imagePreview, String imageFullSize) {
+    public MovieItem(String originalTitle, String title, String id, String description, boolean adult, double rating, String imageBackdrop, String imageFullSize) {
         this.originalTitle = originalTitle;
         this.title = title;
         this.id = id;
         this.description = description;
         this.adult = adult;
         this.rating = rating;
-        this.imagePreview = imagePreview;
+        this.imageBackdrop = imageBackdrop;
         this.imageFullSize = imageFullSize;
     }
 
@@ -72,12 +72,12 @@ public class MovieItem implements Serializable {
         this.rating = rating;
     }
 
-    public String getImagePreview() {
-        return imagePreview;
+    public String getImageBackdrop() {
+        return imageBackdrop;
     }
 
-    public void setImagePreview(String imagePreview) {
-        this.imagePreview = imagePreview;
+    public void setImageBackdrop(String imageBackdrop) {
+        this.imageBackdrop = imageBackdrop;
     }
 
     public String getImageFullSize() {

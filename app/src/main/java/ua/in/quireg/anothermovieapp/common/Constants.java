@@ -11,4 +11,7 @@ public class Constants {
 
     public static final int COLUMN_NUMBER = 2;
 
+    public static final String IMAGE_SIZE_ORIGINAL = "original";
+    public static final String IMAGE_SIZE_W185 = "w185";
+
 }
