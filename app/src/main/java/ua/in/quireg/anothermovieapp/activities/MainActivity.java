@@ -17,7 +17,7 @@ import java.util.List;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
-import ua.in.quireg.anothermovieapp.core.MovieFetcher;
+import ua.in.quireg.anothermovieapp.network.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment;

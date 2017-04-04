@@ -1,11 +1,13 @@
 package ua.in.quireg.anothermovieapp.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,18 +28,15 @@ import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment.OnListFragmentIntera
  * specified {@link OnListFragmentInteractionListener}.
  */
 
-public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<PopularMovieRecyclerViewAdapter.ViewHolder> {
+public class PopularMovieRecyclerViewAdapter extends CursorAdapter {
     private static final String LOG_TAG = PopularMovieRecyclerViewAdapter.class.getSimpleName();
 
-    private final OnListFragmentInteractionListener mListener;
-    private List<MovieItem> mValues;
     private String tag;
     private Context appContext;
 
-    public PopularMovieRecyclerViewAdapter(OnListFragmentInteractionListener listener, String tag) {
-        this.mValues = new ArrayList<>();
-        this.mListener = listener;
-        this.tag = tag;
+    public PopularMovieRecyclerViewAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+        appContext = context;
     }
 
 
@@ -88,6 +87,17 @@ public class PopularMovieRecyclerViewAdapter extends RecyclerView.Adapter<Popula
 
     public String getType(){
         return this.tag;
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.fragment_movie_item, parent, false);
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+
     }
 
 

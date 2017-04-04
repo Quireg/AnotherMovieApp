@@ -44,5 +44,16 @@ public class UriHelper {
                 .build();
     }
 
+    public static Uri getMovieById(String id){
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(id)
+                .appendQueryParameter("api_key", API_KEY)
+                .build();
+    }
+
 
 }

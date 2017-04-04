@@ -1,4 +1,4 @@
-package ua.in.quireg.anothermovieapp.core;
+package ua.in.quireg.anothermovieapp.network;
 
 import android.content.Context;
 import android.net.Uri;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.in.quireg.anothermovieapp.common.UriHelper;
+import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 
 
