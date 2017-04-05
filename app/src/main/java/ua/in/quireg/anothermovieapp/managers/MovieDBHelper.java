@@ -25,6 +25,10 @@ public class MovieDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TopRatedMovies.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PopularMovies.TABLE_NAME);
+        //Favourites table remain untouched.
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME);
 
         final String SQL_CREATE_MOVIE_ENTITY_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
 
@@ -51,13 +55,39 @@ public class MovieDBHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_VOTE_COUNT +          " INTEGER " +
                 "UNIQUE ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_MOVIE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedMovies.TABLE_NAME + " (" +
+                TopRatedMovies.COLUMN_JSON +            " TEXT, "   +
+                TopRatedMovies.COLUMN_PAGE +            " INTEGER " +
+                TopRatedMovies.COLUMN_TIMESTAMP +       " INTEGER " +
+                ");";
+
+        final String SQL_CREATE_MOVIE_POPULAR_TABLE = "CREATE TABLE " + PopularMovies.TABLE_NAME + " (" +
+                PopularMovies.COLUMN_JSON +            " TEXT, "   +
+                PopularMovies.COLUMN_PAGE +            " INTEGER " +
+                PopularMovies.COLUMN_TIMESTAMP +       " INTEGER " +
+                ");";
+
+        final String SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
+                PopularMovies._ID +                    " INTEGER, "   +
+                "UNIQUE ON CONFLICT REPLACE);";
+
         MLog.d(LOG_TAG, "Creating database:");
+
         MLog.d(LOG_TAG, SQL_CREATE_MOVIE_ENTITY_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_ENTITY_TABLE);
+
+        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_TOP_RATED_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TOP_RATED_TABLE);
+
+        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_POPULAR_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_POPULAR_TABLE);
+
+        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_FAVOURITES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_FAVOURITES_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        onCreate(db);
     }
 }
