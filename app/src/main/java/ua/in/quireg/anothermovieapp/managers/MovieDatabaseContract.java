@@ -69,12 +69,12 @@ public class MovieDatabaseContract {
 
         public static final String TABLE_NAME = "top_rated_movies";
 
-        public static final String COLUMN_JSON = "json";
-        public static final String COLUMN_TIMESTAMP = "timestamp";
+        public static final String _ID = "id";
+        public static final String COLUMN_POSITION = "position";
         public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+        public static Uri buildUri() {
+            return CONTENT_URI;
         }
 
     }
@@ -92,12 +92,12 @@ public class MovieDatabaseContract {
 
         public static final String TABLE_NAME = "popular_movies";
 
-        public static final String COLUMN_JSON = "json";
-        public static final String COLUMN_TIMESTAMP = "timestamp";
+        public static final String _ID = "id";
+        public static final String COLUMN_POSITION = "position";
         public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+        public static Uri buildUri() {
+            return CONTENT_URI;
         }
 
     }
@@ -116,9 +116,11 @@ public class MovieDatabaseContract {
         public static final String TABLE_NAME = "favourite_movies";
 
         public static final String _ID = "id";
+        public static final String COLUMN_POSITION = "position";
+        public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+        public static Uri buildUri() {
+            return CONTENT_URI;
         }
 
     }

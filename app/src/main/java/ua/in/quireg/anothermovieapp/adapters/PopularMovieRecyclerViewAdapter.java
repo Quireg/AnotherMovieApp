@@ -13,29 +13,32 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ua.in.quireg.anothermovieapp.R;
+import ua.in.quireg.anothermovieapp.adapters.helpers.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment.OnListFragmentInteractionListener;
+import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 
-public class PopularMovieRecyclerViewAdapter extends CursorAdapter {
+public class PopularMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<PopularMovieRecyclerViewAdapter.ViewHolder> {
     private static final String LOG_TAG = PopularMovieRecyclerViewAdapter.class.getSimpleName();
 
     private String tag;
     private Context appContext;
+    private final TopRatedMovieFragment.OnListFragmentInteractionListener mListener;
+
+
 
     public PopularMovieRecyclerViewAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
+        super(context, c);
         appContext = context;
     }
 
@@ -49,13 +52,14 @@ public class PopularMovieRecyclerViewAdapter extends CursorAdapter {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getOriginalTitle());
+    public void onBindViewHolder(final ViewHolder holder, Cursor cursor) {
+        MovieItem movie = MovieItem.fromCursor(cursor);
+        holder.mItem = movie;
+        holder.mMovieTitle.setText(movie.getOriginalTitle());
 
-        Uri uri = UriHelper.getImageUri(mValues.get(position).getImageFullSize(), Constants.IMAGE_SIZE_W185);
+        Uri uri = UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185);
         MLog.d(LOG_TAG, "Fetching: " + uri.toString());
-        Picasso.with(appContext).load(uri).into(holder.mImageView);
+        Picasso.with(appContext).load(uri).into(holder.mMovieThumbnail);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,54 +73,60 @@ public class PopularMovieRecyclerViewAdapter extends CursorAdapter {
         });
     }
 
-    @Override
-    public int getItemCount() {
-        if(mValues == null){
-            return 0;
-        }
-        return mValues.size();
-    }
+//    @Override
+//    public int getItemCount() {
+//        if(mValues == null){
+//            return 0;
+//        }
+//        return mValues.size();
+//    }
+//
+//
+//    public void addAll(List<MovieItem> items){
+//        if(items != null){
+//            mValues.clear();
+//            mValues.addAll(items);
+//        }
+//    }
 
+//    public String getType() {
+//        return this.tag;
+//    }
 
-    public void addAll(List<MovieItem> items){
-        if(items != null){
-            mValues.clear();
-            mValues.addAll(items);
-        }
-    }
-
-    public String getType(){
-        return this.tag;
-    }
-
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_movie_item, parent, false);
-    }
-
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-
-    }
+//    @Override
+//    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+//        return LayoutInflater.from(parent.getContext())
+//                .inflate(R.layout.fragment_movie_item, parent, false);
+//    }
+//
+//    @Override
+//    public void bindView(View view, Context context, Cursor cursor) {
+//        ViewHolder viewHolder = (ViewHolder) view.getTag();
+//        viewHolder.mMovieTitle.setText(cursor.getString(COL_MOVIE_TITLE));
+//
+//        Uri uri = UriHelper.getImageUri(cursor.getString(COL_MOVIE_POSTER_PATH), Constants.IMAGE_SIZE_W185);
+//        MLog.d(LOG_TAG, "Fetching: " + uri.toString());
+//        Picasso.with(appContext).load(uri).into(viewHolder.mMovieThumbnail);
+//
+//    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final ImageView mImageView;
+        public final TextView mMovieTitle;
+        public final ImageView mMovieThumbnail;
         public MovieItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mImageView = (ImageView) view.findViewById(R.id.image);
+            mMovieTitle = (TextView) view.findViewById(R.id.id);
+            mMovieThumbnail = (ImageView) view.findViewById(R.id.image);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mIdView.getText() + "'";
+            return super.toString() + " '" + mMovieTitle.getText() + "'";
         }
     }
 
