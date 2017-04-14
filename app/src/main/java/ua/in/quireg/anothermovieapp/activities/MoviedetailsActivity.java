@@ -46,7 +46,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements FetchImag
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(movie.getTitle());
 
-        new ImageFetcher(this, getApplicationContext()).execute(UriHelper.getImageUri(movie.getImageBackdrop(), Constants.IMAGE_SIZE_ORIGINAL));
+        new ImageFetcher(this, getApplicationContext()).execute(UriHelper.getImageUri(movie.getBackdropPath(), Constants.IMAGE_SIZE_ORIGINAL));
 
         MovieDetailsActivityFragment movieDetailsActivityFragment = new MovieDetailsActivityFragment();
         movieDetailsActivityFragment.setArguments(getIntent().getExtras());

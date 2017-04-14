@@ -21,21 +21,15 @@ import ua.in.quireg.anothermovieapp.adapters.PopularMovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
+import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class PopularMovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView recyclerView;
     private PopularMovieRecyclerViewAdapter popularMovieRecyclerViewAdapter;
     private int mPosition = RecyclerView.NO_POSITION;
-    private OnListFragmentInteractionListener mListener;
-    private IMovieListListener callback;
+    private OnFragmentInteractionListener mListener;
     private Context mContext;
 
 
@@ -46,7 +40,6 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        callback = (IMovieListListener) getContext();
         mContext = getContext();
     }
 
@@ -88,11 +81,11 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
 
 
 
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -129,9 +122,4 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
 
     }
 
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(MovieItem item);
-
-    }
 }

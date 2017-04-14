@@ -36,13 +36,14 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
 
         //Set movie description
         TextView movie_description_textview = (TextView) rootView.findViewById(R.id.movie_decription);
-        movie_description_textview.setText(movie.getDescription());
+        movie_description_textview.setText(movie.getOverview());
 
         //Set rating
-        TextView movie_rating = (TextView) rootView.findViewById(R.id.movie_rating);
-        movie_rating.setText(movie.getRating() + "/10");
-
-        new ImageFetcher(this, getContext()).execute(UriHelper.getImageUri(movie.getImageFullSize(), Constants.IMAGE_SIZE_W185));
+        if (movie.getVote_average() != 0) {
+            TextView movie_rating = (TextView) rootView.findViewById(R.id.movie_rating);
+            movie_rating.setText(movie.getVote_average() + "/10");
+        }
+        new ImageFetcher(this, getContext()).execute(UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185));
         return rootView;
     }
 

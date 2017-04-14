@@ -1,5 +1,6 @@
 package ua.in.quireg.anothermovieapp.network;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -21,6 +22,7 @@ import java.util.List;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
 
 public class MovieFetcher {
@@ -90,16 +92,10 @@ public class MovieFetcher {
 
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject movie = arr.getJSONObject(i);
-                                temp.add(new MovieItem(
-                                        movie.optString("original_title"),
-                                        movie.optString("title"),
-                                        movie.optString("id"),
-                                        movie.optString("overview"),
-                                        movie.optBoolean("adult"),
-                                        movie.optDouble("vote_average"),
-                                        movie.optString("backdrop_path").replace("/", ""),
-                                        movie.optString("poster_path").replace("/", ""))
-                                );
+                                MovieItem item = MovieItem.fromJSON(movie);
+                                temp.add(item);
+                                mCtx.getContentResolver().insert(MovieDatabaseContract.MovieEntry.CONTENT_URI, MovieItem.contentValuesFromObj(item));
+
                             }
                             Log.d(LOG_TAG, "Parse finished");
 

@@ -16,13 +16,15 @@ import ua.in.quireg.anothermovieapp.adapters.TopRatedMovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
+import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 
 
 public class TopRatedMovieFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private OnListFragmentInteractionListener mListener;
-    private IMovieListListener callback;
+    private TopRatedMovieRecyclerViewAdapter topRatedMovieRecyclerViewAdapter;
+    private int mPosition = RecyclerView.NO_POSITION;
+    private OnFragmentInteractionListener mListener;
     private Context mContext;
 
 
@@ -33,7 +35,6 @@ public class TopRatedMovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        callback = (IMovieListListener) getContext();
         mContext = getContext();
 
     }
@@ -47,21 +48,12 @@ public class TopRatedMovieFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
+            topRatedMovieRecyclerViewAdapter = new TopRatedMovieRecyclerViewAdapter(getActivity(), null, 0);
 
             recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
-            recyclerView.setAdapter(new TopRatedMovieRecyclerViewAdapter(mListener, Constants.TOP_RATED));
+            recyclerView.setAdapter(topRatedMovieRecyclerViewAdapter);
         }
-        reload();
         return view;
-    }
-
-    public void reload() {
-        System.out.println("Stub");
-        if (recyclerView != null && recyclerView.getAdapter() != null) {
-            TopRatedMovieRecyclerViewAdapter adapter = (TopRatedMovieRecyclerViewAdapter) recyclerView.getAdapter();
-            adapter.addAll(callback.getMoviesList(adapter.getType()));
-            adapter.notifyDataSetChanged();
-        }
     }
 
     @Override
@@ -82,13 +74,12 @@ public class TopRatedMovieFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-        reload();
     }
 
     @Override

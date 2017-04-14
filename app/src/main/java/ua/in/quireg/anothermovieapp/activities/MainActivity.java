@@ -17,14 +17,14 @@ import java.util.List;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
+import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.network.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment;
 import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment;
 
-public class MainActivity extends AppCompatActivity implements PopularMovieFragment.OnListFragmentInteractionListener,
-        TopRatedMovieFragment.OnListFragmentInteractionListener, IMovieListListener {
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -88,74 +88,79 @@ public class MainActivity extends AppCompatActivity implements PopularMovieFragm
         return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    public void onListFragmentInteraction(MovieItem item) {
+//
+//    }
+//
+//    @Override
+//    public List<MovieItem> getMoviesList(String requestedList) {
+//        if (requestedList.equals(Constants.POPULAR)) {
+//            return getPopularMoviesList();
+//        } else if (requestedList.equals(Constants.TOP_RATED)) {
+//            return getTopRatedMoviesList();
+//        }
+//        return null;
+//    }
+//
+//    public List<MovieItem> getPopularMoviesList() {
+//        if (this.popularMoviesList == null) {
+//            MLog.d(LOG_TAG, "Popular movies list requested for the first time");
+//
+//            fetcher.requestMovieList(this, Constants.POPULAR);
+//            return null;
+//        } else {
+//            return this.popularMoviesList;
+//        }
+//    }
+//
+//    public List<MovieItem> getTopRatedMoviesList() {
+//        if (this.topRatedMoviesList == null) {
+//            MLog.d(LOG_TAG, "Top rated movies list requested for the first time");
+//
+//            fetcher.requestMovieList(this, Constants.TOP_RATED);
+//            return null;
+//        } else {
+//            return this.topRatedMoviesList;
+//        }
+//    }
+
+//    @Override
+//    public void setMoviesList(List<MovieItem> list, String tag) {
+//        if (tag.equals(Constants.POPULAR)) {
+//            MLog.d(LOG_TAG, "Popular movies list updated");
+//
+//            this.popularMoviesList = list;
+//            reloadFragment(tag);
+//
+//        } else if (tag.equals(Constants.TOP_RATED)) {
+//            MLog.d(LOG_TAG, "Top rated movies list updated");
+//
+//            this.topRatedMoviesList = list;
+//            reloadFragment(tag);
+//        }
+//
+//    }
+
+//    public void reloadFragment(String tag) {
+//        if (tag.equals(Constants.POPULAR)) {
+//            if (popularMoviesFragment != null) {
+//                popularMoviesFragment.reload();
+//            }
+//        } else if (tag.equals(Constants.TOP_RATED)) {
+//            if (topRatedMoviesFragment != null) {
+//                topRatedMoviesFragment.reload();
+//            }
+//        }
+//    }
+
     @Override
-    public void onListFragmentInteraction(MovieItem item) {
+    public void onFragmentMessage(String TAG, Object data) {
         Intent i = new Intent(MainActivity.this, MovieDetailsActivity.class);
         Bundle args = new Bundle();
-        args.putSerializable(Constants.MOVIE, item);
+        args.putSerializable(Constants.MOVIE, (MovieItem)data);
         i.putExtras(args);
         startActivity(i);
-    }
-
-    @Override
-    public List<MovieItem> getMoviesList(String requestedList) {
-        if (requestedList.equals(Constants.POPULAR)) {
-            return getPopularMoviesList();
-        } else if (requestedList.equals(Constants.TOP_RATED)) {
-            return getTopRatedMoviesList();
-        }
-        return null;
-    }
-
-    public List<MovieItem> getPopularMoviesList() {
-        if (this.popularMoviesList == null) {
-            MLog.d(LOG_TAG, "Popular movies list requested for the first time");
-
-            fetcher.requestMovieList(this, Constants.POPULAR);
-            return null;
-        } else {
-            return this.popularMoviesList;
-        }
-    }
-
-    public List<MovieItem> getTopRatedMoviesList() {
-        if (this.topRatedMoviesList == null) {
-            MLog.d(LOG_TAG, "Top rated movies list requested for the first time");
-
-            fetcher.requestMovieList(this, Constants.TOP_RATED);
-            return null;
-        } else {
-            return this.topRatedMoviesList;
-        }
-    }
-
-    @Override
-    public void setMoviesList(List<MovieItem> list, String tag) {
-        if (tag.equals(Constants.POPULAR)) {
-            MLog.d(LOG_TAG, "Popular movies list updated");
-
-            this.popularMoviesList = list;
-            reloadFragment(tag);
-
-        } else if (tag.equals(Constants.TOP_RATED)) {
-            MLog.d(LOG_TAG, "Top rated movies list updated");
-
-            this.topRatedMoviesList = list;
-            reloadFragment(tag);
-        }
-
-    }
-
-    public void reloadFragment(String tag) {
-        if (tag.equals(Constants.POPULAR)) {
-            if (popularMoviesFragment != null) {
-                popularMoviesFragment.reload();
-            }
-        } else if (tag.equals(Constants.TOP_RATED)) {
-            if (topRatedMoviesFragment != null) {
-                topRatedMoviesFragment.reload();
-            }
-        }
     }
 
 

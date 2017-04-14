@@ -1,7 +1,10 @@
 package ua.in.quireg.anothermovieapp.core;
 
 
+import android.content.ContentValues;
 import android.database.Cursor;
+
+import org.json.JSONObject;
 
 import java.io.Serializable;
 
@@ -80,6 +83,32 @@ public class MovieItem implements Serializable {
             MovieDatabaseContract.MovieEntry.COLUMN_VOTE_COUNT
     };
 
+    public static ContentValues contentValuesFromObj(MovieItem obj){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieDatabaseContract.MovieEntry._ID, obj.getId());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_ADULT, obj.isAdult());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_BACKDROP_PATH, obj.getBackdropPath());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_BUDGET, obj.getBudget());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_HOMEPAGE, obj.getHomepage());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_IMDB_ID, obj.getImdb_id());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE, obj.getOriginalLanguage());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_ORIGINAL_TITLE, obj.getOriginalTitle());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_TITLE, obj.getTitle());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_OVERVIEW, obj.getOverview());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_POPULARITY, obj.getPopularity());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_POSTER_PATH, obj.getPosterPath());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_RELEASE_DATE, obj.getReleaseDate());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_REVENUE, obj.getRevenue());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_RUNTIME, obj.getRuntime());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_STATUS, obj.getStatus());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_TAGLINE, obj.getTagline());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_VIDEO, obj.isVideo());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_VOTE_AVERAGE, obj.getVote_average());
+        contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_VOTE_COUNT, obj.getVoteCount());
+
+        return contentValues;
+    }
+
     static final int COL_MOVIE_ID = 0;
     static final int COL_MOVIE_ADULT = 1;
     static final int COL_MOVIE_BACKDROP_PATH = 2;
@@ -100,6 +129,27 @@ public class MovieItem implements Serializable {
     static final int COL_MOVIE_VIDEO = 17;
     static final int COL_MOVIE_VOTE_AVERAGE = 18;
     static final int COL_MOVIE_VOTE_COUNT = 19;
+
+    public static final String JSON_ID = "id";
+    public static final String JSON_ADULT = "adult";
+    public static final String JSON_BACKDROP_PATH = "backdrop_path";
+    public static final String JSON_BUDGET = "budget";
+    public static final String JSON_HOMEPAGE = "homepage";
+    public static final String JSON_IMDB_ID = "imdb_id";
+    public static final String JSON_ORIGINAL_LANGUAGE = "original_language";
+    public static final String JSON_ORIGINAL_TITLE = "original_title";
+    public static final String JSON_TITLE = "title";
+    public static final String JSON_OVERVIEW = "overview";
+    public static final String JSON_POPULARITY = "popularity";
+    public static final String JSON_POSTER_PATH = "poster_path";
+    public static final String JSON_RELEASE_DATE = "release_date";
+    public static final String JSON_REVENUE = "revenue";
+    public static final String JSON_RUNTIME = "runtime";
+    public static final String JSON_STATUS = "status";
+    public static final String JSON_TAGLINE = "tagline";
+    public static final String JSON_VIDEO = "video";
+    public static final String JSON_VOTE_AVERAGE = "vote_average";
+    public static final String JSON_VOTE_COUNT = "vote_count";
 
 
     public static MovieItem fromCursor(Cursor cursor) {
@@ -124,6 +174,31 @@ public class MovieItem implements Serializable {
                 Boolean.valueOf(cursor.getString(COL_MOVIE_VIDEO)),
                 cursor.getDouble(COL_MOVIE_VOTE_AVERAGE),
                 cursor.getInt(COL_MOVIE_VOTE_COUNT)
+        );
+    }
+
+    public static MovieItem fromJSON(JSONObject obj){
+        return new MovieItem(
+                obj.optLong(JSON_ID),
+                obj.optBoolean(JSON_ADULT),
+                obj.optString(JSON_BACKDROP_PATH),
+                obj.optInt(JSON_BUDGET),
+                obj.optString(JSON_HOMEPAGE),
+                obj.optLong(JSON_IMDB_ID),
+                obj.optString(JSON_ORIGINAL_LANGUAGE),
+                obj.optString(JSON_ORIGINAL_TITLE),
+                obj.optString(JSON_TITLE),
+                obj.optString(JSON_OVERVIEW),
+                obj.optDouble(JSON_POPULARITY),
+                obj.optString(JSON_POSTER_PATH),
+                obj.optString(JSON_RELEASE_DATE),
+                obj.optInt(JSON_REVENUE),
+                obj.optInt(JSON_RUNTIME),
+                obj.optString(JSON_STATUS),
+                obj.optString(JSON_TAGLINE),
+                obj.optBoolean(JSON_VIDEO),
+                obj.optDouble(JSON_VOTE_AVERAGE),
+                obj.optInt(JSON_VOTE_COUNT)
         );
     }
 

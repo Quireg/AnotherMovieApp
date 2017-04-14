@@ -7,5 +7,5 @@ import ua.in.quireg.anothermovieapp.core.MovieItem;
 
 public class MovieFromJsonParser {
 
-    public static List<MovieItem> parse
+    //public static List<MovieItem> parse
 }
