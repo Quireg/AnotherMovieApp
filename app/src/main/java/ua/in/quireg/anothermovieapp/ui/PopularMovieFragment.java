@@ -10,19 +10,19 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.PopularMovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
+import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 
 public class PopularMovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -31,6 +31,13 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     private int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
+
+    private LayoutInflater mInflater;
+    private ViewGroup mContainer;
+
+    private static final int POPULAR_MOVIE_LOADER = 0;
+    private int pageNumber = 1;
+    private int adapterItemCount = 0;
 
 
     public PopularMovieFragment() {
@@ -41,25 +48,56 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        popularMovieRecyclerViewAdapter = new PopularMovieRecyclerViewAdapter(getActivity(), null, 0);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        mContainer = container;
+        mInflater = inflater;
+        //View view = inflater.inflate(R.layout.fragment_no_data, container, false);
+        View view = mInflater.inflate(R.layout.fragment_movie_list, mContainer, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-            popularMovieRecyclerViewAdapter = new PopularMovieRecyclerViewAdapter(getActivity(), null, 0);
-
             recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
             recyclerView.setAdapter(popularMovieRecyclerViewAdapter);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (recyclerView.getAdapter().getItemCount() != 0) {
+                        int lastVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                        if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == recyclerView.getAdapter().getItemCount() - 1){
+
+                            if(recyclerView.getAdapter().getItemCount() != adapterItemCount) {
+                                pageNumber = pageNumber + 1;
+                                adapterItemCount = recyclerView.getAdapter().getItemCount();
+                                SyncMovieService.startActionFetchMovies(getContext(), Constants.POPULAR, pageNumber + "");
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                }
+            });
         }
         return view;
     }
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(POPULAR_MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -79,8 +117,6 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     public void onAttach(Context context) {
         super.onAttach(context);
 
-
-
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -97,7 +133,8 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = MovieDatabaseContract.PopularMovies.COLUMN_PAGE + " ASC, " + MovieDatabaseContract.PopularMovies.COLUMN_POSITION + " ASC";
+        String sortOrder = MovieDatabaseContract.PopularMovies.COLUMN_PAGE + " ASC, " +
+                MovieDatabaseContract.PopularMovies.COLUMN_POSITION + " ASC";
 
         return new CursorLoader(getActivity(),
                 MovieDatabaseContract.PopularMovies.buildUri(),

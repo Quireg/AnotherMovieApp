@@ -4,12 +4,13 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.*;
 
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.*;
 
 
 public class MovieEntityProvider extends ContentProvider {
@@ -26,7 +27,7 @@ public class MovieEntityProvider extends ContentProvider {
     //public static final int FAVOURITE_MOVIE_ITEM = 202;
 
     public static final int POPULAR_MOVIE_DIR = 301;
-   // public static final int POPULAR_MOVIE_ITEM = 302;
+    // public static final int POPULAR_MOVIE_ITEM = 302;
 
     public static final int TOP_RATED_MOVIE_DIR = 401;
     //public static final int TOP_RATED_MOVIE_ITEM = 402;
@@ -88,10 +89,10 @@ public class MovieEntityProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case MOVIE_DIR:
                 return mOpenHelper.getReadableDatabase().query(
-                    MovieEntry.TABLE_NAME,
+                        MovieEntry.TABLE_NAME,
                         projection,
                         null,
                         null,
@@ -166,49 +167,29 @@ public class MovieEntityProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        Uri returnUri;
-        long _id;
-        switch (match){
+//        Uri returnUri;
+//        long _id;
+        switch (match) {
             case MOVIE_DIR:
-                _id = db.insert(MovieEntry.TABLE_NAME, null, values);
-                if ( _id > 0 ) {
-                    returnUri = MovieEntry.buildUri(_id);
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnUri;
+                db.insertWithOnConflict(MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
             case FAVOURITE_MOVIE_DIR:
-                _id = db.insert(FavouriteMovies.TABLE_NAME, null, values);
-                if ( _id > 0 ) {
-                    returnUri = null;
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnUri;
+                db.insertWithOnConflict(FavouriteMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+
             case POPULAR_MOVIE_DIR:
-                _id = db.insert(PopularMovies.TABLE_NAME, null, values);
-                if ( _id > 0 ) {
-                    returnUri = null;
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnUri;
+                db.insertWithOnConflict(PopularMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+
             case TOP_RATED_MOVIE_DIR:
-                _id = db.insert(TopRatedMovies.TABLE_NAME, null, values);
-                if ( _id > 0 ) {
-                    returnUri = null;
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnUri;
+                db.insertWithOnConflict(TopRatedMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
+        getContext().getContentResolver().notifyChange(uri, null);
+        return uri;
     }
 
     @Override
@@ -218,7 +199,7 @@ public class MovieEntityProvider extends ContentProvider {
         int rowsDeleted;
 
 
-        switch (match){
+        switch (match) {
             case MOVIE_ITEM:
                 selection = MovieEntry._ID + " =?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
@@ -228,10 +209,10 @@ public class MovieEntityProvider extends ContentProvider {
                         selection,
                         selectionArgs
                 );
-                if ( rowsDeleted > 0 ) {
+                if (rowsDeleted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                } else {
+                    throw new android.database.SQLException("Failed to delete row " + uri);
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
@@ -241,10 +222,10 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null
                 );
-                if ( rowsDeleted > 0 ) {
+                if (rowsDeleted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                } else {
+                    throw new android.database.SQLException("Failed to delete row " + uri);
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
@@ -254,10 +235,10 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null
                 );
-                if ( rowsDeleted > 0 ) {
+                if (rowsDeleted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                } else {
+                    throw new android.database.SQLException("Failed to delete row " + uri);
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
@@ -267,10 +248,10 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null
                 );
-                if ( rowsDeleted > 0 ) {
+                if (rowsDeleted > 0) {
                     getContext().getContentResolver().notifyChange(uri, null);
-                }else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                } else {
+                    throw new android.database.SQLException("Failed to delete row " + uri);
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;

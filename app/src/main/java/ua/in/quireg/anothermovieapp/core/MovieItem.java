@@ -181,7 +181,7 @@ public class MovieItem implements Serializable {
         return new MovieItem(
                 obj.optLong(JSON_ID),
                 obj.optBoolean(JSON_ADULT),
-                obj.optString(JSON_BACKDROP_PATH),
+                obj.optString(JSON_BACKDROP_PATH).replace("/", "").replace("\\", ""),
                 obj.optInt(JSON_BUDGET),
                 obj.optString(JSON_HOMEPAGE),
                 obj.optLong(JSON_IMDB_ID),
@@ -190,7 +190,7 @@ public class MovieItem implements Serializable {
                 obj.optString(JSON_TITLE),
                 obj.optString(JSON_OVERVIEW),
                 obj.optDouble(JSON_POPULARITY),
-                obj.optString(JSON_POSTER_PATH),
+                obj.optString(JSON_POSTER_PATH).replace("/", "").replace("\\", ""),
                 obj.optString(JSON_RELEASE_DATE),
                 obj.optInt(JSON_REVENUE),
                 obj.optInt(JSON_RUNTIME),

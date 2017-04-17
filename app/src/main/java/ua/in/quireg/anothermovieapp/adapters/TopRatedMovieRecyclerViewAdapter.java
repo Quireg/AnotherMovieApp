@@ -53,41 +53,15 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
         return new ViewHolder(view);
     }
 
-//    @Override
-//    public void onBindViewHolder(final ViewHolder holder, int position) {
-//        holder.mItem = mValues.get(position);
-//        Uri uri = UriHelper.getImageUri(mValues.get(position).getImageFullSize(), Constants.IMAGE_SIZE_W185);
-//        MLog.d(LOG_TAG, "Fetching: " + uri.toString());
-//        Picasso.with(appContext).load(uri).into(holder.mImageView);
-//
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-//                }
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        if(mValues == null){
-//            return 0;
-//        }
-//        return mValues.size();
-//    }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, Cursor cursor) {
+        MLog.v(LOG_TAG, "onBindViewHolder()");
         MovieItem movie = MovieItem.fromCursor(cursor);
         holder.mItem = movie;
         holder.mMovieTitle.setText(movie.getOriginalTitle());
 
         Uri uri = UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185);
-        MLog.d(LOG_TAG, "Fetching: " + uri.toString());
         Picasso.with(appContext).load(uri).into(holder.mMovieThumbnail);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -101,18 +75,6 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
             }
         });
     }
-
-
-//    public void addAll(List<MovieItem> items){
-//        if(items != null){
-//            mValues.clear();
-//            mValues.addAll(items);
-//        }
-//    }
-
-//    public String getType(){
-//        return this.tag;
-//    }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,7 +95,6 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
             return super.toString() + " '" + mMovieTitle.getText() + "'";
         }
     }
-
 
 
 }

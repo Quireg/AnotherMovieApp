@@ -16,11 +16,10 @@ import java.util.List;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
-import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.network.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
+import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment;
 import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment;
 
@@ -30,14 +29,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private static final int POPULAR_MOVIES_TAB_POSITION = 0;
     private static final int TOP_RATED_MOVIES_TAB_POSITION = 1;
-
-    private MovieFetcher fetcher;
-
-    private List<MovieItem> popularMoviesList;
-    private List<MovieItem> topRatedMoviesList;
-
-    private PopularMovieFragment popularMoviesFragment;
-    private TopRatedMovieFragment topRatedMoviesFragment;
 
 
     @Override
@@ -50,10 +41,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         //Set title to "Popular" as it is the first fragment to be shown.
         getSupportActionBar().setTitle(getResources().getString(R.string.popular_tab_name));
-
-        fetcher = MovieFetcher.getInstance(getApplicationContext());
-
-
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this.getApplicationContext());
 
 
@@ -82,77 +69,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_refresh) {
+            SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.POPULAR, "1");
+            SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.TOP_RATED, "1");
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onListFragmentInteraction(MovieItem item) {
-//
-//    }
-//
-//    @Override
-//    public List<MovieItem> getMoviesList(String requestedList) {
-//        if (requestedList.equals(Constants.POPULAR)) {
-//            return getPopularMoviesList();
-//        } else if (requestedList.equals(Constants.TOP_RATED)) {
-//            return getTopRatedMoviesList();
-//        }
-//        return null;
-//    }
-//
-//    public List<MovieItem> getPopularMoviesList() {
-//        if (this.popularMoviesList == null) {
-//            MLog.d(LOG_TAG, "Popular movies list requested for the first time");
-//
-//            fetcher.requestMovieList(this, Constants.POPULAR);
-//            return null;
-//        } else {
-//            return this.popularMoviesList;
-//        }
-//    }
-//
-//    public List<MovieItem> getTopRatedMoviesList() {
-//        if (this.topRatedMoviesList == null) {
-//            MLog.d(LOG_TAG, "Top rated movies list requested for the first time");
-//
-//            fetcher.requestMovieList(this, Constants.TOP_RATED);
-//            return null;
-//        } else {
-//            return this.topRatedMoviesList;
-//        }
-//    }
-
-//    @Override
-//    public void setMoviesList(List<MovieItem> list, String tag) {
-//        if (tag.equals(Constants.POPULAR)) {
-//            MLog.d(LOG_TAG, "Popular movies list updated");
-//
-//            this.popularMoviesList = list;
-//            reloadFragment(tag);
-//
-//        } else if (tag.equals(Constants.TOP_RATED)) {
-//            MLog.d(LOG_TAG, "Top rated movies list updated");
-//
-//            this.topRatedMoviesList = list;
-//            reloadFragment(tag);
-//        }
-//
-//    }
-
-//    public void reloadFragment(String tag) {
-//        if (tag.equals(Constants.POPULAR)) {
-//            if (popularMoviesFragment != null) {
-//                popularMoviesFragment.reload();
-//            }
-//        } else if (tag.equals(Constants.TOP_RATED)) {
-//            if (topRatedMoviesFragment != null) {
-//                topRatedMoviesFragment.reload();
-//            }
-//        }
-//    }
 
     @Override
     public void onFragmentMessage(String TAG, Object data) {
@@ -171,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private Context mContext;
+        private PopularMovieFragment popularMoviesFragment;
+        private TopRatedMovieFragment topRatedMoviesFragment;
 
 
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
@@ -182,10 +108,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         public Fragment getItem(int position) {
             switch (position) {
                 case POPULAR_MOVIES_TAB_POSITION:
-                    popularMoviesFragment = new PopularMovieFragment();
+                    if(popularMoviesFragment == null) {
+                        popularMoviesFragment = new PopularMovieFragment();
+                    }
                     return popularMoviesFragment;
                 case TOP_RATED_MOVIES_TAB_POSITION:
-                    topRatedMoviesFragment = new TopRatedMovieFragment();
+                    if(topRatedMoviesFragment == null) {
+                        topRatedMoviesFragment = new TopRatedMovieFragment();
+                    }
                     return topRatedMoviesFragment;
             }
 

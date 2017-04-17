@@ -12,7 +12,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = MovieDBHelper.class.getSimpleName();
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -55,25 +55,25 @@ public class MovieDBHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_VIDEO +               " TEXT, "    +
                 MovieEntry.COLUMN_VOTE_AVERAGE +        " REAL, "    +
                 MovieEntry.COLUMN_VOTE_COUNT +          " INTEGER " +
-                "UNIQUE ON CONFLICT REPLACE);";
+                ");";
 
         final String SQL_CREATE_MOVIE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedMovies.TABLE_NAME + " (" +
-                TopRatedMovies._ID +                    " INTEGER, "   +
+                TopRatedMovies._ID +                    " INTEGER UNIQUE NOT NULL, "   +
                 TopRatedMovies.COLUMN_PAGE +            " INTEGER, " +
                 TopRatedMovies.COLUMN_POSITION +        " INTEGER " +
-                "UNIQUE ON CONFLICT REPLACE);";
+                ");";
 
         final String SQL_CREATE_MOVIE_POPULAR_TABLE = "CREATE TABLE " + PopularMovies.TABLE_NAME + " (" +
-                PopularMovies._ID +                     " INTEGER, "   +
+                PopularMovies._ID +                     " INTEGER UNIQUE NOT NULL, "   +
                 PopularMovies.COLUMN_PAGE +             " INTEGER, " +
                 PopularMovies.COLUMN_POSITION +         " INTEGER " +
-                "UNIQUE ON CONFLICT REPLACE);";
+                ");";
 
         final String SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
-                FavouriteMovies._ID +                     " INTEGER, "   +
+                FavouriteMovies._ID +                     " INTEGER UNIQUE NOT NULL, "   +
                 FavouriteMovies.COLUMN_PAGE +             " INTEGER, " +
                 FavouriteMovies.COLUMN_POSITION +         " INTEGER " +
-                "UNIQUE ON CONFLICT REPLACE);";
+                ");";
 
 
 

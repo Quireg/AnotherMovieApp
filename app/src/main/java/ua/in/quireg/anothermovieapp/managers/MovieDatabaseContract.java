@@ -56,7 +56,7 @@ public class MovieDatabaseContract {
 
     }
 
-    public static final class TopRatedMovies implements BaseColumns{
+    public static final class TopRatedMovies implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_TOP_RATED_MOVIES).build();
@@ -79,7 +79,7 @@ public class MovieDatabaseContract {
 
     }
 
-    public static final class PopularMovies implements BaseColumns{
+    public static final class PopularMovies implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_POPULAR_MOVIES).build();
@@ -102,7 +102,7 @@ public class MovieDatabaseContract {
 
     }
 
-    public static final class FavouriteMovies implements BaseColumns{
+    public static final class FavouriteMovies implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVOURITE_MOVIES).build();

@@ -6,10 +6,11 @@ import android.net.Uri;
 import ua.in.quireg.anothermovieapp.BuildConfig;
 
 public class UriHelper {
-
+    private static final String LOG_TAG = UriHelper.class.getSimpleName();
     private static final String API_KEY = BuildConfig.MOVIE_DATABASE_API_KEY;
 
     public static Uri getMoviesListUri(String tag){
+        MLog.v(LOG_TAG, "getMoviesListUri()");
         switch (tag){
             case Constants.POPULAR:
                 return new Uri.Builder()
@@ -33,7 +34,36 @@ public class UriHelper {
         return null;
     }
 
+    public static Uri getMoviesListPageUri(String tag, String page){
+        MLog.v(LOG_TAG, "getMoviesListPageUri()");
+
+        switch (tag){
+            case Constants.POPULAR:
+                return new Uri.Builder()
+                        .scheme("https")
+                        .authority("api.themoviedb.org")
+                        .appendPath("3")
+                        .appendPath("movie")
+                        .appendPath("popular")
+                        .appendQueryParameter("page", page)
+                        .appendQueryParameter("api_key", API_KEY)
+                        .build();
+            case Constants.TOP_RATED:
+                return new Uri.Builder()
+                        .scheme("https")
+                        .authority("api.themoviedb.org")
+                        .appendPath("3")
+                        .appendPath("movie")
+                        .appendPath("top_rated")
+                        .appendQueryParameter("page", page)
+                        .appendQueryParameter("api_key", API_KEY)
+                        .build();
+        }
+        return null;
+    }
+
     public static Uri getImageUri(String imagePath, String imageSize){
+        MLog.v(LOG_TAG, "getImageUri()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("image.tmdb.org")
@@ -41,10 +71,12 @@ public class UriHelper {
                 .appendPath("p")
                 .appendPath(imageSize)
                 .appendPath(imagePath)
-                .build();
+                .build()
+                .normalizeScheme();
     }
 
-    public static Uri getMovieById(String id){
+    public static Uri getMovieUriById(String id){
+        MLog.v(LOG_TAG, "getMovieUriById()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("api.themoviedb.org")
@@ -54,6 +86,5 @@ public class UriHelper {
                 .appendQueryParameter("api_key", API_KEY)
                 .build();
     }
-
 
 }

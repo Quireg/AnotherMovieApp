@@ -35,7 +35,7 @@ public class MLog {
     }
 
     public static void v(String tag, String msg) {
-        if (Constants.LOGGING) {
+        if (Constants.LOGGING && false) {
             Log.v(tag, msg);
         }
     }

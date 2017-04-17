@@ -29,6 +29,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ua.in.quireg.anothermovieapp.activities.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="ua.in.quireg.anothermovieapp.app"
+            android:multiprocess="true"
+            android:name="ua.in.quireg.anothermovieapp.managers.MovieEntityProvider"></provider>
+
+        <service
+            android:name=".services.SyncMovieService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

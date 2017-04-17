@@ -46,12 +46,13 @@ public class PopularMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<P
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, Cursor cursor) {
+        MLog.v(LOG_TAG, "onBindViewHolder()");
         MovieItem movie = MovieItem.fromCursor(cursor);
         holder.mItem = movie;
         holder.mMovieTitle.setText(movie.getOriginalTitle());
 
         Uri uri = UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185);
-        MLog.d(LOG_TAG, "Fetching: " + uri.toString());
+
         Picasso.with(appContext).load(uri).into(holder.mMovieThumbnail);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

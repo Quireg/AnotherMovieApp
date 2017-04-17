@@ -1,8 +1,12 @@
 package ua.in.quireg.anothermovieapp.ui;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,17 +19,18 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.TopRatedMovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.IMovieListListener;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
 
-public class TopRatedMovieFragment extends Fragment {
+public class TopRatedMovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView recyclerView;
     private TopRatedMovieRecyclerViewAdapter topRatedMovieRecyclerViewAdapter;
     private int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
+    private static final int TOP_RATED_MOVIE_LOADER = 0;
 
 
     public TopRatedMovieFragment() {
@@ -36,6 +41,7 @@ public class TopRatedMovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        topRatedMovieRecyclerViewAdapter = new TopRatedMovieRecyclerViewAdapter(getActivity(), null, 0);
 
     }
 
@@ -48,12 +54,16 @@ public class TopRatedMovieFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-            topRatedMovieRecyclerViewAdapter = new TopRatedMovieRecyclerViewAdapter(getActivity(), null, 0);
-
             recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
             recyclerView.setAdapter(topRatedMovieRecyclerViewAdapter);
         }
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(TOP_RATED_MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -86,6 +96,33 @@ public class TopRatedMovieFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder = MovieDatabaseContract.TopRatedMovies.COLUMN_PAGE + " ASC, " + MovieDatabaseContract.TopRatedMovies.COLUMN_POSITION + " ASC";
+
+        return new CursorLoader(getActivity(),
+                MovieDatabaseContract.TopRatedMovies.buildUri(),
+                MovieItem.MOVIES_CLOMUNS,
+                null,
+                null,
+                sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        topRatedMovieRecyclerViewAdapter.swapCursor(data);
+        if (mPosition != RecyclerView.NO_POSITION) {
+            // If we don't need to restart the loader, and there's a desired position to restore
+            // to, do so now.
+            recyclerView.smoothScrollToPosition(mPosition);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     /**
