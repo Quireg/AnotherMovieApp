@@ -12,7 +12,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = MovieDBHelper.class.getSimpleName();
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3 ;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -29,8 +29,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TopRatedMovies.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PopularMovies.TABLE_NAME);
-        //Favourites table remain untouched.
-        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME);
 
         final String SQL_CREATE_MOVIE_ENTITY_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
 

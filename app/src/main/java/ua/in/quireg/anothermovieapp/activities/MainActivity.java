@@ -12,12 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.network.MovieFetcher;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment;
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public void onFragmentMessage(String TAG, Object data) {
-        Intent i = new Intent(MainActivity.this, MovieDetailsActivity.class);
+        Intent i = new Intent(MainActivity.this, MovieActivity.class);
         Bundle args = new Bundle();
         args.putSerializable(Constants.MOVIE, (MovieItem)data);
         i.putExtras(args);
