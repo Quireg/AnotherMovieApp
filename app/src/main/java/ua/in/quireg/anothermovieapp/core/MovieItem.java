@@ -83,7 +83,7 @@ public class MovieItem implements Serializable {
             MovieDatabaseContract.MovieEntry.COLUMN_VOTE_COUNT
     };
 
-    public static ContentValues contentValuesFromObj(MovieItem obj){
+    public static ContentValues contentValuesFromObj(MovieItem obj) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieDatabaseContract.MovieEntry._ID, obj.getId());
         contentValues.put(MovieDatabaseContract.MovieEntry.COLUMN_ADULT, obj.isAdult());
@@ -177,7 +177,7 @@ public class MovieItem implements Serializable {
         );
     }
 
-    public static MovieItem fromJSON(JSONObject obj){
+    public static MovieItem fromJSON(JSONObject obj) {
         return new MovieItem(
                 obj.optLong(JSON_ID),
                 obj.optBoolean(JSON_ADULT),
@@ -200,6 +200,43 @@ public class MovieItem implements Serializable {
                 obj.optDouble(JSON_VOTE_AVERAGE),
                 obj.optInt(JSON_VOTE_COUNT)
         );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!MovieItem.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final MovieItem other = (MovieItem) obj;
+
+        if (this.id != other.id ||
+                this.adult != other.adult ||
+                !this.backdropPath.equals(other.backdropPath) ||
+                this.budget != other.budget ||
+                !this.homepage.equals(other.homepage) ||
+                this.imdb_id != other.imdb_id ||
+                !this.originalTitle.equals(other.originalTitle) ||
+                !this.originalLanguage.equals(other.originalLanguage) ||
+                !this.title.equals(other.title) ||
+                !this.overview.equals((other.overview)) ||
+                this.popularity != other.popularity ||
+                !this.posterPath.equals(other.posterPath) ||
+                !this.releaseDate.equals(other.releaseDate) ||
+                this.revenue != other.revenue ||
+                this.runtime != other.runtime ||
+                !this.status.equals(other.status) ||
+                !this.tagline.equals(other.tagline) ||
+                this.video != other.video ||
+                this.vote_average != other.vote_average ||
+                this.voteCount != other.voteCount
+                ){
+            return false;
+        }
+
+        return true;
     }
 
     public long getId() {

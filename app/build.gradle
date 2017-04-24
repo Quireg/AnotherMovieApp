@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "ua.in.quireg.anothermovieapp"
         minSdkVersion 19
@@ -41,5 +41,8 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    testCompile (group: 'org.json', name: 'json', version: '20140107'){
+        force = true
+    }
     testCompile 'junit:junit:4.12'
 }

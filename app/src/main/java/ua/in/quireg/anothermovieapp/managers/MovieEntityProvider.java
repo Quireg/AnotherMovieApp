@@ -89,9 +89,11 @@ public class MovieEntityProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor cursor;
+
         switch (sUriMatcher.match(uri)) {
             case MOVIE_DIR:
-                return mOpenHelper.getReadableDatabase().query(
+                cursor = mOpenHelper.getReadableDatabase().query(
                         MovieEntry.TABLE_NAME,
                         projection,
                         null,
@@ -100,8 +102,9 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         "_ID ASC"
                 );
+                break;
             case MOVIE_ITEM:
-                return mOpenHelper.getReadableDatabase().query(
+                cursor = mOpenHelper.getReadableDatabase().query(
                         MovieEntry.TABLE_NAME,
                         projection,
                         "_ID = " + uri.getLastPathSegment(),
@@ -111,8 +114,9 @@ public class MovieEntityProvider extends ContentProvider {
                         "_ID ASC",
                         "LIMIT 1"
                 );
+                break;
             case FAVOURITE_MOVIE_DIR:
-                return sMovieFromFavouritesQueryBuilder.query(
+                cursor = sMovieFromFavouritesQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
@@ -120,8 +124,9 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             case POPULAR_MOVIE_DIR:
-                return sMovieFromPopularQueryBuilder.query(
+                cursor = sMovieFromPopularQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
@@ -129,8 +134,9 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             case TOP_RATED_MOVIE_DIR:
-                return sMovieFromTopRatedQueryBuilder.query(
+                cursor = sMovieFromTopRatedQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
@@ -138,9 +144,12 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
@@ -167,8 +176,7 @@ public class MovieEntityProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-//        Uri returnUri;
-//        long _id;
+
         switch (match) {
             case MOVIE_DIR:
                 db.insertWithOnConflict(MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);

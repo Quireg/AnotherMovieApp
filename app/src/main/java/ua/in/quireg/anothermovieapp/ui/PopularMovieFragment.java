@@ -2,6 +2,7 @@ package ua.in.quireg.anothermovieapp.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,8 +33,7 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     private OnFragmentInteractionListener mListener;
     private Context mContext;
 
-    private LayoutInflater mInflater;
-    private ViewGroup mContainer;
+    private View loadingView = null;
 
     private static final int POPULAR_MOVIE_LOADER = 0;
     private int pageNumber = 1;
@@ -54,41 +54,38 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContainer = container;
-        mInflater = inflater;
-        //View view = inflater.inflate(R.layout.fragment_no_data, container, false);
-        View view = mInflater.inflate(R.layout.fragment_movie_list, mContainer, false);
+        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        loadingView = view.findViewById(R.id.loading);
+        loadingView.setVisibility(View.VISIBLE);
+        recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
-            recyclerView.setAdapter(popularMovieRecyclerViewAdapter);
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        Context context = view.getContext();
+        recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
+        recyclerView.setAdapter(popularMovieRecyclerViewAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (recyclerView.getAdapter().getItemCount() != 0) {
-                        int lastVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                        if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == recyclerView.getAdapter().getItemCount() - 1){
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (recyclerView.getAdapter().getItemCount() != 0) {
+                    int lastVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                    if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == recyclerView.getAdapter().getItemCount() - 1) {
 
-                            if(recyclerView.getAdapter().getItemCount() != adapterItemCount) {
-                                pageNumber = pageNumber + 1;
-                                adapterItemCount = recyclerView.getAdapter().getItemCount();
-                                SyncMovieService.startActionFetchMovies(getContext(), Constants.POPULAR, pageNumber + "");
-                            }
+                        if (recyclerView.getAdapter().getItemCount() != adapterItemCount) {
+                            pageNumber = pageNumber + 1;
+                            adapterItemCount = recyclerView.getAdapter().getItemCount();
+                            SyncMovieService.startActionFetchMovies(getContext(), Constants.POPULAR, pageNumber + "");
                         }
                     }
                 }
+            }
 
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                }
-            });
-        }
+            }
+        });
         return view;
     }
 
@@ -136,8 +133,10 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
         String sortOrder = MovieDatabaseContract.PopularMovies.COLUMN_PAGE + " ASC, " +
                 MovieDatabaseContract.PopularMovies.COLUMN_POSITION + " ASC";
 
+        Uri uri = MovieDatabaseContract.PopularMovies.buildUri();
+
         return new CursorLoader(getActivity(),
-                MovieDatabaseContract.PopularMovies.buildUri(),
+                uri,
                 MovieItem.MOVIES_CLOMUNS,
                 null,
                 null,
@@ -145,8 +144,13 @@ public class PopularMovieFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        popularMovieRecyclerViewAdapter.swapCursor(data);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        popularMovieRecyclerViewAdapter.swapCursor(cursor);
+
+        if (cursor.moveToFirst()) {
+            loadingView.setVisibility(View.GONE);
+        }
+
         if (mPosition != RecyclerView.NO_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
