@@ -19,7 +19,7 @@ import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
 
-public class MovieDetailsActivity extends AppCompatActivity implements FetchImageCallback{
+public class MovieActivity extends AppCompatActivity implements FetchImageCallback{
 
     private CollapsingToolbarLayout collapsingToolbar;
 
