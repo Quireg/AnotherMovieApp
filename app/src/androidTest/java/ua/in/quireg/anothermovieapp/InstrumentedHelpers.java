@@ -3,7 +3,7 @@ package ua.in.quireg.anothermovieapp;
 
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 
-public class Helpers {
+public class InstrumentedHelpers {
 
     public static final MovieItem getTestMovieItem(){
         return new MovieItem(

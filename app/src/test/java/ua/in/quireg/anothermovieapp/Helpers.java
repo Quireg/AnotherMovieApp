@@ -7,26 +7,26 @@ public class Helpers {
 
     public static final MovieItem getTestMovieItem(){
         return new MovieItem(
-                7777, //id
-                true, //adult
-                "backdrop",
+                321612, //id
+                false, //adult
+                "6aUWe0GSl69wMTSWWexsorMIvwU.jpg",
                 1000000, //budget
                 "www.homepage.com",
                 123,  //imdb_id
-                "originalLanguage",
-                "originalTitle",
-                "title",
-                "overviewWWWWWwwwwwwwwwwwwwwwwwwwwWWWWWWWWWww",
-                0.123, //popularity
-                "poster_path",
-                "release_date",
-                123, //revenue
+                "en",
+                "Beauty and the Beast",
+                "Beauty and the Beast",
+                "A live-action adaptation of Disney's version of the classic 'Beauty and the Beast' tale of a cursed prince and a beautiful young woman who helps him break the spell.",
+                152.656399, //popularity
+                "tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
+                "2017-03-16",
+                12345, //revenue
                 1, //runtime
-                "status",
-                "tagline", //tagline
-                true,
-                0.7,
-                19999
+                "some_status", //status
+                "some_tags", //tagline
+                false, //video
+                6.9, //vote average
+                1988 //vote count
         );
     }
 
