@@ -21,12 +21,12 @@ import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 
 
-public class PopularMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<PopularMovieRecyclerViewAdapter.ViewHolder> {
+public class PopularMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<PopularMovieRecyclerViewAdapter.ViewHolder>{
     private static final String LOG_TAG = PopularMovieRecyclerViewAdapter.class.getSimpleName();
 
-    private String TAG = LOG_TAG;
-    private Context appContext;
     private final OnFragmentInteractionListener mListener;
+    private Context appContext;
+    private String TAG = LOG_TAG;
 
 
     public PopularMovieRecyclerViewAdapter(Context context, Cursor c, int flags) {

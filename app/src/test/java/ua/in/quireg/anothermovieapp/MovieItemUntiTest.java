@@ -22,4 +22,5 @@ public class MovieItemUntiTest {
         MovieItem sample = Helpers.getTestMovieItem();
         assertTrue (created.equals(sample));
     }
+
 }

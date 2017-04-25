@@ -3,6 +3,7 @@ package ua.in.quireg.anothermovieapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,8 +18,7 @@ import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.services.SyncMovieService;
-import ua.in.quireg.anothermovieapp.ui.PopularMovieFragment;
-import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment;
+import ua.in.quireg.anothermovieapp.ui.MoviesGridViewFragment;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
@@ -40,10 +40,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         getSupportActionBar().setTitle(getResources().getString(R.string.popular_tab_name));
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this.getApplicationContext());
 
-
         // Set up the ViewPager with the sections adapter.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
     }
 
@@ -92,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private Context mContext;
-        private PopularMovieFragment popularMoviesFragment;
-        private TopRatedMovieFragment topRatedMoviesFragment;
+        private MoviesGridViewFragment popularMoviesFragment;
+        private MoviesGridViewFragment topRatedMoviesFragment;
 
 
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
@@ -103,15 +105,25 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         @Override
         public Fragment getItem(int position) {
+
+
+
             switch (position) {
                 case POPULAR_MOVIES_TAB_POSITION:
                     if(popularMoviesFragment == null) {
-                        popularMoviesFragment = new PopularMovieFragment();
+                        popularMoviesFragment = new MoviesGridViewFragment();
+                        Bundle args = new Bundle();
+                        args.putSerializable(Constants.FRAGMENT_TAG,Constants.POPULAR);
+                        popularMoviesFragment.setArguments(args);
+
                     }
                     return popularMoviesFragment;
                 case TOP_RATED_MOVIES_TAB_POSITION:
                     if(topRatedMoviesFragment == null) {
-                        topRatedMoviesFragment = new TopRatedMovieFragment();
+                        topRatedMoviesFragment = new MoviesGridViewFragment();
+                        Bundle args = new Bundle();
+                        args.putSerializable(Constants.FRAGMENT_TAG,Constants.TOP_RATED);
+                        topRatedMoviesFragment.setArguments(args);
                     }
                     return topRatedMoviesFragment;
             }

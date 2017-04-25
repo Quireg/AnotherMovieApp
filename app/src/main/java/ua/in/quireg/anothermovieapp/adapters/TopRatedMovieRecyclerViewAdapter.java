@@ -12,9 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.helpers.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
@@ -22,16 +19,10 @@ import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.ui.TopRatedMovieFragment.OnListFragmentInteractionListener;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link ua.in.quireg.anothermovieapp.core.MovieItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- */
 
-public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<TopRatedMovieRecyclerViewAdapter.ViewHolder> {
+public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<TopRatedMovieRecyclerViewAdapter.ViewHolder>{
     private static final String LOG_TAG = TopRatedMovieRecyclerViewAdapter.class.getSimpleName();
-
 
     private final OnFragmentInteractionListener mListener;
     private Context appContext;
@@ -53,7 +44,6 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
         return new ViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(final ViewHolder holder, Cursor cursor) {
         MLog.v(LOG_TAG, "onBindViewHolder()");
@@ -62,6 +52,7 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
         holder.mMovieTitle.setText(movie.getOriginalTitle());
 
         Uri uri = UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185);
+
         Picasso.with(appContext).load(uri).into(holder.mMovieThumbnail);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +66,6 @@ public class TopRatedMovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<
             }
         });
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
