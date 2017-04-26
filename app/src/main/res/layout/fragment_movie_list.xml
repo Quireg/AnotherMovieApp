@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/movie_list_recycler_view"
         android:name="ua.in.quireg.anothermovieapp.ui.MovieFragment"
         android:layout_width="match_parent"
@@ -13,7 +12,10 @@
         tools:context="ua.in.quireg.anothermovieapp.ui.MoviesGridViewFragment"
         tools:listitem="@layout/fragment_movie_item">
 
+
+
     </android.support.v7.widget.RecyclerView>
+
     <include
         android:id="@+id/loading"
         layout="@layout/loading"
@@ -21,4 +23,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-8dp"
+        android:layout_marginTop="-4dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="30"
+        android:layout_gravity="bottom"
+        android:visibility="visible"
+        android:indeterminate="true" />
+
 </FrameLayout>

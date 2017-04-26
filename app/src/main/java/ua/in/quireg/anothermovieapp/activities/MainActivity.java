@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_refresh) {
-            SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.POPULAR, "1");
-            SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.TOP_RATED, "1");
+            SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.POPULAR, "1");
+            SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.TOP_RATED, "1");
             return true;
         }
 

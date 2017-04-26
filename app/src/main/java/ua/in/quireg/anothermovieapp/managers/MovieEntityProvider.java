@@ -4,13 +4,15 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.*;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.FavouriteMovies;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieEntry;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.PopularMovies;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.TopRatedMovies;
 
 
 public class MovieEntityProvider extends ContentProvider {
@@ -169,6 +171,44 @@ public class MovieEntityProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] valuesArray) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+
+        db.beginTransaction();
+        try {
+            for (ContentValues values : valuesArray) {
+                switch (match) {
+                    case MOVIE_DIR:
+                        db.insertWithOnConflict(MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                        break;
+                    case FAVOURITE_MOVIE_DIR:
+                        db.insertWithOnConflict(FavouriteMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                        break;
+
+                    case POPULAR_MOVIE_DIR:
+                        db.insertWithOnConflict(PopularMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                        break;
+
+                    case TOP_RATED_MOVIE_DIR:
+                        db.insertWithOnConflict(TopRatedMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                        break;
+
+                    default:
+                        throw new UnsupportedOperationException("Unknown uri: " + uri);
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return 0;
     }
 
     @Nullable

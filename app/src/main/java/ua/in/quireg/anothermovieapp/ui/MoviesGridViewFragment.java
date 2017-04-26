@@ -16,31 +16,35 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.helpers.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.interfaces.FetchMoreItemsCallback;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
-import ua.in.quireg.anothermovieapp.services.SyncMovieService;
+import ua.in.quireg.anothermovieapp.managers.MoviePageLoader;
 
-public class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, FetchMoreItemsCallback {
 
     private RecyclerView recyclerView;
     private CursorRecyclerViewAdapter recyclerViewAdapter;
+    private MoviePageLoader moviePageLoader;
     private int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
-    String fragmentTag;
+    private String fragmentTag;
 
     private View loadingView = null;
+    private View progressBarView = null;
+
 
     private static final int POPULAR_MOVIE_LOADER = 0;
     private static final int TOP_RATED_MOVIE_LOADER = 1;
     private static final int FAVOURITE_MOVIE_LOADER = 2;
-    private int pageNumber = 1;
     private int adapterItemCount = 0;
 
 
@@ -54,6 +58,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         mContext = getContext();
         fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
         recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
+        moviePageLoader = new MoviePageLoader(getContext(), fragmentTag, MoviesGridViewFragment.this);
     }
 
     @Override
@@ -64,6 +69,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         //Set view to loading state until data is fetched
         loadingView = view.findViewById(R.id.loading);
         loadingView.setVisibility(View.VISIBLE);
+        progressBarView = view.findViewById(R.id.progressBar);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
 
@@ -74,8 +80,6 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
-            private Snackbar snackbar;
-
             @Override
             public void onScrollStateChanged(final RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -83,41 +87,12 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
-                //scrolled up, hide the snackbar
-                if(dy < 0){
-                    if(snackbar != null){
-                        snackbar.dismiss();
-                    }
-                }
                 //scrolled down
-                if(dy > 0){
+                if (dy > 0) {
                     //check if we have reached the end
-                    if(!recyclerView.canScrollVertically(1)){
-                        //check if adapter count has been changed since last visit
-                        if (recyclerView.getAdapter().getItemCount() != adapterItemCount) {
-                            //show the snackbar with proposal
-                            snackbar = Snackbar
-                                    .make(recyclerView, "Want some more?", Snackbar.LENGTH_LONG)
-                                    .setAction("Yes!", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            adapterItemCount = recyclerView.getAdapter().getItemCount();
-                                            pageNumber = adapterItemCount/20 + 1;
-
-                                            switch (fragmentTag) {
-                                                case Constants.POPULAR:
-                                                    SyncMovieService.startActionFetchMovies(getContext(), Constants.POPULAR, pageNumber + "");
-                                                    break;
-                                                case Constants.TOP_RATED:
-                                                    SyncMovieService.startActionFetchMovies(getContext(), Constants.TOP_RATED, pageNumber + "");
-                                                    break;
-                                            }
-
-                                        }
-                                    });
-                            snackbar.show();
-
-                        }
+                    if (!recyclerView.canScrollVertically(1)) {
+                        adapterItemCount = recyclerView.getAdapter().getItemCount();
+                        moviePageLoader.fetchNewItems(adapterItemCount);
                     }
                 }
             }
@@ -134,6 +109,9 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 break;
             case Constants.TOP_RATED:
                 getLoaderManager().initLoader(TOP_RATED_MOVIE_LOADER, null, this);
+                break;
+            case Constants.FAVOURITES:
+                getLoaderManager().initLoader(FAVOURITE_MOVIE_LOADER, null, this);
                 break;
         }
 
@@ -154,6 +132,9 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                             break;
                         case Constants.TOP_RATED:
                             abar.setTitle(mContext.getResources().getString(R.string.top_rated_tab_name));
+                            break;
+                        case Constants.FAVOURITES:
+                            abar.setTitle(mContext.getResources().getString(R.string.favourites_tab_name));
                             break;
                     }
 
@@ -229,4 +210,49 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
     }
 
+    @Override
+    public void fetchStarted() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBarView != null) {
+                    progressBarView.setEnabled(true);
+                    progressBarView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void fetchCompleted() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBarView != null) {
+                    progressBarView.setEnabled(false);
+                    progressBarView.setVisibility(View.GONE);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void fetchErrorOccured() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBarView != null) {
+                    progressBarView.setEnabled(false);
+                    progressBarView.setVisibility(View.GONE);
+                }
+                Toast fetchFailedToast = Toast.makeText(getContext(), "Error occured while fetching new movies", Toast.LENGTH_SHORT);
+                fetchFailedToast.show();
+            }
+        });
+
+
+    }
 }

@@ -2,8 +2,8 @@ package ua.in.quireg.anothermovieapp.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
@@ -16,12 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.interfaces.FetchMoreItemsCallback;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.network.MovieFetcher;
 
@@ -42,8 +40,10 @@ public class SyncMovieService extends IntentService {
     private static final String ACTION_BAZ = "ua.in.quireg.anothermovieapp.services.action.BAZ";
 
     // TODO: Rename parameters
-    private static final String EXTRA_PARAM_LIST_TYPE = "ua.in.quireg.anothermovieapp.services.extra.PARAM_LIST_TYPE";
+    private static final String EXTRA_PARAM_TAG = "ua.in.quireg.anothermovieapp.services.extra.PARAM_TAG";
     private static final String EXTRA_PARAM_PAGE_NUMBER = "ua.in.quireg.anothermovieapp.services.extra.PARAM_PAGE_NUMBER";
+
+    private static FetchMoreItemsCallback fetchMoreItemsCallback = null;
 
     public SyncMovieService() {
         super("SyncMovieService");
@@ -56,17 +56,20 @@ public class SyncMovieService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionFetchMovies(Context context, String listType, String pageNumber) {
+    public static void startActionFetchMoviesForPage(Context context, String tag, String pageNumber, FetchMoreItemsCallback callback) {
+        fetchMoreItemsCallback = callback;
+        fetchMoreItemsCallback.fetchStarted();
+        startActionFetchMoviesInitial(context, tag, pageNumber);
+    }
+
+    public static void startActionFetchMoviesInitial(Context context, String tag, String pageNumber) {
         Intent intent = new Intent(context, SyncMovieService.class);
         intent.setAction(ACTION_FETCH_NEW_MOVIES);
-        intent.putExtra(EXTRA_PARAM_LIST_TYPE, listType);
+        intent.putExtra(EXTRA_PARAM_TAG, tag);
         intent.putExtra(EXTRA_PARAM_PAGE_NUMBER, pageNumber);
         context.startService(intent);
     }
 
-    public static void fetchMoreItems(Context context, String tag, int itemsInAdapter){
-
-    }
 
     /**
      * Starts this service to perform action Baz with the given parameters. If
@@ -82,13 +85,12 @@ public class SyncMovieService extends IntentService {
 //        intent.putExtra(EXTRA_PARAM2, param2);
 //        context.startService(intent);
 //    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_FETCH_NEW_MOVIES.equals(action)) {
-                final String listType = intent.getStringExtra(EXTRA_PARAM_LIST_TYPE);
+                final String listType = intent.getStringExtra(EXTRA_PARAM_TAG);
                 final String pageNumber = intent.getStringExtra(EXTRA_PARAM_PAGE_NUMBER);
                 handleActionFetchNewMovies(listType, pageNumber);
             } else if (ACTION_BAZ.equals(action)) {
@@ -104,75 +106,96 @@ public class SyncMovieService extends IntentService {
      * parameters.
      */
     private void handleActionFetchNewMovies(final String listType, final String pageNumber) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                Uri uri = UriHelper.getMoviesListPageUri(listType, pageNumber);
 
-                JsonObjectRequest movieListRequest = new JsonObjectRequest
-                        (Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
+        Uri uri = UriHelper.getMoviesListPageUri(listType, pageNumber);
 
+        JsonObjectRequest movieListRequest = new JsonObjectRequest
+                (Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(final JSONObject response) {
+
+                        new Thread(new Runnable() {
                             @Override
-                            public void onResponse(JSONObject response) {
+                            public void run() {
                                 try {
                                     Log.d(LOG_TAG, "onResponse()");
                                     Log.d(LOG_TAG, response.toString());
                                     JSONArray arr = response.getJSONArray("results");
 
+                                    ContentValues[] contentValuesArray = new ContentValues[arr.length()];
+                                    ContentValues[] contentValuesArrayIdsOnly = new ContentValues[arr.length()];
+
+
                                     for (int i = 0; i < arr.length(); i++) {
                                         JSONObject movie = arr.getJSONObject(i);
                                         MovieItem item = MovieItem.fromJSON(movie);
 
-                                        //Insert this movie to general movies table.
-                                        getApplicationContext().getContentResolver().insert(
-                                                MovieDatabaseContract.MovieEntry.CONTENT_URI,
-                                                MovieItem.contentValuesFromObj(item)
-                                        );
-
+                                        contentValuesArray[i] = MovieItem.contentValuesFromObj(item);
                                         ContentValues contentValues = new ContentValues();
-                                        //Insert this movie to dedicated table
-                                        switch (listType){
+
+                                        switch (listType) {
                                             case Constants.POPULAR:
                                                 contentValues.put(MovieDatabaseContract.PopularMovies._ID, item.getId());
                                                 contentValues.put(MovieDatabaseContract.PopularMovies.COLUMN_PAGE, pageNumber);
                                                 contentValues.put(MovieDatabaseContract.PopularMovies.COLUMN_POSITION, i);
 
-                                                getApplicationContext().getContentResolver().insert(
-                                                        MovieDatabaseContract.PopularMovies.CONTENT_URI,
-                                                        contentValues
-                                                );
+                                                contentValuesArrayIdsOnly[i] = contentValues;
                                                 break;
                                             case Constants.TOP_RATED:
                                                 contentValues.put(MovieDatabaseContract.TopRatedMovies._ID, item.getId());
                                                 contentValues.put(MovieDatabaseContract.TopRatedMovies.COLUMN_PAGE, pageNumber);
                                                 contentValues.put(MovieDatabaseContract.TopRatedMovies.COLUMN_POSITION, i);
 
-                                                getApplicationContext().getContentResolver().insert(
-                                                        MovieDatabaseContract.TopRatedMovies.CONTENT_URI,
-                                                        contentValues
-                                                );
+                                                contentValuesArrayIdsOnly[i] = contentValues;
                                                 break;
                                         }
+                                    }
 
+                                    getApplicationContext().getContentResolver().bulkInsert(
+                                            MovieDatabaseContract.MovieEntry.CONTENT_URI,
+                                            contentValuesArray
+                                    );
+
+                                    switch (listType) {
+                                        case Constants.POPULAR:
+                                            getApplicationContext().getContentResolver().bulkInsert(
+                                                    MovieDatabaseContract.PopularMovies.CONTENT_URI,
+                                                    contentValuesArrayIdsOnly
+                                            );
+                                            break;
+                                        case Constants.TOP_RATED:
+                                            getApplicationContext().getContentResolver().bulkInsert(
+                                                    MovieDatabaseContract.TopRatedMovies.CONTENT_URI,
+                                                    contentValuesArrayIdsOnly
+                                            );
+                                            break;
                                     }
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                } finally {
+                                    if(fetchMoreItemsCallback != null){
+                                        fetchMoreItemsCallback.fetchCompleted();
+                                    }
                                 }
                             }
-                        }, new Response.ErrorListener() {
+                        }).start();
+                    }
+                }, new Response.ErrorListener() {
 
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e(LOG_TAG, error.toString());
-                            }
-                        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(fetchMoreItemsCallback != null){
+                            fetchMoreItemsCallback.fetchErrorOccured();
+                        }
+                    }
+                });
 
-                MovieFetcher.getInstance(getApplicationContext()).addToRequestQueue(movieListRequest);
+        MovieFetcher.getInstance(getApplicationContext()).addToRequestQueue(movieListRequest);
 
-            }
-        }).start();
+
     }
 
     /**

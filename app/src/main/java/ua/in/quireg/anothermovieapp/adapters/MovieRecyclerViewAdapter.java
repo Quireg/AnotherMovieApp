@@ -30,9 +30,6 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
     private String TAG;
 
 
-    private final int VIEW_ITEM = 1;
-    private final int VIEW_PROG = 0;
-
     public MovieRecyclerViewAdapter(Context context, Cursor c, int flags, String tag) {
         super(context, c);
         appContext = context;
@@ -40,22 +37,13 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
         TAG = tag;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position != -2 ? VIEW_ITEM: VIEW_PROG;
-    }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         appContext = parent.getContext();
-        View view;
-        if(viewType==VIEW_ITEM){
-            view = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(appContext)
                     .inflate(R.layout.fragment_movie_item, parent, false);
-        }else{
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.progress_item, parent, false);
-        }
+
         return new MovieViewHolder(view);
     }
 
@@ -63,10 +51,7 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, Cursor cursor) {
         MLog.v(LOG_TAG, "onBindViewHolder()");
 
-        if(holder instanceof ProgressViewHolder){
-            ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
-            return;
-        }else if(holder instanceof MovieViewHolder){
+
             MovieItem movie = MovieItem.fromCursor(cursor);
             ((MovieViewHolder) holder).mItem = movie;
             ((MovieViewHolder) holder).mMovieTitle.setText(movie.getOriginalTitle());
@@ -85,7 +70,6 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
                     }
                 }
             });
-        }
 
     }
 
@@ -107,14 +91,5 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
             return super.toString() + " '" + mMovieTitle.getText() + "'";
         }
     }
-
-    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
-        public ProgressBar progressBar;
-        public ProgressViewHolder(View v) {
-            super(v);
-            progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
-        }
-    }
-
 
 }
