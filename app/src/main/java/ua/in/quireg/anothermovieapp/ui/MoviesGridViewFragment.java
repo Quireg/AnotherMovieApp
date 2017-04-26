@@ -18,8 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.adapters.PopularMovieRecyclerViewAdapter;
-import ua.in.quireg.anothermovieapp.adapters.TopRatedMovieRecyclerViewAdapter;
+import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.helpers.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
@@ -40,6 +39,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
     private static final int POPULAR_MOVIE_LOADER = 0;
     private static final int TOP_RATED_MOVIE_LOADER = 1;
+    private static final int FAVOURITE_MOVIE_LOADER = 2;
     private int pageNumber = 1;
     private int adapterItemCount = 0;
 
@@ -53,31 +53,28 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
         mContext = getContext();
         fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
-        switch (fragmentTag) {
-            case Constants.POPULAR:
-                recyclerViewAdapter = new PopularMovieRecyclerViewAdapter(getActivity(), null, 0);
-                break;
-            case Constants.TOP_RATED:
-                recyclerViewAdapter = new TopRatedMovieRecyclerViewAdapter(getActivity(), null, 0);
-                break;
-        }
-
+        recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+
+        //Set view to loading state until data is fetched
         loadingView = view.findViewById(R.id.loading);
         loadingView.setVisibility(View.VISIBLE);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
 
         // Set the adapter
-        Context context = view.getContext();
-        recyclerView.setLayoutManager(new GridLayoutManager(context, Constants.COLUMN_NUMBER));
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMN_NUMBER);
+
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            Snackbar snackbar;
+
+            private Snackbar snackbar;
 
             @Override
             public void onScrollStateChanged(final RecyclerView recyclerView, int newState) {

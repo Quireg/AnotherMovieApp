@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private static final int POPULAR_MOVIES_TAB_POSITION = 0;
     private static final int TOP_RATED_MOVIES_TAB_POSITION = 1;
+    private static final int FAVOURITE_MOVIES_TAB_POSITION = 2;
 
 
     @Override
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         private Context mContext;
         private MoviesGridViewFragment popularMoviesFragment;
         private MoviesGridViewFragment topRatedMoviesFragment;
+        private MoviesGridViewFragment favouritesMoviesFragment;
 
 
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
@@ -126,6 +128,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                         topRatedMoviesFragment.setArguments(args);
                     }
                     return topRatedMoviesFragment;
+                case FAVOURITE_MOVIES_TAB_POSITION:
+                    if(favouritesMoviesFragment == null) {
+                        favouritesMoviesFragment = new MoviesGridViewFragment();
+                        Bundle args = new Bundle();
+                        args.putSerializable(Constants.FRAGMENT_TAG, Constants.FAVOURITES);
+                        favouritesMoviesFragment.setArguments(args);
+                    }
+                    return favouritesMoviesFragment;
             }
 
             return null;
@@ -133,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -143,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     return mContext.getResources().getString(R.string.popular_tab_name);
                 case 1:
                     return mContext.getResources().getString(R.string.top_rated_tab_name);
-//                case 2:
-//                    return "SECTION 3";
+                case 2:
+                    return mContext.getResources().getString(R.string.favourites_tab_name);
             }
             return null;
         }

@@ -64,6 +64,10 @@ public class SyncMovieService extends IntentService {
         context.startService(intent);
     }
 
+    public static void fetchMoreItems(Context context, String tag, int itemsInAdapter){
+
+    }
+
     /**
      * Starts this service to perform action Baz with the given parameters. If
      * the service is already performing a task this action will be queued.
