@@ -8,13 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.adapters.helpers.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.common.UriHelper;

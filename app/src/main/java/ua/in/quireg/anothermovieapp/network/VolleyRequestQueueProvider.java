@@ -1,45 +1,31 @@
 package ua.in.quireg.anothermovieapp.network;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.List;
+public class VolleyRequestQueueProvider {
 
-import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
+    private static final String LOG_TAG = VolleyRequestQueueProvider.class.getSimpleName();
 
-
-public class MovieFetcher {
-
-    private static final String LOG_TAG = MovieFetcher.class.getSimpleName();
-
-    private static MovieFetcher mInstance;
+    private static VolleyRequestQueueProvider mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
 
-    private MovieFetcher(Context context) {
+    private VolleyRequestQueueProvider(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
     }
 
-    public static synchronized MovieFetcher getInstance(Context context) {
+    public static synchronized VolleyRequestQueueProvider getInstance(Context context) {
         Log.d(LOG_TAG, "getInstance()");
         if (mInstance == null) {
-            mInstance = new MovieFetcher(context);
+            mInstance = new VolleyRequestQueueProvider(context);
         }
         return mInstance;
     }

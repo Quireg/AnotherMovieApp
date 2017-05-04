@@ -1,4 +1,4 @@
-package ua.in.quireg.anothermovieapp.adapters.helpers;
+package ua.in.quireg.anothermovieapp.adapters;
 
 /*
  * Copyright (C) 2014 skyfish.jy@gmail.com

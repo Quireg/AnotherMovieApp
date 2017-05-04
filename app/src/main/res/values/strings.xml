@@ -8,7 +8,9 @@
     <string name="top_rated_tab_name">Top Rated</string>
     <string name="favourites_tab_name">Favourites</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
+    <string name="favourites_no_movies">There are no movies added to favourites yet.\n
+    Try adding one!</string>
 
 
 

@@ -47,8 +47,8 @@ public class MovieEntityProvider extends ContentProvider {
 
         sMovieFromPopularQueryBuilder = new SQLiteQueryBuilder();
         sMovieFromPopularQueryBuilder.setTables(
-                MovieEntry.TABLE_NAME + " INNER JOIN " +
-                        PopularMovies.TABLE_NAME +
+                PopularMovies.TABLE_NAME + " LEFT JOIN " +
+                        MovieEntry.TABLE_NAME +
                         " ON " + MovieEntry.TABLE_NAME +
                         "." + MovieEntry._ID +
                         " = " + PopularMovies.TABLE_NAME +
@@ -59,8 +59,8 @@ public class MovieEntityProvider extends ContentProvider {
 
         sMovieFromTopRatedQueryBuilder = new SQLiteQueryBuilder();
         sMovieFromTopRatedQueryBuilder.setTables(
-                MovieEntry.TABLE_NAME + " INNER JOIN " +
-                        TopRatedMovies.TABLE_NAME +
+                TopRatedMovies.TABLE_NAME + " LEFT JOIN " +
+                        MovieEntry.TABLE_NAME +
                         " ON " + MovieEntry.TABLE_NAME +
                         "." + MovieEntry._ID +
                         " = " + TopRatedMovies.TABLE_NAME +
@@ -71,8 +71,8 @@ public class MovieEntityProvider extends ContentProvider {
 
         sMovieFromFavouritesQueryBuilder = new SQLiteQueryBuilder();
         sMovieFromFavouritesQueryBuilder.setTables(
-                MovieEntry.TABLE_NAME + " INNER JOIN " +
-                        FavouriteMovies.TABLE_NAME +
+                FavouriteMovies.TABLE_NAME + " LEFT JOIN " +
+                        MovieEntry.TABLE_NAME +
                         " ON " + MovieEntry.TABLE_NAME +
                         "." + MovieEntry._ID +
                         " = " + FavouriteMovies.TABLE_NAME +
@@ -271,11 +271,24 @@ public class MovieEntityProvider extends ContentProvider {
                         null
                 );
                 if (rowsDeleted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
+                    //getContext().getContentResolver().notifyChange(uri, null);
                 } else {
                     throw new android.database.SQLException("Failed to delete row " + uri);
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+                //getContext().getContentResolver().notifyChange(uri, null);
+                return rowsDeleted;
+            case TOP_RATED_MOVIE_DIR:
+                rowsDeleted = db.delete(
+                        TopRatedMovies.TABLE_NAME,
+                        null,
+                        null
+                );
+                if (rowsDeleted > 0) {
+                    //getContext().getContentResolver().notifyChange(uri, null);
+                } else {
+                    throw new android.database.SQLException("Failed to delete row " + uri);
+                }
+                //getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
             case FAVOURITE_MOVIE_DIR:
                 rowsDeleted = db.delete(
@@ -290,19 +303,7 @@ public class MovieEntityProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
-            case TOP_RATED_MOVIE_DIR:
-                rowsDeleted = db.delete(
-                        TopRatedMovies.TABLE_NAME,
-                        null,
-                        null
-                );
-                if (rowsDeleted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                } else {
-                    throw new android.database.SQLException("Failed to delete row " + uri);
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return rowsDeleted;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -312,5 +313,9 @@ public class MovieEntityProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         throw new UnsupportedOperationException("Unsupported operation");
+    }
+
+    public void dothx(){
+
     }
 }

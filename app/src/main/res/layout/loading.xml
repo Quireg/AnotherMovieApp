@@ -7,17 +7,17 @@
     android:orientation="horizontal">
 
     <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5.0dip"
-        android:text="@string/loading"
-        android:textColor="?android:textColorPrimary"
-        android:textAppearance="?android:textAppearanceLarge" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="5.0dip"-->
+        <!--android:text="@string/loading"-->
+        <!--android:textColor="?android:textColorPrimary"-->
+        <!--android:textAppearance="?android:textAppearanceLarge" />-->
 
 </LinearLayout>

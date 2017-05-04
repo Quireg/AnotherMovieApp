@@ -10,6 +10,7 @@ public class MoviePageLoader implements FetchMoreItemsCallback{
     private FetchMoreItemsCallback fetchMoreItemsCallback;
     private Context mContext;
     private String tag;
+    private long last_loaded_page = 0;
     private boolean fetchInProgress = false;
 
     public MoviePageLoader(Context context, String tag, FetchMoreItemsCallback callback){
@@ -18,21 +19,29 @@ public class MoviePageLoader implements FetchMoreItemsCallback{
         fetchMoreItemsCallback = callback;
     }
 
-    public void fetchNewItems(int itemsInAdapter){
+    public void fetchNewItems(){
         if(fetchInProgress){
             return;
         }
-        int pageToLoad = pageToLoad(itemsInAdapter);
-
-        if(pageToLoad == -1){
-            return;
-        }
+        long pageToLoad = last_loaded_page + 1;
         fetchInProgress = true;
         SyncMovieService.startActionFetchMoviesForPage(mContext, tag, pageToLoad + "", MoviePageLoader.this);
     }
 
-    private int pageToLoad(int itemsInAdapter){
-        return itemsInAdapter/20 + 1;
+    @Override
+    public void setPageNumber(long pageNumber) {
+        fetchMoreItemsCallback.setPageNumber(pageNumber);
+        last_loaded_page = pageNumber;
+    }
+
+    @Override
+    public void setTotalPages(long totalPages) {
+        fetchMoreItemsCallback.setTotalPages(totalPages);
+    }
+
+    @Override
+    public void setTotalResults(long totalResults) {
+        fetchMoreItemsCallback.setTotalResults(totalResults);
     }
 
     @Override

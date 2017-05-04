@@ -21,7 +21,7 @@ import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchMoreItemsCallback;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
-import ua.in.quireg.anothermovieapp.network.MovieFetcher;
+import ua.in.quireg.anothermovieapp.network.VolleyRequestQueueProvider;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -119,10 +119,16 @@ public class SyncMovieService extends IntentService {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
+                                long page = 0;
+                                long totalPages = 0;
+                                long totalResults = 0;
                                 try {
                                     Log.d(LOG_TAG, "onResponse()");
                                     Log.d(LOG_TAG, response.toString());
                                     JSONArray arr = response.getJSONArray("results");
+                                    page = response.getLong("page");
+                                    totalResults = response.getLong("total_results");
+                                    totalPages = response.getLong("total_pages");
 
                                     ContentValues[] contentValuesArray = new ContentValues[arr.length()];
                                     ContentValues[] contentValuesArrayIdsOnly = new ContentValues[arr.length()];
@@ -160,12 +166,26 @@ public class SyncMovieService extends IntentService {
 
                                     switch (listType) {
                                         case Constants.POPULAR:
+                                            if(page == 1){
+                                                getApplicationContext().getContentResolver().delete(
+                                                        MovieDatabaseContract.PopularMovies.CONTENT_URI,
+                                                        null,
+                                                        null
+                                                );
+                                            }
                                             getApplicationContext().getContentResolver().bulkInsert(
                                                     MovieDatabaseContract.PopularMovies.CONTENT_URI,
                                                     contentValuesArrayIdsOnly
                                             );
                                             break;
                                         case Constants.TOP_RATED:
+                                            if(page == 1){
+                                                getApplicationContext().getContentResolver().delete(
+                                                        MovieDatabaseContract.TopRatedMovies.CONTENT_URI,
+                                                        null,
+                                                        null
+                                                );
+                                            }
                                             getApplicationContext().getContentResolver().bulkInsert(
                                                     MovieDatabaseContract.TopRatedMovies.CONTENT_URI,
                                                     contentValuesArrayIdsOnly
@@ -177,6 +197,9 @@ public class SyncMovieService extends IntentService {
                                     e.printStackTrace();
                                 } finally {
                                     if(fetchMoreItemsCallback != null){
+                                        fetchMoreItemsCallback.setPageNumber(page);
+                                        fetchMoreItemsCallback.setTotalPages(totalPages);
+                                        fetchMoreItemsCallback.setTotalResults(totalResults);
                                         fetchMoreItemsCallback.fetchCompleted();
                                     }
                                 }
@@ -193,7 +216,7 @@ public class SyncMovieService extends IntentService {
                     }
                 });
 
-        MovieFetcher.getInstance(getApplicationContext()).addToRequestQueue(movieListRequest);
+        VolleyRequestQueueProvider.getInstance(getApplicationContext()).addToRequestQueue(movieListRequest);
 
 
     }
