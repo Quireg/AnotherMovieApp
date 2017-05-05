@@ -75,6 +75,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
         noFavouritesMoviesView = view.findViewById(R.id.favourites_no_movies);
         pageNumberAndTotal = (TextView) view.findViewById(R.id.pageNumberAndTotal);
+        updateAdapterInfoTextView();
 
         //Set view to loading state until data is fetched
         loadingView = view.findViewById(R.id.loading);
@@ -89,7 +90,8 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        currentItem = layoutManager.findLastVisibleItemPosition() + 1;
+        currentItem = layoutManager.findLastVisibleItemPosition();
+        moviePageLoader.fetchNewItems();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -103,7 +105,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 //scrolled down
                 if (dy > 0) {
 
-                    currentItem =  layoutManager.findLastVisibleItemPosition() + 1;
+                    currentItem =  layoutManager.findLastVisibleItemPosition();
                     updateAdapterInfoTextView();
 
                     int itemsInAdapter = recyclerView.getAdapter().getItemCount();
@@ -112,7 +114,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                         moviePageLoader.fetchNewItems();
                     }
                 }else if(dy < 0){
-                    currentItem =  layoutManager.findLastVisibleItemPosition() + 1;
+                    currentItem =  layoutManager.findLastVisibleItemPosition();
                     updateAdapterInfoTextView();
                 }
             }

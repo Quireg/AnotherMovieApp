@@ -11,8 +11,8 @@ public class AnotherMovieApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.POPULAR, "1");
-        SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.TOP_RATED, "1");
+//        SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.POPULAR, "1");
+//        SyncMovieService.startActionFetchMoviesInitial(getApplicationContext(), Constants.TOP_RATED, "1");
     }
 
 }
