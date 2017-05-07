@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -19,7 +20,7 @@ import org.json.JSONObject;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.FetchMoreItemsCallback;
+import ua.in.quireg.anothermovieapp.interfaces.FetchItemsCallback;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.network.VolleyRequestQueueProvider;
 
@@ -43,7 +44,7 @@ public class SyncMovieService extends IntentService {
     private static final String EXTRA_PARAM_TAG = "ua.in.quireg.anothermovieapp.services.extra.PARAM_TAG";
     private static final String EXTRA_PARAM_PAGE_NUMBER = "ua.in.quireg.anothermovieapp.services.extra.PARAM_PAGE_NUMBER";
 
-    private static FetchMoreItemsCallback fetchMoreItemsCallback = null;
+    private static FetchItemsCallback fetchMoreItemsCallback = null;
 
     public SyncMovieService() {
         super("SyncMovieService");
@@ -56,13 +57,8 @@ public class SyncMovieService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionFetchMoviesForPage(Context context, String tag, String pageNumber, FetchMoreItemsCallback callback) {
-        fetchMoreItemsCallback = callback;
-        fetchMoreItemsCallback.fetchStarted();
-        startActionFetchMoviesInitial(context, tag, pageNumber);
-    }
 
-    public static void startActionFetchMoviesInitial(Context context, String tag, String pageNumber) {
+    public static void startActionFetchMovies(Context context, String tag, String pageNumber) {
         Intent intent = new Intent(context, SyncMovieService.class);
         intent.setAction(ACTION_FETCH_NEW_MOVIES);
         intent.putExtra(EXTRA_PARAM_TAG, tag);
@@ -90,9 +86,9 @@ public class SyncMovieService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_FETCH_NEW_MOVIES.equals(action)) {
-                final String listType = intent.getStringExtra(EXTRA_PARAM_TAG);
+                final String tag = intent.getStringExtra(EXTRA_PARAM_TAG);
                 final String pageNumber = intent.getStringExtra(EXTRA_PARAM_PAGE_NUMBER);
-                handleActionFetchNewMovies(listType, pageNumber);
+                handleActionFetchNewMovies(tag, pageNumber);
             } else if (ACTION_BAZ.equals(action)) {
 //                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
 //                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
@@ -105,10 +101,10 @@ public class SyncMovieService extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionFetchNewMovies(final String listType, final String pageNumber) {
+    private void handleActionFetchNewMovies(final String tag, final String pageNumber) {
 
 
-        Uri uri = UriHelper.getMoviesListPageUri(listType, pageNumber);
+        Uri uri = UriHelper.getMoviesListPageUri(tag, pageNumber);
 
         JsonObjectRequest movieListRequest = new JsonObjectRequest
                 (Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
@@ -141,7 +137,7 @@ public class SyncMovieService extends IntentService {
                                         contentValuesArray[i] = MovieItem.contentValuesFromObj(item);
                                         ContentValues contentValues = new ContentValues();
 
-                                        switch (listType) {
+                                        switch (tag) {
                                             case Constants.POPULAR:
                                                 contentValues.put(MovieDatabaseContract.PopularMovies._ID, item.getId());
                                                 contentValues.put(MovieDatabaseContract.PopularMovies.COLUMN_PAGE, pageNumber);
@@ -164,7 +160,7 @@ public class SyncMovieService extends IntentService {
                                             contentValuesArray
                                     );
 
-                                    switch (listType) {
+                                    switch (tag) {
                                         case Constants.POPULAR:
                                             if(page == 1){
                                                 getApplicationContext().getContentResolver().delete(
@@ -196,12 +192,13 @@ public class SyncMovieService extends IntentService {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 } finally {
-                                    if(fetchMoreItemsCallback != null){
-                                        fetchMoreItemsCallback.setPageNumber(page);
-                                        fetchMoreItemsCallback.setTotalPages(totalPages);
-                                        fetchMoreItemsCallback.setTotalResults(totalResults);
-                                        fetchMoreItemsCallback.fetchCompleted();
-                                    }
+                                    Intent fetchCompletedIntent = new Intent(Constants.SYNC_UPDATES_FILTER);
+                                    fetchCompletedIntent.putExtra(Constants.SYNC_STATUS, Constants.SYNC_COMPLETED);
+                                    fetchCompletedIntent.putExtra(Constants.FRAGMENT_TAG, tag);
+                                    fetchCompletedIntent.putExtra(Constants.TOTAL_ITEMS_LOADED, totalResults);
+                                    fetchCompletedIntent.putExtra(Constants.LOADED_PAGE, page);
+                                    LocalBroadcastManager.getInstance(SyncMovieService.this).sendBroadcast(fetchCompletedIntent);
+
                                 }
                             }
                         }).start();
@@ -210,9 +207,10 @@ public class SyncMovieService extends IntentService {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(fetchMoreItemsCallback != null){
-                            fetchMoreItemsCallback.fetchErrorOccured();
-                        }
+                        Intent fetchCompletedIntent = new Intent(Constants.SYNC_UPDATES_FILTER);
+                        fetchCompletedIntent.putExtra(Constants.SYNC_STATUS, Constants.SYNC_FAILED);
+                        fetchCompletedIntent.putExtra(Constants.FRAGMENT_TAG, tag);
+                        LocalBroadcastManager.getInstance(SyncMovieService.this).sendBroadcast(fetchCompletedIntent);
                     }
                 });
 

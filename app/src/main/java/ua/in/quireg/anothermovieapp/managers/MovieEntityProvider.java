@@ -270,11 +270,11 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null
                 );
-                if (rowsDeleted > 0) {
-                    //getContext().getContentResolver().notifyChange(uri, null);
-                } else {
-                    throw new android.database.SQLException("Failed to delete row " + uri);
-                }
+//                if (rowsDeleted > 0) {
+//                    //getContext().getContentResolver().notifyChange(uri, null);
+//                } else {
+//                    throw new android.database.SQLException("Failed to delete row " + uri);
+//                }
                 //getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
             case TOP_RATED_MOVIE_DIR:
@@ -283,11 +283,11 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null
                 );
-                if (rowsDeleted > 0) {
-                    //getContext().getContentResolver().notifyChange(uri, null);
-                } else {
-                    throw new android.database.SQLException("Failed to delete row " + uri);
-                }
+//                if (rowsDeleted > 0) {
+//                    //getContext().getContentResolver().notifyChange(uri, null);
+//                } else {
+//                    throw new android.database.SQLException("Failed to delete row " + uri);
+//                }
                 //getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
             case FAVOURITE_MOVIE_DIR:
@@ -315,7 +315,4 @@ public class MovieEntityProvider extends ContentProvider {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
-    public void dothx(){
-
-    }
 }

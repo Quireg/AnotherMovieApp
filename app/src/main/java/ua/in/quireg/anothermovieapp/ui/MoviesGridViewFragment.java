@@ -1,6 +1,9 @@
 package ua.in.quireg.anothermovieapp.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,16 +27,14 @@ import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
-import ua.in.quireg.anothermovieapp.interfaces.FetchMoreItemsCallback;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
-import ua.in.quireg.anothermovieapp.managers.MoviePageLoader;
+import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 
-public class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, FetchMoreItemsCallback {
+public class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView recyclerView;
     private CursorRecyclerViewAdapter recyclerViewAdapter;
-    private MoviePageLoader moviePageLoader;
     private int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
@@ -42,8 +44,9 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     private View progressBarView = null;
     private View noFavouritesMoviesView = null;
     private TextView pageNumberAndTotal = null;
-    private long currentPage = 0;
-    private long totalPages = 0;
+
+    private boolean fetchInProgress = false;
+    private long last_loaded_page = 0;
     private long currentItem = 0;
     private long totalItems = 0;
 
@@ -65,7 +68,6 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         mContext = getContext();
         fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
         recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
-        moviePageLoader = new MoviePageLoader(getContext(), fragmentTag, MoviesGridViewFragment.this);
     }
 
     @Override
@@ -86,12 +88,14 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
 
         // Set the adapter
-        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMN_NUMBER);
+        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         currentItem = layoutManager.findLastVisibleItemPosition();
-        moviePageLoader.fetchNewItems();
+        if (!fragmentTag.equals(Constants.FAVOURITES)) {
+            fetchNewItems();
+        }
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -105,21 +109,78 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 //scrolled down
                 if (dy > 0) {
 
-                    currentItem =  layoutManager.findLastVisibleItemPosition();
+                    currentItem = layoutManager.findLastVisibleItemPosition();
                     updateAdapterInfoTextView();
 
                     int itemsInAdapter = recyclerView.getAdapter().getItemCount();
                     //check if we have reached the end
-                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD) {
-                        moviePageLoader.fetchNewItems();
+                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD && !fragmentTag.equals(Constants.FAVOURITES)) {
+                        fetchNewItems();
                     }
-                }else if(dy < 0){
-                    currentItem =  layoutManager.findLastVisibleItemPosition();
+                } else if (dy < 0) {
+                    currentItem = layoutManager.findLastVisibleItemPosition();
                     updateAdapterInfoTextView();
                 }
             }
         });
         return view;
+    }
+
+    public void fetchNewItems(){
+        if(fetchInProgress){
+            return;
+        }
+        long pageToLoad = last_loaded_page + 1;
+        fetchInProgress = true;
+        SyncMovieService.startActionFetchMovies(mContext, fragmentTag, pageToLoad + "");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_UPDATES_FILTER));
+    }
+    @Override
+    public void onStop() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
+        super.onStop();
+    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleMessage(intent);
+        }
+    };
+    private void handleMessage(Intent msg)
+    {
+        if(!msg.getStringExtra(Constants.FRAGMENT_TAG).equals(fragmentTag)){
+            return;
+        }
+        fetchInProgress = false;
+        switch (msg.getStringExtra(Constants.SYNC_STATUS)){
+            case Constants.SYNC_COMPLETED:
+                totalItems = msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0);
+                last_loaded_page = msg.getLongExtra(Constants.LOADED_PAGE, 0);
+
+                if (progressBarView != null) {
+                    progressBarView.setVisibility(View.GONE);
+                    updateAdapterInfoTextView();
+                }
+
+                break;
+            case Constants.SYNC_FAILED:
+                if (progressBarView != null) {
+                    progressBarView.setVisibility(View.GONE);
+                }
+                if (fetchFailedToast != null) {
+                    fetchFailedToast.cancel();
+                    fetchFailedToast = Toast.makeText(getContext(), "Error occurred while fetching new movies", Toast.LENGTH_SHORT);
+                    fetchFailedToast.show();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -222,17 +283,17 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         recyclerViewAdapter.swapCursor(cursor);
 
-        switch (fragmentTag){
+        switch (fragmentTag) {
             case Constants.POPULAR:
             case Constants.TOP_RATED:
                 if (cursor.moveToFirst()) {
                     loadingView.setVisibility(View.GONE);
                 }
-                 break;
+                break;
             case Constants.FAVOURITES:
                 if (cursor.moveToFirst()) {
                     loadingView.setVisibility(View.GONE);
-                }else{
+                } else {
                     loadingView.setVisibility(View.GONE);
                     noFavouritesMoviesView.setVisibility(View.VISIBLE);
                 }
@@ -251,73 +312,9 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
     }
 
-    @Override
-    public void setPageNumber(long pageNumber) {
-        this.currentPage = pageNumber;
-    }
 
-    @Override
-    public void setTotalPages(long totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    @Override
-    public void setTotalResults(long totalResults) {
-        this.totalItems = totalResults;
-    }
-
-    @Override
-    public void fetchStarted() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBarView != null) {
-                    //progressBarView.setEnabled(true);
-                    progressBarView.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-
-    }
-
-    @Override
-    public void fetchCompleted() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBarView != null) {
-                    //progressBarView.setEnabled(false);
-                    progressBarView.setVisibility(View.GONE);
-                    updateAdapterInfoTextView();
-                }
-            }
-        });
-
-    }
-
-
-    @Override
-    public void fetchErrorOccured() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBarView != null) {
-                    //progressBarView.setEnabled(false);
-                    progressBarView.setVisibility(View.GONE);
-                }
-                if(fetchFailedToast != null){
-                    fetchFailedToast.cancel();
-                    fetchFailedToast = Toast.makeText(getContext(), "Error occurred while fetching new movies", Toast.LENGTH_SHORT);
-                    fetchFailedToast.show();
-                }
-
-            }
-        });
-    }
-
-    private void updateAdapterInfoTextView(){
-        pageNumberAndTotal.setText(currentItem + "/" + totalItems + " " + currentPage + "/" + totalPages);
+    private void updateAdapterInfoTextView() {
+        pageNumberAndTotal.setText(currentItem + "/" + totalItems);
     }
 
 }

@@ -1,7 +1,7 @@
 package ua.in.quireg.anothermovieapp.interfaces;
 
 
-public interface FetchMoreItemsCallback {
+public interface FetchItemsCallback {
     void setPageNumber(long pageNumber);
 
     void setTotalPages(long totalPages);
