@@ -69,9 +69,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
                 ");";
 
         final String SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
-                FavouriteMovies._ID +                     " INTEGER UNIQUE NOT NULL, "   +
-                FavouriteMovies.COLUMN_PAGE +             " INTEGER, " +
-                FavouriteMovies.COLUMN_POSITION +         " INTEGER " +
+                FavouriteMovies._ID +                     " INTEGER UNIQUE NOT NULL "   +
                 ");";
 
 

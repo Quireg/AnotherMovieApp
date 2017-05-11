@@ -73,8 +73,8 @@ public class MovieDatabaseContract {
         public static final String COLUMN_POSITION = "position";
         public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri() {
-            return CONTENT_URI;
+        public static Uri buildUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
     }
@@ -96,8 +96,8 @@ public class MovieDatabaseContract {
         public static final String COLUMN_POSITION = "position";
         public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri() {
-            return CONTENT_URI;
+        public static Uri buildUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
     }
@@ -116,11 +116,9 @@ public class MovieDatabaseContract {
         public static final String TABLE_NAME = "favourite_movies";
 
         public static final String _ID = "id";
-        public static final String COLUMN_POSITION = "position";
-        public static final String COLUMN_PAGE = "page";
 
-        public static Uri buildUri() {
-            return CONTENT_URI;
+        public static Uri buildUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
     }

@@ -1,5 +1,6 @@
 package ua.in.quireg.anothermovieapp.activities;
 
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,9 +18,11 @@ import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
+import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
 
-public class MovieActivity extends AppCompatActivity implements FetchImageCallback{
+public class MovieActivity extends AppCompatActivity implements FetchImageCallback, OnFragmentInteractionListener{
 
     private CollapsingToolbarLayout collapsingToolbar;
 
@@ -60,6 +63,24 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
         if (collapsingToolbar != null) {
             Drawable background = new BitmapDrawable(getResources(), bitmap);
             collapsingToolbar.setBackground(background);
+        }
+    }
+
+    @Override
+    public void onFragmentMessage(String tag, Object data) {
+        MovieItem item = (MovieItem) data;
+        switch (tag){
+            case Constants.ADD_TO_FAVOURITES:
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MovieDatabaseContract.FavouriteMovies._ID, item.getId());
+                getContentResolver().insert(MovieDatabaseContract.FavouriteMovies.CONTENT_URI, contentValues);
+                break;
+            case Constants.REMOVE_FROM_FAVOURITES:
+                getContentResolver().delete(
+                        MovieDatabaseContract.FavouriteMovies.buildUri(item.getId()),
+                        null,
+                        null
+                );
         }
     }
 }

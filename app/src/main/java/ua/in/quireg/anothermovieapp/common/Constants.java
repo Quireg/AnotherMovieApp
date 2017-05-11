@@ -25,4 +25,8 @@ public class Constants {
     public static final String IMAGE_SIZE_ORIGINAL = "original";
     public static final String IMAGE_SIZE_W185 = "w185";
 
+    //fragment interaction
+    public static final String ADD_TO_FAVOURITES = "add_to_favourites";
+    public static final String REMOVE_FROM_FAVOURITES = "remove_from_favourites";
+
 }

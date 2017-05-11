@@ -26,7 +26,7 @@ public class MovieEntityProvider extends ContentProvider {
     public static final int MOVIE_ITEM = 102;
 
     public static final int FAVOURITE_MOVIE_DIR = 201;
-    //public static final int FAVOURITE_MOVIE_ITEM = 202;
+    public static final int FAVOURITE_MOVIE_ITEM = 202;
 
     public static final int POPULAR_MOVIE_DIR = 301;
     // public static final int POPULAR_MOVIE_ITEM = 302;
@@ -40,6 +40,7 @@ public class MovieEntityProvider extends ContentProvider {
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_MOVIE_ENTITY + "/#", MOVIE_ITEM);
 
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_FAVOURITE_MOVIES, FAVOURITE_MOVIE_DIR);
+        sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_FAVOURITE_MOVIES + "/#", FAVOURITE_MOVIE_ITEM);
 
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_POPULAR_MOVIES, POPULAR_MOVIE_DIR);
 
@@ -109,7 +110,7 @@ public class MovieEntityProvider extends ContentProvider {
                 cursor = mOpenHelper.getReadableDatabase().query(
                         MovieEntry.TABLE_NAME,
                         projection,
-                        "_ID = " + uri.getLastPathSegment(),
+                        MovieEntry._ID + " = " + uri.getLastPathSegment(),
                         null,
                         null,
                         null,
@@ -126,6 +127,18 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
+            case FAVOURITE_MOVIE_ITEM:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        FavouriteMovies.TABLE_NAME,
+                        projection,
+                        FavouriteMovies._ID + " = " + uri.getLastPathSegment(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
                 break;
             case POPULAR_MOVIE_DIR:
                 cursor = sMovieFromPopularQueryBuilder.query(
@@ -164,6 +177,8 @@ public class MovieEntityProvider extends ContentProvider {
                 return MovieEntry.CONTENT_ITEM_TYPE;
             case FAVOURITE_MOVIE_DIR:
                 return FavouriteMovies.CONTENT_DIR_TYPE;
+            case FAVOURITE_MOVIE_ITEM:
+                return FavouriteMovies.CONTENT_ITEM_TYPE;
             case POPULAR_MOVIE_DIR:
                 return PopularMovies.CONTENT_DIR_TYPE;
             case TOP_RATED_MOVIE_DIR:
@@ -290,17 +305,20 @@ public class MovieEntityProvider extends ContentProvider {
 //                }
                 //getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
-            case FAVOURITE_MOVIE_DIR:
+            case FAVOURITE_MOVIE_ITEM:
+                selection = FavouriteMovies._ID + " =?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+
                 rowsDeleted = db.delete(
                         FavouriteMovies.TABLE_NAME,
-                        null,
-                        null
+                        selection,
+                        selectionArgs
                 );
-                if (rowsDeleted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                } else {
-                    throw new android.database.SQLException("Failed to delete row " + uri);
-                }
+//                if (rowsDeleted > 0) {
+//                    getContext().getContentResolver().notifyChange(uri, null);
+//                } else {
+//                    throw new android.database.SQLException("Failed to delete row " + uri);
+//                }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return rowsDeleted;
 

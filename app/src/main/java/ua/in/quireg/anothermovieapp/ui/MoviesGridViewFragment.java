@@ -253,19 +253,18 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 sortOrder = MovieDatabaseContract.PopularMovies.COLUMN_PAGE + " ASC, " +
                         MovieDatabaseContract.PopularMovies.COLUMN_POSITION + " ASC";
 
-                uri = MovieDatabaseContract.PopularMovies.buildUri();
+                uri = MovieDatabaseContract.PopularMovies.CONTENT_URI;
                 break;
             case Constants.TOP_RATED:
                 sortOrder = MovieDatabaseContract.TopRatedMovies.COLUMN_PAGE + " ASC, " +
                         MovieDatabaseContract.TopRatedMovies.COLUMN_POSITION + " ASC";
 
-                uri = MovieDatabaseContract.TopRatedMovies.buildUri();
+                uri = MovieDatabaseContract.TopRatedMovies.CONTENT_URI;
                 break;
             case Constants.FAVOURITES:
-                sortOrder = MovieDatabaseContract.FavouriteMovies.COLUMN_PAGE + " ASC, " +
-                        MovieDatabaseContract.FavouriteMovies.COLUMN_POSITION + " ASC";
+                sortOrder = null;
 
-                uri = MovieDatabaseContract.FavouriteMovies.buildUri();
+                uri = MovieDatabaseContract.FavouriteMovies.CONTENT_URI;
                 break;
             default:
                 return null;
