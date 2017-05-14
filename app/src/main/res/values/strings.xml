@@ -9,8 +9,12 @@
     <string name="favourites_tab_name">Favourites</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
     <string name="loading">Loading…</string>
+    <string name="error_fetch_failed">Error occurred while fetching new movies</string>
     <string name="favourites_no_movies">There are no movies added to favourites yet.\n
     Try adding one!</string>
+
+    <string name="ui_details_original_title">Original title:</string>
+    <string name="ui_details_rating">Rating:</string>
 
 
 

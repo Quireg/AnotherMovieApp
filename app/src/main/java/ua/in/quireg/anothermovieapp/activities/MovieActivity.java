@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.async.ImageFetcher;
@@ -24,7 +25,8 @@ import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
 
 public class MovieActivity extends AppCompatActivity implements FetchImageCallback, OnFragmentInteractionListener{
 
-    private CollapsingToolbarLayout collapsingToolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private ImageView collapsingToolbarImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,14 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         MovieItem movie = (MovieItem) getIntent().getExtras().getSerializable(Constants.MOVIE);
 
 
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(movie.getTitle());
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(movie.getTitle());
+        collapsingToolbarImageView = (ImageView) findViewById(R.id.toolbar_imageview);
 
         new ImageFetcher(this, getApplicationContext()).execute(UriHelper.getImageUri(movie.getBackdropPath(), Constants.IMAGE_SIZE_ORIGINAL));
 
@@ -60,9 +64,11 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
 
     @Override
     public void setImage(Bitmap bitmap) {
-        if (collapsingToolbar != null) {
+        if (collapsingToolbarLayout != null && collapsingToolbarImageView != null) {
             Drawable background = new BitmapDrawable(getResources(), bitmap);
-            collapsingToolbar.setBackground(background);
+            collapsingToolbarImageView.setImageBitmap(bitmap);
+//            collapsingToolbarLayout.setContentScrim(background);
+//            collapsingToolbarLayout.setScrimVisibleHeightTrigger(getSupportActionBar().getHeight());
         }
     }
 

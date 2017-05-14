@@ -30,7 +30,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
     private MovieItem movie;
     private OnFragmentInteractionListener mListener;
     private FloatingActionButton floatingActionButton;
-    //private boolean isFavourite;
 
     public MovieDetailsActivityFragment() {
     }
@@ -40,7 +39,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_movie_details, container, false);
         movie = (MovieItem) getArguments().getSerializable(Constants.MOVIE);
-        //isFavourite = isFavourite(movie);
 
         floatingActionButton = (FloatingActionButton) container.getRootView().findViewById(R.id.fab);
         updateFloatingActionBar();
@@ -67,6 +65,16 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
             movie_rating.setText(movie.getVote_average() + "/10");
         }
         new ImageFetcher(this, getContext()).execute(UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185));
+
+        TextView movie_original_title_textview = (TextView) view.findViewById(R.id.original_title_textview_text);
+        movie_original_title_textview.setText(movie.getOriginalTitle());
+
+        TextView movie_release_date_textview = (TextView) view.findViewById(R.id.movie_year);
+        movie_release_date_textview.setText(movie.getReleaseDate());
+
+        TextView movie_duration_textview = (TextView) view.findViewById(R.id.movie_duration);
+        movie_duration_textview.setText(String.valueOf(movie.getRuntime()));
+
         return view;
     }
 

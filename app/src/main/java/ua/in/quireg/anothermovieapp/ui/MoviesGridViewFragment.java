@@ -26,6 +26,7 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
+import ua.in.quireg.anothermovieapp.common.GeneralUtils;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
@@ -56,8 +57,6 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     private static final int FAVOURITE_MOVIE_LOADER = 2;
     private final int LOAD_ITEMS_THRESHOLD = 10;
 
-    private Toast fetchFailedToast;
-
     public MoviesGridViewFragment() {
     }
 
@@ -68,6 +67,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         mContext = getContext();
         fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
         recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_UPDATES_FILTER));
     }
 
     @Override
@@ -91,6 +91,20 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
+        if(fragmentTag.equals(Constants.FAVOURITES)){
+            recyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    if(recyclerViewAdapter.getItemCount() > 0){
+                        noFavouritesMoviesView.setVisibility(View.GONE);
+                    }else{
+                        noFavouritesMoviesView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
+
 
         currentItem = layoutManager.findLastVisibleItemPosition();
         if (!fragmentTag.equals(Constants.FAVOURITES)) {
@@ -136,15 +150,11 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_UPDATES_FILTER));
-    }
-    @Override
-    public void onStop() {
+    public void onDestroy() {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
-        super.onStop();
+        super.onDestroy();
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -172,11 +182,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 if (progressBarView != null) {
                     progressBarView.setVisibility(View.GONE);
                 }
-                if (fetchFailedToast != null) {
-                    fetchFailedToast.cancel();
-                    fetchFailedToast = Toast.makeText(getContext(), "Error occurred while fetching new movies", Toast.LENGTH_SHORT);
-                    fetchFailedToast.show();
-                }
+                GeneralUtils.showToastMessage(getContext(), getString(R.string.error_fetch_failed));
                 break;
             default:
                 break;
@@ -313,7 +319,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
 
     private void updateAdapterInfoTextView() {
-        pageNumberAndTotal.setText(currentItem + "/" + totalItems);
+        pageNumberAndTotal.setText((currentItem + 1) + "/" + totalItems);
     }
 
 }
