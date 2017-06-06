@@ -77,19 +77,16 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
         noFavouritesMoviesView = view.findViewById(R.id.favourites_no_movies);
         pageNumberAndTotal = (TextView) view.findViewById(R.id.pageNumberAndTotal);
-        updateAdapterInfoTextView();
 
-        //Set view to loading state until data is fetched
         loadingView = view.findViewById(R.id.loading);
-        loadingView.setVisibility(View.VISIBLE);
 
-        progressBarView = view.findViewById(R.id.progressBar);
-
+        progressBarView = container.getRootView().findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
 
         // Set the adapter
         final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);
         recyclerView.setLayoutManager(layoutManager);
+        currentItem = layoutManager.findLastVisibleItemPosition();
         recyclerView.setAdapter(recyclerViewAdapter);
         if(fragmentTag.equals(Constants.FAVOURITES)){
             recyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -104,13 +101,8 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 }
             });
         }
-
-
-        currentItem = layoutManager.findLastVisibleItemPosition();
-        if (!fragmentTag.equals(Constants.FAVOURITES)) {
-            fetchNewItems();
-        }
-
+        fetchNewItems();
+        updateAdapterInfoTextView();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -141,12 +133,25 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     }
 
     public void fetchNewItems(){
-        if(fetchInProgress){
+        if(fetchInProgress || fragmentTag.equals(Constants.FAVOURITES)){
             return;
         }
         long pageToLoad = last_loaded_page + 1;
         fetchInProgress = true;
+        updateProgressBarVisibility();
         SyncMovieService.startActionFetchMovies(mContext, fragmentTag, pageToLoad + "");
+    }
+
+    public void updateProgressBarVisibility(){
+        System.out.println("asd");
+        if(progressBarView == null){
+            return;
+        }
+        if(fetchInProgress){
+            progressBarView.setVisibility(View.VISIBLE);
+        }else{
+            progressBarView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -172,16 +177,11 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
                 totalItems = msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0);
                 last_loaded_page = msg.getLongExtra(Constants.LOADED_PAGE, 0);
 
-                if (progressBarView != null) {
-                    progressBarView.setVisibility(View.GONE);
-                    updateAdapterInfoTextView();
-                }
-
+                updateProgressBarVisibility();
+                updateAdapterInfoTextView();
                 break;
             case Constants.SYNC_FAILED:
-                if (progressBarView != null) {
-                    progressBarView.setVisibility(View.GONE);
-                }
+                updateProgressBarVisibility();
                 GeneralUtils.showToastMessage(getContext(), getString(R.string.error_fetch_failed));
                 break;
             default:
@@ -213,17 +213,17 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         if (isVisibleToUser) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity != null) {
-                ActionBar abar = activity.getSupportActionBar();
-                if (abar != null) {
+                ActionBar supportActionBar = activity.getSupportActionBar();
+                if (supportActionBar != null) {
                     switch (fragmentTag) {
                         case Constants.POPULAR:
-                            abar.setTitle(mContext.getResources().getString(R.string.popular_tab_name));
+                            supportActionBar.setTitle(mContext.getResources().getString(R.string.popular_tab_name));
                             break;
                         case Constants.TOP_RATED:
-                            abar.setTitle(mContext.getResources().getString(R.string.top_rated_tab_name));
+                            supportActionBar.setTitle(mContext.getResources().getString(R.string.top_rated_tab_name));
                             break;
                         case Constants.FAVOURITES:
-                            abar.setTitle(mContext.getResources().getString(R.string.favourites_tab_name));
+                            supportActionBar.setTitle(mContext.getResources().getString(R.string.favourites_tab_name));
                             break;
                     }
 
