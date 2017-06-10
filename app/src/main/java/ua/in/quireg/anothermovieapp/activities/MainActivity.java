@@ -18,7 +18,10 @@ import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.services.SyncMovieService;
+import ua.in.quireg.anothermovieapp.ui.FavouritesMoviesGridViewFragment;
 import ua.in.quireg.anothermovieapp.ui.MoviesGridViewFragment;
+import ua.in.quireg.anothermovieapp.ui.PopularMoviesGridViewFragment;
+import ua.in.quireg.anothermovieapp.ui.TopRatedMoviesGridViewFragment;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             switch (position) {
                 case POPULAR_MOVIES_TAB_POSITION:
                     if(popularMoviesFragment == null) {
-                        popularMoviesFragment = new MoviesGridViewFragment();
+                        popularMoviesFragment = new PopularMoviesGridViewFragment();
                         Bundle args = new Bundle();
                         args.putSerializable(Constants.FRAGMENT_TAG,Constants.POPULAR);
                         popularMoviesFragment.setArguments(args);
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     return popularMoviesFragment;
                 case TOP_RATED_MOVIES_TAB_POSITION:
                     if(topRatedMoviesFragment == null) {
-                        topRatedMoviesFragment = new MoviesGridViewFragment();
+                        topRatedMoviesFragment = new TopRatedMoviesGridViewFragment();
                         Bundle args = new Bundle();
                         args.putSerializable(Constants.FRAGMENT_TAG,Constants.TOP_RATED);
                         topRatedMoviesFragment.setArguments(args);
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     return topRatedMoviesFragment;
                 case FAVOURITE_MOVIES_TAB_POSITION:
                     if(favouritesMoviesFragment == null) {
-                        favouritesMoviesFragment = new MoviesGridViewFragment();
+                        favouritesMoviesFragment = new FavouritesMoviesGridViewFragment();
                         Bundle args = new Bundle();
                         args.putSerializable(Constants.FRAGMENT_TAG, Constants.FAVOURITES);
                         favouritesMoviesFragment.setArguments(args);

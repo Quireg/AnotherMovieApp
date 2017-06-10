@@ -5,56 +5,45 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.CursorRecyclerViewAdapter;
+import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
-import ua.in.quireg.anothermovieapp.common.GeneralUtils;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 
-public class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public abstract class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private RecyclerView recyclerView;
-    private CursorRecyclerViewAdapter recyclerViewAdapter;
-    private int mPosition = RecyclerView.NO_POSITION;
+    protected RecyclerView recyclerView;
+    protected CursorRecyclerViewAdapter recyclerViewAdapter;
+    protected int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
     private String fragmentTag;
 
-    private View loadingView = null;
+    protected View loadingView = null;
     private View progressBarView = null;
-    private View noFavouritesMoviesView = null;
+    protected View noFavouritesMoviesView = null;
     private TextView pageNumberAndTotal = null;
 
-    private boolean fetchInProgress = false;
-    private long last_loaded_page = 0;
+    protected boolean fetchInProgress = false;
+    protected long last_loaded_page = 0;
     private long currentItem = 0;
-    private long totalItems = 0;
+    protected long totalItems = 0;
 
 
-    private static final int POPULAR_MOVIE_LOADER = 0;
-    private static final int TOP_RATED_MOVIE_LOADER = 1;
-    private static final int FAVOURITE_MOVIE_LOADER = 2;
     private final int LOAD_ITEMS_THRESHOLD = 10;
 
     public MoviesGridViewFragment() {
@@ -88,19 +77,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         recyclerView.setLayoutManager(layoutManager);
         currentItem = layoutManager.findLastVisibleItemPosition();
         recyclerView.setAdapter(recyclerViewAdapter);
-        if(fragmentTag.equals(Constants.FAVOURITES)){
-            recyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    super.onChanged();
-                    if(recyclerViewAdapter.getItemCount() > 0){
-                        noFavouritesMoviesView.setVisibility(View.GONE);
-                    }else{
-                        noFavouritesMoviesView.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        }
+
         fetchNewItems();
         updateAdapterInfoTextView();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -120,7 +97,7 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
 
                     int itemsInAdapter = recyclerView.getAdapter().getItemCount();
                     //check if we have reached the end
-                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD && !fragmentTag.equals(Constants.FAVOURITES)) {
+                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD) {
                         fetchNewItems();
                     }
                 } else if (dy < 0) {
@@ -143,7 +120,6 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
     }
 
     public void updateProgressBarVisibility(){
-        System.out.println("asd");
         if(progressBarView == null){
             return;
         }
@@ -166,71 +142,8 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
             handleMessage(intent);
         }
     };
-    private void handleMessage(Intent msg)
-    {
-        if(!msg.getStringExtra(Constants.FRAGMENT_TAG).equals(fragmentTag)){
-            return;
-        }
-        fetchInProgress = false;
-        switch (msg.getStringExtra(Constants.SYNC_STATUS)){
-            case Constants.SYNC_COMPLETED:
-                totalItems = msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0);
-                last_loaded_page = msg.getLongExtra(Constants.LOADED_PAGE, 0);
 
-                updateProgressBarVisibility();
-                updateAdapterInfoTextView();
-                break;
-            case Constants.SYNC_FAILED:
-                updateProgressBarVisibility();
-                GeneralUtils.showToastMessage(getContext(), getString(R.string.error_fetch_failed));
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        switch (fragmentTag) {
-            case Constants.POPULAR:
-                getLoaderManager().initLoader(POPULAR_MOVIE_LOADER, null, this);
-                break;
-            case Constants.TOP_RATED:
-                getLoaderManager().initLoader(TOP_RATED_MOVIE_LOADER, null, this);
-                break;
-            case Constants.FAVOURITES:
-                getLoaderManager().initLoader(FAVOURITE_MOVIE_LOADER, null, this);
-                break;
-        }
-
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            if (activity != null) {
-                ActionBar supportActionBar = activity.getSupportActionBar();
-                if (supportActionBar != null) {
-                    switch (fragmentTag) {
-                        case Constants.POPULAR:
-                            supportActionBar.setTitle(mContext.getResources().getString(R.string.popular_tab_name));
-                            break;
-                        case Constants.TOP_RATED:
-                            supportActionBar.setTitle(mContext.getResources().getString(R.string.top_rated_tab_name));
-                            break;
-                        case Constants.FAVOURITES:
-                            supportActionBar.setTitle(mContext.getResources().getString(R.string.favourites_tab_name));
-                            break;
-                    }
-
-                }
-            }
-        }
-    }
+    protected abstract void handleMessage(Intent msg);
 
     @Override
     public void onAttach(Context context) {
@@ -250,75 +163,13 @@ public class MoviesGridViewFragment extends Fragment implements LoaderManager.Lo
         mListener = null;
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder;
-        Uri uri;
-        switch (fragmentTag) {
-            case Constants.POPULAR:
-                sortOrder = MovieDatabaseContract.PopularMovies.COLUMN_PAGE + " ASC, " +
-                        MovieDatabaseContract.PopularMovies.COLUMN_POSITION + " ASC";
-
-                uri = MovieDatabaseContract.PopularMovies.CONTENT_URI;
-                break;
-            case Constants.TOP_RATED:
-                sortOrder = MovieDatabaseContract.TopRatedMovies.COLUMN_PAGE + " ASC, " +
-                        MovieDatabaseContract.TopRatedMovies.COLUMN_POSITION + " ASC";
-
-                uri = MovieDatabaseContract.TopRatedMovies.CONTENT_URI;
-                break;
-            case Constants.FAVOURITES:
-                sortOrder = null;
-
-                uri = MovieDatabaseContract.FavouriteMovies.CONTENT_URI;
-                break;
-            default:
-                return null;
-        }
-
-        return new CursorLoader(getActivity(),
-                uri,
-                MovieItem.MOVIES_CLOMUNS,
-                null,
-                null,
-                sortOrder);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        recyclerViewAdapter.swapCursor(cursor);
-
-        switch (fragmentTag) {
-            case Constants.POPULAR:
-            case Constants.TOP_RATED:
-                if (cursor.moveToFirst()) {
-                    loadingView.setVisibility(View.GONE);
-                }
-                break;
-            case Constants.FAVOURITES:
-                if (cursor.moveToFirst()) {
-                    loadingView.setVisibility(View.GONE);
-                } else {
-                    loadingView.setVisibility(View.GONE);
-                    noFavouritesMoviesView.setVisibility(View.VISIBLE);
-                }
-                break;
-        }
-
-        if (mPosition != RecyclerView.NO_POSITION) {
-            // If we don't need to restart the loader, and there's a desired position to restore
-            // to, do so now.
-            recyclerView.smoothScrollToPosition(mPosition);
-        }
-    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
-
-    private void updateAdapterInfoTextView() {
+    protected void updateAdapterInfoTextView() {
         pageNumberAndTotal.setText((currentItem + 1) + "/" + totalItems);
     }
 
