@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.async.ImageFetcher;
 import ua.in.quireg.anothermovieapp.common.Constants;
@@ -62,17 +64,22 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
         //Set rating
         if (movie.getVote_average() != 0) {
             TextView movie_rating = (TextView) view.findViewById(R.id.movie_rating);
-            movie_rating.setText(movie.getVote_average() + "/10");
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            String movie_rating_text = String.format(getResources().getString(R.string.ui_details_rating_value), decimalFormat.format(movie.getVote_average()));
+            movie_rating.setText(movie_rating_text);
         }
-        new ImageFetcher(this, getContext()).execute(UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185));
+        new ImageFetcher(this, getContext())
+                .execute(
+                        UriHelper.getImageUri(movie.getPosterPath(),
+                        Constants.IMAGE_SIZE_W185)
+                );
 
         TextView movie_original_title_textview = (TextView) view.findViewById(R.id.original_title_textview_text);
-        movie_original_title_textview.setText(movie.getOriginalTitle());
-
         TextView movie_release_date_textview = (TextView) view.findViewById(R.id.movie_year);
-        movie_release_date_textview.setText(movie.getReleaseDate());
-
         TextView movie_duration_textview = (TextView) view.findViewById(R.id.movie_duration);
+
+        movie_original_title_textview.setText(movie.getOriginalTitle());
+        movie_release_date_textview.setText(movie.getReleaseDate());
         movie_duration_textview.setText(String.valueOf(movie.getRuntime()));
 
         return view;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,17 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
     private final OnFragmentInteractionListener mListener;
     private Context appContext;
     private String TAG;
-
+    float dpHeight;
+    float dpWidth;
 
     public MovieRecyclerViewAdapter(Context context, Cursor c, int flags, String tag) {
         super(context, c);
         appContext = context;
         mListener = (OnFragmentInteractionListener) context;
         TAG = tag;
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        dpWidth = displayMetrics.widthPixels / displayMetrics.density;
     }
 
 
@@ -55,7 +60,6 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
             ((MovieViewHolder) holder).mMovieTitle.setText(movie.getOriginalTitle());
 
             Uri uri = UriHelper.getImageUri(movie.getPosterPath(), Constants.IMAGE_SIZE_W185);
-
             Picasso.with(appContext).load(uri).into(((MovieViewHolder) holder).mMovieThumbnail);
 
             ((MovieViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +75,7 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
 
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mMovieTitle;
         public final ImageView mMovieThumbnail;
@@ -82,6 +86,9 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
             mView = view;
             mMovieTitle = (TextView) view.findViewById(R.id.id);
             mMovieThumbnail = (ImageView) view.findViewById(R.id.image);
+            mMovieThumbnail.setMinimumWidth((int) (dpWidth/2));
+            mMovieThumbnail.setMinimumHeight((int) ((dpWidth/2)*1.5));
+
         }
 
         @Override

@@ -29,8 +29,7 @@ public class ImageFetcher extends AsyncTask<Uri, Void, Bitmap> {
     protected Bitmap doInBackground(Uri... params) {
         try {
             MLog.d(LOG_TAG, "Fetching: " + params[0].toString());
-            Bitmap bitmap = Picasso.with(mContext).load(params[0]).get();
-            return bitmap;
+            return Picasso.with(mContext).load(params[0]).get();
         } catch (IOException e) {
             e.printStackTrace();
         }

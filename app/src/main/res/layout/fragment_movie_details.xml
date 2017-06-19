@@ -18,8 +18,7 @@
             android:layout_marginTop="8dp"
             tools:context="ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment">
 
-            <!-- An invisible view aligned to the center of the parent. Allows other
-       views to be arranged on either side -->
+
             <TextView
                 android:id="@+id/original_title_textview"
                 android:layout_width="wrap_content"
@@ -28,7 +27,9 @@
                 android:layout_marginStart="20dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
-                android:minHeight="5dp"/>
+                android:minHeight="5dp"
+                android:layout_marginEnd="20dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <TextView
                 android:id="@+id/original_title_textview_text"
@@ -38,8 +39,14 @@
                 android:layout_marginStart="20dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
-                android:minHeight="5dp"/>
+                android:layout_marginBottom="10dp"
+                android:minHeight="5dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_horizontal"
+                android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
+            <!-- An invisible view aligned to the center of the parent. Allows other
+                   views to be arranged on either side -->
             <View
                 android:id="@+id/centerShim"
                 android:layout_width="0dp"
@@ -58,25 +65,34 @@
                 android:layout_below="@+id/original_title_textview_text"
                 android:layout_alignEnd="@+id/centerShim" />
 
-            <TextView
-                android:id="@+id/movie_rating"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/movie_poster"
                 android:layout_below="@+id/original_title_textview_text"
-                android:layout_toEndOf="@+id/centerShim" />
+                android:layout_above="@+id/movie_decription">
+                <TextView
+                    android:id="@+id/movie_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp" />
 
-            <TextView
-                android:id="@+id/movie_year"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/movie_rating"
-                android:layout_toEndOf="@+id/centerShim" />
-            <TextView
-                android:id="@+id/movie_duration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/movie_year"
-                android:layout_toEndOf="@+id/centerShim" />
+                <TextView
+                    android:id="@+id/movie_year"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp" />
+                <TextView
+                    android:id="@+id/movie_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/movie_year"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/movie_decription"

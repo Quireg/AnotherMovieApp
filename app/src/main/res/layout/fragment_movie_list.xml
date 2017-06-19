@@ -31,13 +31,4 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="5dp"
-        android:id="@+id/pageNumberAndTotal"
-        android:background="@android:drawable/editbox_background" />
-
 </FrameLayout>

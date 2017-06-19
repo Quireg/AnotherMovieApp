@@ -34,13 +34,13 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     private String fragmentTag;
 
     protected View loadingView = null;
-    private View progressBarView = null;
+    protected View progressBarView = null;
     protected View noFavouritesMoviesView = null;
-    private TextView pageNumberAndTotal = null;
+    protected TextView pageNumberAndTotal = null;
 
     protected boolean fetchInProgress = false;
     protected long last_loaded_page = 0;
-    private long currentItem = 0;
+    protected long currentItem = 0;
     protected long totalItems = 0;
 
 
@@ -65,7 +65,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         noFavouritesMoviesView = view.findViewById(R.id.favourites_no_movies);
-        pageNumberAndTotal = (TextView) view.findViewById(R.id.pageNumberAndTotal);
+        pageNumberAndTotal = (TextView) container.getRootView().findViewById(R.id.pageNumberAndTotal);
 
         loadingView = view.findViewById(R.id.loading);
 

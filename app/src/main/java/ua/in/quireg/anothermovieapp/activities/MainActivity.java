@@ -110,9 +110,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         @Override
         public Fragment getItem(int position) {
-
-
-
             switch (position) {
                 case POPULAR_MOVIES_TAB_POSITION:
                     if(popularMoviesFragment == null) {
