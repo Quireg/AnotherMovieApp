@@ -15,7 +15,7 @@ import android.view.View;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.GeneralUtils;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
 public class TopRatedMoviesGridViewFragment extends MoviesGridViewFragment {

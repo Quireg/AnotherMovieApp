@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.Scanner;
 
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 
 import static org.junit.Assert.*;
 

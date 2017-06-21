@@ -4,8 +4,9 @@ package ua.in.quireg.anothermovieapp.common;
 import ua.in.quireg.anothermovieapp.BuildConfig;
 
 public class Constants {
-    public static final String FRAGMENT_TAG = "fragment_tag";
 
+    public static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
+    public static final String FRAGMENT_TAG = "fragment_tag";
     public static final String POPULAR = "POPULAR";
     public static final String TOP_RATED = "TOP_RATED";
     public static final String FAVOURITES = "FAVOURITES";

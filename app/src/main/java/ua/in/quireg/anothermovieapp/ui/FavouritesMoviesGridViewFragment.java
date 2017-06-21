@@ -13,13 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
 public class FavouritesMoviesGridViewFragment extends MoviesGridViewFragment {
     private static final int FAVOURITE_MOVIE_LOADER = 2;
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

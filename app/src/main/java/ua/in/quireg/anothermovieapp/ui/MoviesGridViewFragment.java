@@ -66,11 +66,9 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
 
         noFavouritesMoviesView = view.findViewById(R.id.favourites_no_movies);
         pageNumberAndTotal = (TextView) container.getRootView().findViewById(R.id.pageNumberAndTotal);
-
-        loadingView = view.findViewById(R.id.loading);
-
         progressBarView = container.getRootView().findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
+        loadingView = view.findViewById(R.id.loading);
 
         // Set the adapter
         final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);

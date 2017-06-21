@@ -1,7 +1,7 @@
 package ua.in.quireg.anothermovieapp;
 
 
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 
 public class Helpers {
 

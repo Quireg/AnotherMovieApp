@@ -2,8 +2,6 @@ package ua.in.quireg.anothermovieapp.activities;
 
 import android.content.ContentValues;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +15,7 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.async.ImageFetcher;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
@@ -44,7 +42,6 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
 
         MovieItem movie = (MovieItem) getIntent().getExtras().getSerializable(Constants.MOVIE);
 
@@ -65,10 +62,7 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
     @Override
     public void setImage(Bitmap bitmap) {
         if (collapsingToolbarLayout != null && collapsingToolbarImageView != null) {
-            Drawable background = new BitmapDrawable(getResources(), bitmap);
             collapsingToolbarImageView.setImageBitmap(bitmap);
-//            collapsingToolbarLayout.setContentScrim(background);
-//            collapsingToolbarLayout.setScrimVisibleHeightTrigger(getSupportActionBar().getHeight());
         }
     }
 

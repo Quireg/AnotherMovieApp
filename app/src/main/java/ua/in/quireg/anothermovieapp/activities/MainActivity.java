@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 import ua.in.quireg.anothermovieapp.ui.FavouritesMoviesGridViewFragment;
 import ua.in.quireg.anothermovieapp.ui.MoviesGridViewFragment;

@@ -2,6 +2,11 @@ package ua.in.quireg.anothermovieapp.common;
 
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class GeneralUtils {
@@ -14,6 +19,5 @@ public class GeneralUtils {
         toast_short = Toast.makeText(context, msg, Toast.LENGTH_LONG);
         toast_short.show();
     }
-
 
 }

@@ -17,7 +17,7 @@ import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.MLog;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 
 
@@ -84,7 +84,7 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
         public MovieViewHolder(View view) {
             super(view);
             mView = view;
-            mMovieTitle = (TextView) view.findViewById(R.id.id);
+            mMovieTitle = (TextView) view.findViewById(R.id.movie_title);
             mMovieThumbnail = (ImageView) view.findViewById(R.id.image);
             mMovieThumbnail.setMinimumWidth((int) (dpWidth/2));
             mMovieThumbnail.setMinimumHeight((int) ((dpWidth/2)*1.5));

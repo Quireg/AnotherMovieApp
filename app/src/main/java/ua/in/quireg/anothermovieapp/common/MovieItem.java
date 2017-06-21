@@ -1,4 +1,4 @@
-package ua.in.quireg.anothermovieapp.core;
+package ua.in.quireg.anothermovieapp.common;
 
 
 import android.content.ContentValues;

@@ -87,4 +87,27 @@ public class UriHelper {
                 .build();
     }
 
+    public static Uri getMovieTrailerUriById(String id){
+        MLog.v(LOG_TAG, "getMovieTrailerUriById()");
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(id)
+                .appendPath("videos")
+                .appendQueryParameter("api_key", API_KEY)
+                .build();
+    }
+
+    public static Uri getYouTubeLinkToPlay(String id){
+        MLog.v(LOG_TAG, "getYouTubeLinkToPlay()");
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("youtube.com")
+                .appendPath("watch")
+                .appendQueryParameter("v", id)
+                .build();
+    }
+
 }

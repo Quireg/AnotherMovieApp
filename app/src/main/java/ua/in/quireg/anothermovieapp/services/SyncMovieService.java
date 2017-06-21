@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.core.MovieItem;
+import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchItemsCallback;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.network.VolleyRequestQueueProvider;
@@ -214,7 +214,7 @@ public class SyncMovieService extends IntentService {
                     }
                 });
 
-        VolleyRequestQueueProvider.getInstance(getApplicationContext()).addToRequestQueue(movieListRequest);
+        VolleyRequestQueueProvider.getInstance(null).addToRequestQueue(movieListRequest);
 
 
     }
