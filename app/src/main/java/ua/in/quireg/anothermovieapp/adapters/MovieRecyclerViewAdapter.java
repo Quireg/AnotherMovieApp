@@ -86,8 +86,8 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
             mView = view;
             mMovieTitle = (TextView) view.findViewById(R.id.movie_title);
             mMovieThumbnail = (ImageView) view.findViewById(R.id.image);
-            mMovieThumbnail.setMinimumWidth((int) (dpWidth/2));
-            mMovieThumbnail.setMinimumHeight((int) ((dpWidth/2)*1.5));
+            mView.setMinimumWidth((int) (dpWidth/2));
+            mView.setMinimumHeight((int) ((dpWidth/2)*1.5));
 
         }
 

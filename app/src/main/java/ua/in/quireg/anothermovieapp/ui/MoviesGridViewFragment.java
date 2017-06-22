@@ -43,7 +43,6 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     protected long currentItem = 0;
     protected long totalItems = 0;
 
-
     private final int LOAD_ITEMS_THRESHOLD = 10;
 
     public MoviesGridViewFragment() {
@@ -60,7 +59,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
@@ -73,7 +72,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
         // Set the adapter
         final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);
         recyclerView.setLayoutManager(layoutManager);
-        currentItem = layoutManager.findLastVisibleItemPosition();
+        currentItem = layoutManager.findFirstCompletelyVisibleItemPosition();
         recyclerView.setAdapter(recyclerViewAdapter);
 
         fetchNewItems();
@@ -90,16 +89,16 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
                 //scrolled down
                 if (dy > 0) {
 
-                    currentItem = layoutManager.findLastVisibleItemPosition();
+                    currentItem = layoutManager.findFirstCompletelyVisibleItemPosition();
                     updateAdapterInfoTextView();
 
                     int itemsInAdapter = recyclerView.getAdapter().getItemCount();
                     //check if we have reached the end
-                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD) {
+                    if (itemsInAdapter - currentItem < LOAD_ITEMS_THRESHOLD || itemsInAdapter < 100) {
                         fetchNewItems();
                     }
                 } else if (dy < 0) {
-                    currentItem = layoutManager.findLastVisibleItemPosition();
+                    currentItem = layoutManager.findFirstCompletelyVisibleItemPosition();
                     updateAdapterInfoTextView();
                 }
             }

@@ -102,7 +102,7 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
 
     @Override
     public void setImage(Bitmap bitmap) {
-        if (view != null) {
+        if (view != null && isAdded()) {
             Drawable background = new BitmapDrawable(getResources(), bitmap);
             ImageView movie_poster = (ImageView) view.findViewById(R.id.movie_poster);
             movie_poster.setImageDrawable(background);
