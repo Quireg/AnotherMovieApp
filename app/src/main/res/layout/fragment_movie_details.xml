@@ -133,13 +133,29 @@
                 android:layout_marginTop="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
+            <View
+                android:id="@+id/black_line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/movie_description"/>
+
             <LinearLayout
                 android:id="@+id/movie_trailers_layout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/movie_description"
+                android:layout_below="@+id/black_line2"
                 android:layout_centerHorizontal="true" />
+
+            <View
+                android:id="@+id/black_line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/movie_trailers_layout"/>
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

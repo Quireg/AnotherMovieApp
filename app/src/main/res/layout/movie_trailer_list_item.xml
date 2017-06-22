@@ -4,29 +4,31 @@
     android:orientation="horizontal"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="48dp"
+    android:weightSum="7"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:duplicateParentState="false"
     >
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:srcCompat="?android:attr/alertDialogIcon"
-        android:id="@+id/imageView"
-        android:gravity="center"
+        android:id="@+id/trailer_preview"
+        android:scaleType="fitXY"
+        android:layout_marginTop="4dp"
         android:layout_weight="1" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/trailer_title"
+        android:layout_marginStart="12dp"
         android:gravity="center|start"
-        android:layout_weight="10" />
+        android:layout_weight="5" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:id="@+id/trailer_quality"
         android:gravity="center|end"

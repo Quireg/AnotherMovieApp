@@ -110,4 +110,15 @@ public class UriHelper {
                 .build();
     }
 
+    public static Uri getYouTubeTrailerPreviewLink(String trailer_id){
+        MLog.v(LOG_TAG, "getYouTubeTrailerPreviewLink()");
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("i1.ytimg.com")
+                .appendPath("vi")
+                .appendPath(trailer_id)
+                .appendPath("hqdefault.jpg")
+                .build();
+    }
+
 }

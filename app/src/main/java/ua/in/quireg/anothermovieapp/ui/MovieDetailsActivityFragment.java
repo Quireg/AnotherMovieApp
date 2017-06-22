@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -161,10 +163,11 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
 
             TextView trailer_name = (TextView) single_trailer_view.findViewById(R.id.trailer_title);
             TextView trailer_quality = (TextView) single_trailer_view.findViewById(R.id.trailer_quality);
+            ImageView trailer_preview = (ImageView) single_trailer_view.findViewById(R.id.trailer_preview);
             final TextView trailer_key = (TextView) single_trailer_view.findViewById(R.id.trailer_key);
-
+            Picasso.with(getContext()).load(UriHelper.getYouTubeTrailerPreviewLink(trailer.key)).into(trailer_preview);
             trailer_name.setText(trailer.name);
-            trailer_quality.setText(trailer.size);
+            trailer_quality.setText(String.format(getString(R.string.ui_details_trailer_quality), trailer.size));
             trailer_key.setText(trailer.key);
             single_trailer_view.setOnClickListener(new View.OnClickListener() {
                 @Override
