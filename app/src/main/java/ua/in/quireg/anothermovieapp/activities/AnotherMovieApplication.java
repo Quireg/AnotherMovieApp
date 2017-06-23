@@ -11,8 +11,6 @@ public class AnotherMovieApplication extends Application{
         super.onCreate();
         VolleyRequestQueueProvider.getInstance(getApplicationContext());
 
-//        SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.POPULAR, "1");
-//        SyncMovieService.startActionFetchMovies(getApplicationContext(), Constants.TOP_RATED, "1");
     }
 
 }

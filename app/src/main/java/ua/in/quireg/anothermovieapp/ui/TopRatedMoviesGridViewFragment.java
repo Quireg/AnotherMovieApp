@@ -10,17 +10,29 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.common.GeneralUtils;
 import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
+import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 
 public class TopRatedMoviesGridViewFragment extends MoviesGridViewFragment {
     private static final int TOP_RATED_MOVIE_LOADER = 1;
 
+    protected boolean fetchInProgress = false;
+    protected long last_loaded_page = 0;
+    protected long currentItem = 0;
+    protected long totalItems = 0;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -63,6 +75,7 @@ public class TopRatedMoviesGridViewFragment extends MoviesGridViewFragment {
                 ActionBar supportActionBar = activity.getSupportActionBar();
                 if (supportActionBar != null) {
                     supportActionBar.setTitle(getContext().getResources().getString(R.string.top_rated_tab_name));
+                    updateAdapterInfoTextView();
                 }
             }
         }
@@ -70,21 +83,71 @@ public class TopRatedMoviesGridViewFragment extends MoviesGridViewFragment {
 
     @Override
     protected void handleMessage(Intent msg) {
-        fetchInProgress = false;
+        if(!msg.getStringExtra(Constants.FRAGMENT_TAG).equals(Constants.TOP_RATED)){
+            return;
+        }
+        setFetchInProgress(false);
+        updateProgressBarVisibility();
         switch (msg.getStringExtra(Constants.SYNC_STATUS)) {
             case Constants.SYNC_COMPLETED:
-                totalItems = msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0);
-                last_loaded_page = msg.getLongExtra(Constants.LOADED_PAGE, 0);
-
-                updateProgressBarVisibility();
-                updateAdapterInfoTextView();
+                setTotalItems(msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0));
+                setLast_loaded_page(msg.getLongExtra(Constants.LOADED_PAGE, 0));
                 break;
             case Constants.SYNC_FAILED:
-                updateProgressBarVisibility();
                 GeneralUtils.showToastMessage(getContext(), getString(R.string.error_fetch_failed));
                 break;
             default:
                 break;
         }
+    }
+
+    public void fetchNewItems() {
+        if (isFetchInProgress()) {
+            return;
+        }
+        long pageToLoad = getLast_loaded_page() + 1;
+        setFetchInProgress(true);
+        updateProgressBarVisibility();
+        SyncMovieService.startActionFetchMovies(getContext(), Constants.TOP_RATED, pageToLoad + "");
+    }
+
+    @Override
+    protected long getCurrentPosition() {
+        return this.currentItem;
+    }
+
+    @Override
+    protected void setCurrentPosition(long position) {
+        this.currentItem = position;
+    }
+
+    @Override
+    protected boolean isFetchInProgress() {
+        return this.fetchInProgress;
+    }
+
+    @Override
+    protected void setFetchInProgress(boolean fetchInProgress) {
+        this.fetchInProgress = fetchInProgress;
+    }
+
+    @Override
+    protected long getLast_loaded_page() {
+        return this.last_loaded_page;
+    }
+
+    @Override
+    protected void setLast_loaded_page(long last_loaded_page) {
+        this.last_loaded_page = last_loaded_page;
+    }
+
+    @Override
+    protected long getTotalItems() {
+        return this.totalItems;
+    }
+
+    @Override
+    protected void setTotalItems(long totalItems) {
+        this.totalItems = totalItems;
     }
 }
