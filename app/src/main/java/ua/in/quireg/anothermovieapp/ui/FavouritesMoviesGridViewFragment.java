@@ -96,8 +96,10 @@ public class FavouritesMoviesGridViewFragment extends MoviesGridViewFragment {
 
     @Override
     protected void handleMessage(Intent msg) {
+        //do nothing
     }
 
+    @Override
     public void fetchNewItems(){
         //do nothing
     }

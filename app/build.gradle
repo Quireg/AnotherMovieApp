@@ -19,18 +19,18 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'MOVIE_DATABASE_API_KEY', "\""+getMovieApiKey()+"\""
-        it.buildConfigField 'String', 'YOUTUBE_API_KEY', "\""+getYouTubeApiKey()+"\""
+        it.buildConfigField 'String', 'MOVIE_DATABASE_API_KEY', "\"" + getMovieApiKey() + "\""
+        it.buildConfigField 'String', 'YOUTUBE_API_KEY', "\"" + getYouTubeApiKey() + "\""
     }
 }
 
-def getMovieApiKey(){
+def getMovieApiKey() {
     def Properties props = new Properties()
     props.load(new FileInputStream(new File('secrets.properties')))
     return props['MOVIE_DATABASE_API_KEY']
 }
 
-def getYouTubeApiKey(){
+def getYouTubeApiKey() {
     def Properties props = new Properties()
     props.load(new FileInputStream(new File('secrets.properties')))
     return props['YOUTUBE_API_KEY']
@@ -39,17 +39,18 @@ def getYouTubeApiKey(){
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
-    compile "com.android.support:support-core-utils:25.4.0"
+    testCompile(group: 'org.json', name: 'json', version: '20140107') {
+        force = true
+    }
+    compile 'com.android.support:support-core-utils:25.4.0'
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:recyclerview-v7:25.4.0'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.volley:volley:1.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    testCompile (group: 'org.json', name: 'json', version: '20140107'){
-        force = true
-    }
+    compile 'com.android.support:support-v4:25.2.0'
     testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
 }

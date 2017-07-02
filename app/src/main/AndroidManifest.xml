@@ -38,10 +38,13 @@
         <provider
             android:authorities="ua.in.quireg.anothermovieapp.app"
             android:multiprocess="true"
-            android:name="ua.in.quireg.anothermovieapp.managers.MovieEntityProvider"></provider>
+            android:name="ua.in.quireg.anothermovieapp.managers.MovieAppContentProvider"></provider>
 
         <service
             android:name=".services.SyncMovieService"
+            android:exported="false"></service>
+        <service
+            android:name=".services.SyncReviewsService"
             android:exported="false"></service>
     </application>
 

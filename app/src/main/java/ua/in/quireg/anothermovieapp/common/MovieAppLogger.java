@@ -2,7 +2,7 @@ package ua.in.quireg.anothermovieapp.common;
 
 import android.util.Log;
 
-public class MLog {
+public class MovieAppLogger {
 
     public static void d(String tag, String msg) {
         if (Constants.LOGGING) {
@@ -35,7 +35,7 @@ public class MLog {
     }
 
     public static void v(String tag, String msg) {
-        if (Constants.LOGGING) {
+        if (Constants.LOGGING && false) {
             Log.v(tag, msg);
         }
     }

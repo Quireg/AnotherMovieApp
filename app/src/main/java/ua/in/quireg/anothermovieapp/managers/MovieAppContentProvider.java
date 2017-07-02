@@ -13,9 +13,10 @@ import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.FavouriteMovi
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieEntry;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.PopularMovies;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.TopRatedMovies;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieReviews;
 
 
-public class MovieEntityProvider extends ContentProvider {
+public class MovieAppContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private MovieDBHelper mOpenHelper;
     private static final SQLiteQueryBuilder sMovieFromPopularQueryBuilder;
@@ -34,6 +35,9 @@ public class MovieEntityProvider extends ContentProvider {
     public static final int TOP_RATED_MOVIE_DIR = 401;
     //public static final int TOP_RATED_MOVIE_ITEM = 402;
 
+    public static final int MOVIE_REVIEWS_DIR = 501;
+    public static final int MOVIE_REVIEWS_DIR_FOR_SINGLE_MOVIE = 502;
+
 
     static {
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_MOVIE_ENTITY, MOVIE_DIR);
@@ -45,6 +49,9 @@ public class MovieEntityProvider extends ContentProvider {
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_POPULAR_MOVIES, POPULAR_MOVIE_DIR);
 
         sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_TOP_RATED_MOVIES, TOP_RATED_MOVIE_DIR);
+
+        sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_MOVIE_REVIEWS, MOVIE_REVIEWS_DIR);
+        sUriMatcher.addURI(MovieDatabaseContract.CONTENT_AUTHORITY, MovieDatabaseContract.PATH_MOVIE_REVIEWS  + "/#", MOVIE_REVIEWS_DIR_FOR_SINGLE_MOVIE);
 
         sMovieFromPopularQueryBuilder = new SQLiteQueryBuilder();
         sMovieFromPopularQueryBuilder.setTables(
@@ -160,6 +167,18 @@ public class MovieEntityProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case MOVIE_REVIEWS_DIR_FOR_SINGLE_MOVIE:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        MovieReviews.TABLE_NAME,
+                        projection,
+                        MovieReviews._ID + " = " + uri.getLastPathSegment(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -183,6 +202,10 @@ public class MovieEntityProvider extends ContentProvider {
                 return PopularMovies.CONTENT_DIR_TYPE;
             case TOP_RATED_MOVIE_DIR:
                 return TopRatedMovies.CONTENT_DIR_TYPE;
+            case MOVIE_REVIEWS_DIR:
+                return MovieReviews.CONTENT_DIR_TYPE;
+            case MOVIE_REVIEWS_DIR_FOR_SINGLE_MOVIE:
+                return MovieReviews.CONTENT_DIR_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -211,6 +234,9 @@ public class MovieEntityProvider extends ContentProvider {
 
                     case TOP_RATED_MOVIE_DIR:
                         db.insertWithOnConflict(TopRatedMovies.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                        break;
+                    case MOVIE_REVIEWS_DIR:
+                        db.insertWithOnConflict(MovieReviews.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                         break;
 
                     default:

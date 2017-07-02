@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import ua.in.quireg.anothermovieapp.common.MLog;
+import ua.in.quireg.anothermovieapp.common.MovieAppLogger;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.*;
 
 
@@ -12,7 +12,7 @@ public class MovieDBHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = MovieDBHelper.class.getSimpleName();
 
-    private static final int DATABASE_VERSION = 3 ;
+    private static final int DATABASE_VERSION = 6;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -24,12 +24,13 @@ public class MovieDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        MLog.d(LOG_TAG, "onCreate()");
+        MovieAppLogger.d(LOG_TAG, "onCreate()");
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TopRatedMovies.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PopularMovies.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieReviews.TABLE_NAME);
 
         final String SQL_CREATE_MOVIE_ENTITY_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
 
@@ -71,20 +72,29 @@ public class MovieDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
                 FavouriteMovies._ID +                     " INTEGER UNIQUE NOT NULL "   +
                 ");";
+        final String SQL_CREATE_MOVIE_REVIEWS_TABLE = "CREATE TABLE " + MovieReviews.TABLE_NAME + " (" +
+                MovieReviews._ID +                     " INTEGER, "   +
+                MovieReviews.COLUMN_AUTHOR +             " TEXT, " +
+                MovieReviews.COLUMN_REVIEW_ID +             " TEXT UNIQUE NOT NULL, " +
+                MovieReviews.COLUMN_CONTENT +         " TEXT " +
+                ");";
 
 
 
-        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_ENTITY_TABLE);
+        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_ENTITY_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_ENTITY_TABLE);
 
-        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_TOP_RATED_TABLE);
+        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_TOP_RATED_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TOP_RATED_TABLE);
 
-        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_POPULAR_TABLE);
+        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_POPULAR_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_POPULAR_TABLE);
 
-        MLog.d(LOG_TAG, SQL_CREATE_MOVIE_FAVOURITES_TABLE);
+        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_FAVOURITES_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_FAVOURITES_TABLE);
+
+        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_REVIEWS_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_REVIEWS_TABLE);
     }
 
     @Override

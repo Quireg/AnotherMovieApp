@@ -10,7 +10,7 @@ public class UriHelper {
     private static final String API_KEY = BuildConfig.MOVIE_DATABASE_API_KEY;
 
     public static Uri getMoviesListUri(String tag){
-        MLog.v(LOG_TAG, "getMoviesListUri()");
+        MovieAppLogger.v(LOG_TAG, "getMoviesListUri()");
         switch (tag){
             case Constants.POPULAR:
                 return new Uri.Builder()
@@ -35,7 +35,7 @@ public class UriHelper {
     }
 
     public static Uri getMoviesListPageUri(String tag, String page){
-        MLog.v(LOG_TAG, "getMoviesListPageUri()");
+        MovieAppLogger.v(LOG_TAG, "getMoviesListPageUri()");
 
         switch (tag){
             case Constants.POPULAR:
@@ -63,7 +63,7 @@ public class UriHelper {
     }
 
     public static Uri getImageUri(String imagePath, String imageSize){
-        MLog.v(LOG_TAG, "getImageUri()");
+        MovieAppLogger.v(LOG_TAG, "getImageUri()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("image.tmdb.org")
@@ -76,7 +76,7 @@ public class UriHelper {
     }
 
     public static Uri getMovieUriById(String id){
-        MLog.v(LOG_TAG, "getMovieUriById()");
+        MovieAppLogger.v(LOG_TAG, "getMovieUriById()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("api.themoviedb.org")
@@ -88,7 +88,7 @@ public class UriHelper {
     }
 
     public static Uri getMovieTrailerUriById(String id){
-        MLog.v(LOG_TAG, "getMovieTrailerUriById()");
+        MovieAppLogger.v(LOG_TAG, "getMovieTrailerUriById()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("api.themoviedb.org")
@@ -100,8 +100,34 @@ public class UriHelper {
                 .build();
     }
 
+    public static Uri getMovieReviewsUri(String id){
+        MovieAppLogger.v(LOG_TAG, "getMovieReviewsUri()");
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(id)
+                .appendPath("reviews")
+                .appendQueryParameter("api_key", API_KEY)
+                .build();
+    }
+    public static Uri getMovieReviewsUriForPage(String id, String page){
+        MovieAppLogger.v(LOG_TAG, "getMovieReviewsUri()");
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(id)
+                .appendPath("reviews")
+                .appendQueryParameter("page", page)
+                .appendQueryParameter("api_key", API_KEY)
+                .build();
+    }
+
     public static Uri getYouTubeLinkToPlay(String id){
-        MLog.v(LOG_TAG, "getYouTubeLinkToPlay()");
+        MovieAppLogger.v(LOG_TAG, "getYouTubeLinkToPlay()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("youtube.com")
@@ -111,7 +137,7 @@ public class UriHelper {
     }
 
     public static Uri getYouTubeTrailerPreviewLink(String trailer_id){
-        MLog.v(LOG_TAG, "getYouTubeTrailerPreviewLink()");
+        MovieAppLogger.v(LOG_TAG, "getYouTubeTrailerPreviewLink()");
         return new Uri.Builder()
                 .scheme("https")
                 .authority("i1.ytimg.com")

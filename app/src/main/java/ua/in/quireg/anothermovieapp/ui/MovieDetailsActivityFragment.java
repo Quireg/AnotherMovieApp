@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -96,6 +97,15 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
         //Trailers
         movie_trailer_linear_layout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout);
         new MovieTrailersProvider().fetchTrailersList(movie, this);
+
+        //Reviews
+        Button reviewsButton = (Button)view.findViewById(R.id.reviews_button);
+        reviewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFragmentMessage(Constants.OPEN_REVIEWS, movie);
+            }
+        });
 
         return view;
     }

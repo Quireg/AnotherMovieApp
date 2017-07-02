@@ -157,6 +157,15 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/movie_trailers_layout"/>
 
+            <Button
+                android:id="@+id/reviews_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/black_line3"
+                android:text="@string/ui_details_reviews_button_title"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
+
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 

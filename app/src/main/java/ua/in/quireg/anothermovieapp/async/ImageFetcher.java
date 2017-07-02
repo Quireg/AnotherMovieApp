@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
-import ua.in.quireg.anothermovieapp.common.MLog;
+import ua.in.quireg.anothermovieapp.common.MovieAppLogger;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 
 public class ImageFetcher extends AsyncTask<Uri, Void, Bitmap> {
@@ -28,7 +28,7 @@ public class ImageFetcher extends AsyncTask<Uri, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(Uri... params) {
         try {
-            MLog.d(LOG_TAG, "Fetching: " + params[0].toString());
+            MovieAppLogger.d(LOG_TAG, "Fetching: " + params[0].toString());
             return Picasso.with(mContext).load(params[0]).get();
         } catch (IOException e) {
             e.printStackTrace();

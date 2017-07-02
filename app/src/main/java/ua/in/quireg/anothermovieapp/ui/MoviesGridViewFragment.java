@@ -22,7 +22,6 @@ import ua.in.quireg.anothermovieapp.adapters.CursorRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.adapters.MovieRecyclerViewAdapter;
 import ua.in.quireg.anothermovieapp.common.Constants;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
-import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 
 public abstract class MoviesGridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -50,7 +49,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
         mContext = getContext();
         fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
         recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_UPDATES_FILTER));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_MOVIE_UPDATES_FILTER));
         fetchNewItems();
     }
 
@@ -157,7 +156,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
             pageNumberAndTotal.setVisibility(View.GONE);
         }else{
             pageNumberAndTotal.setVisibility(View.VISIBLE);
-            pageNumberAndTotal.setText((getCurrentPosition() + 1) + "/" + getTotalItems());
+            pageNumberAndTotal.setText((getCurrentPosition() + 2) + "/" + getTotalItems());
         }
     }
 

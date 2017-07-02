@@ -1,5 +1,6 @@
 package ua.in.quireg.anothermovieapp.activities;
 
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -19,7 +20,9 @@ import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
+import ua.in.quireg.anothermovieapp.services.SyncReviewsService;
 import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
+import ua.in.quireg.anothermovieapp.ui.MovieReviewFragment;
 
 public class MovieActivity extends AppCompatActivity implements FetchImageCallback, OnFragmentInteractionListener{
 
@@ -32,15 +35,6 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
         setContentView(R.layout.activity_movie_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MovieItem movie = (MovieItem) getIntent().getExtras().getSerializable(Constants.MOVIE);
@@ -81,6 +75,15 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
                         null,
                         null
                 );
+                break;
+            case Constants.OPEN_REVIEWS:
+                MovieReviewFragment movieReviewFragment = MovieReviewFragment.newInstance(item.getId());
+                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, movieReviewFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                SyncReviewsService.startActionFetchReviews(this, String.valueOf(item.getId()));
+                break;
         }
     }
 }

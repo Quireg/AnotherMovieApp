@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.Constants;
-import ua.in.quireg.anothermovieapp.common.MLog;
+import ua.in.quireg.anothermovieapp.common.MovieAppLogger;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
@@ -52,7 +52,7 @@ public class MovieRecyclerViewAdapter extends CursorRecyclerViewAdapter<Recycler
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, Cursor cursor) {
-        MLog.v(LOG_TAG, "onBindViewHolder()");
+        MovieAppLogger.v(LOG_TAG, "onBindViewHolder()");
 
 
             MovieItem movie = MovieItem.fromCursor(cursor);
