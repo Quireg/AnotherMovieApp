@@ -35,7 +35,7 @@ public class MovieReviewsRecyclerViewAdapter extends CursorRecyclerViewAdapter<R
         MovieAppLogger.v(LOG_TAG, "onCreateViewHolder()");
         Context appContext = parent.getContext();
         View view = LayoutInflater.from(appContext)
-                .inflate(R.layout.fragment_movie_review, parent, false);
+                .inflate(R.layout.fragment_movie_review_item, parent, false);
 
         return new MovieReviewViewHolder(view);
     }

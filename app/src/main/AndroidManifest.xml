@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:hardwareAccelerated="true"
         android:name=".activities.AnotherMovieApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,14 +39,17 @@
         <provider
             android:authorities="ua.in.quireg.anothermovieapp.app"
             android:multiprocess="true"
-            android:name="ua.in.quireg.anothermovieapp.managers.MovieAppContentProvider"></provider>
-
+            android:name="ua.in.quireg.anothermovieapp.managers.MovieAppContentProvider"
+            android:exported="false">
+        </provider>
         <service
             android:name=".services.SyncMovieService"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
         <service
             android:name=".services.SyncReviewsService"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

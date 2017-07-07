@@ -20,6 +20,7 @@
     <string name="ui_details_rating_value">%1$s/10</string>
     <string name="ui_details_trailer_quality">%1$sp</string>
     <string name="ui_details_reviews_button_title">Show user reviews</string>
+    <string name="ui_review_author_title">Author:</string>
 
 
 

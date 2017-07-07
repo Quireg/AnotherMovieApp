@@ -4,9 +4,11 @@ import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.async.ImageFetcher;
 import ua.in.quireg.anothermovieapp.common.Constants;
+import ua.in.quireg.anothermovieapp.common.GeneralUtils;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
@@ -42,6 +45,14 @@ public class MovieActivity extends AppCompatActivity implements FetchImageCallba
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(movie.getTitle());
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                //some other code here
+                ViewCompat.setElevation(appBarLayout, GeneralUtils.dipToPixels(getApplicationContext(), 6));
+            }
+        });
         collapsingToolbarImageView = (ImageView) findViewById(R.id.toolbar_imageview);
 
         new ImageFetcher(this, getApplicationContext()).execute(UriHelper.getImageUri(movie.getBackdropPath(), Constants.IMAGE_SIZE_ORIGINAL));
