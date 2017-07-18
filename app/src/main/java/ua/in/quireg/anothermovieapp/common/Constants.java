@@ -33,4 +33,12 @@ public class Constants {
     public static final String REMOVE_FROM_FAVOURITES = "remove_from_favourites";
     public static final String OPEN_REVIEWS = "open_reviews";
 
+    //favourites fragment sorting
+    public static final String SORT_ORDER = "sort_order";
+    public static final int SORT_BY_NAME = 0;
+    public static final int SORT_BY_RELEASE_DATE = 1;
+    public static final int SORT_BY_RATING = 2;
+    public static final int SORT_BY_VOTES_COUNT = 3;
+
+
 }

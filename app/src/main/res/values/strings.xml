@@ -22,6 +22,11 @@
     <string name="ui_details_reviews_button_title">Show user reviews</string>
     <string name="ui_review_author_title">Author:</string>
 
-
-
+    <string name="ui_favourites_sort_order">Sort by</string>
+    <string-array name="sort_orders_array">
+        <item>Name</item>
+        <item>Release Date</item>
+        <item>Rating</item>
+        <item>Votes Count</item>
+    </string-array>
 </resources>
