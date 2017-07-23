@@ -27,19 +27,38 @@ import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 
 public class FavouritesMoviesGridViewFragment extends MoviesGridViewFragment {
+
     private static final int FAVOURITE_MOVIE_LOADER = 2;
     private static final int DIALOG_FRAGMENT = 1;
 
-    protected boolean fetchInProgress = false;
-    protected long last_loaded_page = 0;
-    protected long currentItem = 0;
-    protected long totalItems = 0;
+    private boolean mFetchInProgress = false;
+    private long mLastLoadedPage = 0;
+    private long mCurrentItem = 0;
+    private long mTotalItems = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            super.onCreate(savedInstanceState);
+            mFetchInProgress = savedInstanceState.getBoolean(FETCH_IN_PROGRESS, false);
+            mLastLoadedPage = savedInstanceState.getLong(LAST_LOADED_PAGE, 0);
+            mCurrentItem = savedInstanceState.getLong(CURRENT_ITEM, 0);
+            mTotalItems = savedInstanceState.getLong(TOTAL_ITEMS, 0);
+        }
         setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putBoolean(FETCH_IN_PROGRESS, mFetchInProgress);
+        bundle.putLong(LAST_LOADED_PAGE, mLastLoadedPage);
+        bundle.putLong(CURRENT_ITEM, mCurrentItem);
+        bundle.putLong(TOTAL_ITEMS, mTotalItems);
+    }
+
+
 
     @Override
     public void onCreateOptionsMenu(
@@ -68,12 +87,12 @@ public class FavouritesMoviesGridViewFragment extends MoviesGridViewFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setTotalItems(recyclerViewAdapter.getItemCount());
+        setmTotalItems(recyclerViewAdapter.getItemCount());
         recyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                setTotalItems(recyclerViewAdapter.getItemCount());
+                setmTotalItems(recyclerViewAdapter.getItemCount());
                 if (recyclerViewAdapter.getItemCount() > 0) {
                     noFavouritesMoviesView.setVisibility(View.GONE);
                 } else {
@@ -169,42 +188,36 @@ public class FavouritesMoviesGridViewFragment extends MoviesGridViewFragment {
 
     @Override
     protected long getCurrentPosition() {
-        return this.currentItem;
+        return this.mCurrentItem;
     }
 
     @Override
     protected void setCurrentPosition(long position) {
-        this.currentItem = position;
+        this.mCurrentItem = position;
     }
 
-    @Override
-    protected boolean isFetchInProgress() {
-        return this.fetchInProgress;
+    protected boolean ismFetchInProgress() {
+        return this.mFetchInProgress;
     }
 
-    @Override
-    protected void setFetchInProgress(boolean fetchInProgress) {
-        this.fetchInProgress = fetchInProgress;
+    protected void setmFetchInProgress(boolean mFetchInProgress) {
+        this.mFetchInProgress = mFetchInProgress;
     }
 
-    @Override
-    protected long getLast_loaded_page() {
-        return this.last_loaded_page;
+    protected long getmLastLoadedPage() {
+        return this.mLastLoadedPage;
     }
 
-    @Override
-    protected void setLast_loaded_page(long last_loaded_page) {
-        this.last_loaded_page = last_loaded_page;
+    protected void setmLastLoadedPage(long mLastLoadedPage) {
+        this.mLastLoadedPage = mLastLoadedPage;
     }
 
-    @Override
-    protected long getTotalItems() {
-        return this.totalItems;
+    protected long getmTotalItems() {
+        return this.mTotalItems;
     }
 
-    @Override
-    protected void setTotalItems(long totalItems) {
-        this.totalItems = totalItems;
+    protected void setmTotalItems(long mTotalItems) {
+        this.mTotalItems = mTotalItems;
     }
 
     @Override

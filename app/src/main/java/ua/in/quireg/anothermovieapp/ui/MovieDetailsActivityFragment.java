@@ -3,9 +3,6 @@ package ua.in.quireg.anothermovieapp.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -24,26 +22,25 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import ua.in.quireg.anothermovieapp.R;
-import ua.in.quireg.anothermovieapp.async.ImageFetcher;
 import ua.in.quireg.anothermovieapp.common.Constants;
-import ua.in.quireg.anothermovieapp.common.GeneralUtils;
 import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.common.MovieTrailer;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.interfaces.FetchImageCallback;
 import ua.in.quireg.anothermovieapp.interfaces.FetchTrailersCallback;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.managers.MovieTrailersProvider;
 
 
-public class MovieDetailsActivityFragment extends Fragment implements FetchImageCallback, FetchTrailersCallback {
+public class MovieDetailsActivityFragment extends Fragment implements FetchTrailersCallback {
     private static final String LOG_TAG = MovieDetailsActivityFragment.class.getSimpleName();
     private View view;
     private MovieItem movie;
     private OnFragmentInteractionListener mListener;
-    private FloatingActionButton floatingActionButton;
-    private LinearLayout movie_trailer_linear_layout;
+    private FloatingActionButton mFloatingActionButton;
+    private LinearLayout mMovieTrailerLinearLayout;
+    private LinearLayout mMovieNoTrailersLinearLayout;
+    private View mBlackLineUnderTrailerView;
 
     public MovieDetailsActivityFragment() {
     }
@@ -54,10 +51,10 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
         view = inflater.inflate(R.layout.fragment_movie_details, container, false);
         movie = (MovieItem) getArguments().getSerializable(Constants.MOVIE);
 
-        floatingActionButton = (FloatingActionButton) container.getRootView().findViewById(R.id.fab);
+        mFloatingActionButton = (FloatingActionButton) container.getRootView().findViewById(R.id.fab);
         updateFloatingActionBar();
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isFavourite(movie)) {
@@ -81,11 +78,12 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
             String movie_rating_text = String.format(getResources().getString(R.string.ui_details_rating_value), decimalFormat.format(movie.getVote_average()));
             movie_rating.setText(movie_rating_text);
         }
-        new ImageFetcher(this, getContext())
-                .execute(
-                        UriHelper.getImageUri(movie.getPosterPath(),
-                                Constants.IMAGE_SIZE_W185)
-                );
+        ImageView movie_poster = (ImageView) view.findViewById(R.id.movie_poster);
+        Uri uri = UriHelper.getImageUri(movie.getPosterPath(),
+                Constants.IMAGE_SIZE_W185);
+
+        Picasso.with(getContext()).load(uri).into(movie_poster);
+
 
         TextView movie_original_title_textview = (TextView) view.findViewById(R.id.original_title_textview_text);
         TextView movie_release_date_textview = (TextView) view.findViewById(R.id.movie_year);
@@ -95,8 +93,10 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
         movie_votecount_textview.setText(String.valueOf(movie.getVoteCount()));
 
         //Trailers
-        movie_trailer_linear_layout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout);
+        mMovieTrailerLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout);
         new MovieTrailersProvider().fetchTrailersList(movie, this);
+        mMovieNoTrailersLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout_no_trailers);
+        mBlackLineUnderTrailerView = view.findViewById(R.id.black_line3);
 
         //Reviews
         Button reviewsButton = (Button)view.findViewById(R.id.reviews_button);
@@ -108,15 +108,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
         });
 
         return view;
-    }
-
-    @Override
-    public void setImage(Bitmap bitmap) {
-        if (view != null && isAdded()) {
-            Drawable background = new BitmapDrawable(getResources(), bitmap);
-            ImageView movie_poster = (ImageView) view.findViewById(R.id.movie_poster);
-            movie_poster.setImageDrawable(background);
-        }
     }
 
     @Override
@@ -158,18 +149,21 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
 
     private void updateFloatingActionBar() {
         if (isFavourite(movie)) {
-            floatingActionButton.setImageResource(android.R.drawable.star_big_on);
+            mFloatingActionButton.setImageResource(android.R.drawable.star_big_on);
         } else {
-            floatingActionButton.setImageResource(android.R.drawable.star_big_off);
+            mFloatingActionButton.setImageResource(android.R.drawable.star_big_off);
         }
     }
 
     @Override
     public void onTrailersFetchCompleted(List<MovieTrailer> trailers) {
+        if(!isAdded() || trailers.isEmpty()){
+            return;
+        }
         for (final MovieTrailer trailer : trailers) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View single_trailer_view = inflater.inflate(R.layout.movie_trailer_list_item, movie_trailer_linear_layout, false);
+            View single_trailer_view = inflater.inflate(R.layout.movie_trailer_list_item, mMovieTrailerLinearLayout, false);
 
             TextView trailer_name = (TextView) single_trailer_view.findViewById(R.id.trailer_title);
             TextView trailer_quality = (TextView) single_trailer_view.findViewById(R.id.trailer_quality);
@@ -186,7 +180,17 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchImage
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 }
             });
-            movie_trailer_linear_layout.addView(single_trailer_view);
+            mMovieTrailerLinearLayout.addView(single_trailer_view);
         }
+
+        //Remove "no trailers view" and add trailers layout
+        mMovieNoTrailersLinearLayout.setVisibility(View.GONE);
+        mMovieTrailerLinearLayout.setVisibility(View.VISIBLE);
+
+        //Set layout_below for black line under trailer view to a trailers layout.
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) mBlackLineUnderTrailerView.getLayoutParams();
+        p.addRule(RelativeLayout.BELOW, R.id.movie_trailers_layout);
+        mBlackLineUnderTrailerView.setLayoutParams(p);
+
     }
 }

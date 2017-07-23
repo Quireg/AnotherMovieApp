@@ -30,7 +30,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     protected int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
-    private String fragmentTag;
+    private String mFragmentTag;
 
     protected View loadingView = null;
     protected View progressBarView = null;
@@ -38,6 +38,11 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     protected TextView pageNumberAndTotal = null;
 
     private final int LOAD_ITEMS_THRESHOLD = 10;
+
+    public static final String FETCH_IN_PROGRESS = "mFetchInProgress";
+    public static final String LAST_LOADED_PAGE = "mLastLoadedPage";
+    public static final String CURRENT_ITEM = "mCurrentItem";
+    public static final String TOTAL_ITEMS = "mTotalItems";
 
     public MoviesGridViewFragment() {
     }
@@ -47,8 +52,8 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
-        fragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
-        recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, fragmentTag);
+        mFragmentTag = (String) getArguments().getSerializable(Constants.FRAGMENT_TAG);
+        recyclerViewAdapter = new MovieRecyclerViewAdapter(getActivity(), null, 0, mFragmentTag);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver((mMessageReceiver), new IntentFilter(Constants.SYNC_MOVIE_UPDATES_FILTER));
         fetchNewItems();
     }
@@ -68,7 +73,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
         // Set the adapter
         final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), Constants.COLUMNS_NUMBER);
         recyclerView.setLayoutManager(layoutManager);
-        setCurrentPosition(layoutManager.findFirstCompletelyVisibleItemPosition());
+        setCurrentPosition(layoutManager.findLastVisibleItemPosition());
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -82,7 +87,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
                 //scrolled down
                 if (dy > 0) {
 
-                    setCurrentPosition(layoutManager.findFirstCompletelyVisibleItemPosition());
+                    setCurrentPosition(((GridLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition());
                     updateAdapterInfoTextView();
 
                     int itemsInAdapter = recyclerView.getAdapter().getItemCount();
@@ -91,7 +96,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
                         fetchNewItems();
                     }
                 } else if (dy < 0) {
-                    setCurrentPosition(layoutManager.findFirstCompletelyVisibleItemPosition());
+                    setCurrentPosition(((GridLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition());
                     updateAdapterInfoTextView();
                 }
             }
@@ -105,7 +110,7 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
         if(progressBarView == null){
             return;
         }
-        if(isFetchInProgress()){
+        if(ismFetchInProgress()){
             progressBarView.setVisibility(View.VISIBLE);
         }else{
             progressBarView.setVisibility(View.GONE);
@@ -152,11 +157,11 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
     }
 
     protected void updateAdapterInfoTextView() {
-        if(getTotalItems() == 0){
+        if(getmTotalItems() == 0){
             pageNumberAndTotal.setVisibility(View.GONE);
         }else{
             pageNumberAndTotal.setVisibility(View.VISIBLE);
-            pageNumberAndTotal.setText((getCurrentPosition() + 2) + "/" + getTotalItems());
+            pageNumberAndTotal.setText((getCurrentPosition() + 1) + "/" + getmTotalItems());
         }
     }
 
@@ -164,15 +169,15 @@ public abstract class MoviesGridViewFragment extends Fragment implements LoaderM
 
     protected abstract void setCurrentPosition(long position);
 
-    protected abstract boolean isFetchInProgress();
+    protected abstract boolean ismFetchInProgress();
 
-    protected abstract void setFetchInProgress(boolean fetchInProgress);
+    protected abstract void setmFetchInProgress(boolean mFetchInProgress);
 
-    protected abstract long getLast_loaded_page();
+    protected abstract long getmLastLoadedPage();
 
-    protected abstract void setLast_loaded_page(long last_loaded_page);
+    protected abstract void setmLastLoadedPage(long mLastLoadedPage);
 
-    protected abstract long getTotalItems();
+    protected abstract long getmTotalItems();
 
-    protected abstract void setTotalItems(long totalItems);
+    protected abstract void setmTotalItems(long mTotalItems);
 }

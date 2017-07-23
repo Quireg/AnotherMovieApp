@@ -117,6 +117,7 @@ public class SyncReviewsService extends IntentService {
                                 } finally {
                                     Intent fetchCompletedIntent = new Intent(Constants.SYNC_REVIEWS_UPDATES_FILTER);
                                     fetchCompletedIntent.putExtra(Constants.SYNC_STATUS, Constants.SYNC_COMPLETED);
+                                    fetchCompletedIntent.putExtra(Constants.FRAGMENT_TAG, Constants.REVIEWS);
                                     fetchCompletedIntent.putExtra(Constants.TOTAL_PAGES, totalPages);
                                     fetchCompletedIntent.putExtra(Constants.LOADED_PAGE, page);
                                     LocalBroadcastManager.getInstance(SyncReviewsService.this).sendBroadcast(fetchCompletedIntent);
@@ -131,6 +132,8 @@ public class SyncReviewsService extends IntentService {
                     public void onErrorResponse(VolleyError error) {
                         Intent fetchFailedIntent = new Intent(Constants.SYNC_REVIEWS_UPDATES_FILTER);
                         fetchFailedIntent.putExtra(Constants.SYNC_STATUS, Constants.SYNC_FAILED);
+                        fetchFailedIntent.putExtra(Constants.FRAGMENT_TAG, Constants.REVIEWS);
+
                         LocalBroadcastManager.getInstance(SyncReviewsService.this).sendBroadcast(fetchFailedIntent);
                     }
                 });

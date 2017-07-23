@@ -5,6 +5,7 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:layout_width="match_parent"
     android:layout_height="48dp"
+    android:layout_marginTop="10dp"
     android:weightSum="7"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
@@ -16,7 +17,6 @@
         android:layout_height="match_parent"
         android:id="@+id/trailer_preview"
         android:scaleType="fitXY"
-        android:layout_marginTop="4dp"
         android:layout_weight="1" />
 
     <TextView

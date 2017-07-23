@@ -1,7 +1,6 @@
 package ua.in.quireg.anothermovieapp.ui;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,14 +24,30 @@ import ua.in.quireg.anothermovieapp.services.SyncMovieService;
 public class PopularMoviesGridViewFragment extends MoviesGridViewFragment {
     private static final int POPULAR_MOVIE_LOADER = 1;
 
-    protected boolean fetchInProgress = false;
-    protected long last_loaded_page = 0;
-    protected long currentItem = 0;
-    protected long totalItems = 0;
+    protected boolean mFetchInProgress = false;
+    protected long mLastLoadedPage = 0;
+    protected long mCurrentItem = 0;
+    protected long mTotalItems = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            super.onCreate(savedInstanceState);
+            mFetchInProgress = savedInstanceState.getBoolean(FETCH_IN_PROGRESS, false);
+            mLastLoadedPage = savedInstanceState.getLong(LAST_LOADED_PAGE, 0);
+            mCurrentItem = savedInstanceState.getLong(CURRENT_ITEM, 0);
+            mTotalItems = savedInstanceState.getLong(TOTAL_ITEMS, 0);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putBoolean(FETCH_IN_PROGRESS, mFetchInProgress);
+        bundle.putLong(LAST_LOADED_PAGE, mLastLoadedPage);
+        bundle.putLong(CURRENT_ITEM, mCurrentItem);
+        bundle.putLong(TOTAL_ITEMS, mTotalItems);
     }
 
     @Override
@@ -93,12 +108,12 @@ public class PopularMoviesGridViewFragment extends MoviesGridViewFragment {
         if(!msg.getStringExtra(Constants.FRAGMENT_TAG).equals(Constants.POPULAR)){
             return;
         }
-        setFetchInProgress(false);
+        setmFetchInProgress(false);
         updateProgressBarVisibility();
         switch (msg.getStringExtra(Constants.SYNC_STATUS)) {
             case Constants.SYNC_COMPLETED:
-                setTotalItems(msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0));
-                setLast_loaded_page(msg.getLongExtra(Constants.LOADED_PAGE, 0));
+                setmTotalItems(msg.getLongExtra(Constants.TOTAL_ITEMS_LOADED, 0));
+                setmLastLoadedPage(msg.getLongExtra(Constants.LOADED_PAGE, 0));
                 break;
             case Constants.SYNC_FAILED:
                 GeneralUtils.showToastMessage(getContext(), getString(R.string.error_fetch_failed));
@@ -109,52 +124,46 @@ public class PopularMoviesGridViewFragment extends MoviesGridViewFragment {
     }
 
     public void fetchNewItems(){
-        if(isFetchInProgress()){
+        if(ismFetchInProgress()){
             return;
         }
-        long pageToLoad = getLast_loaded_page() + 1;
-        setFetchInProgress(true);
+        long pageToLoad = getmLastLoadedPage() + 1;
+        setmFetchInProgress(true);
         updateProgressBarVisibility();
         SyncMovieService.startActionFetchMovies(getContext(), Constants.POPULAR, pageToLoad + "");
     }
 
     @Override
     protected long getCurrentPosition() {
-        return this.currentItem;
+        return this.mCurrentItem;
     }
 
     @Override
     protected void setCurrentPosition(long position) {
-        this.currentItem = position;
+        this.mCurrentItem = position;
     }
 
-    @Override
-    protected boolean isFetchInProgress() {
-        return this.fetchInProgress;
+    protected boolean ismFetchInProgress() {
+        return this.mFetchInProgress;
     }
 
-    @Override
-    protected void setFetchInProgress(boolean fetchInProgress) {
-        this.fetchInProgress = fetchInProgress;
+    protected void setmFetchInProgress(boolean mFetchInProgress) {
+        this.mFetchInProgress = mFetchInProgress;
     }
 
-    @Override
-    protected long getLast_loaded_page() {
-        return this.last_loaded_page;
+    protected long getmLastLoadedPage() {
+        return this.mLastLoadedPage;
     }
 
-    @Override
-    protected void setLast_loaded_page(long last_loaded_page) {
-        this.last_loaded_page = last_loaded_page;
+    protected void setmLastLoadedPage(long mLastLoadedPage) {
+        this.mLastLoadedPage = mLastLoadedPage;
     }
 
-    @Override
-    protected long getTotalItems() {
-        return this.totalItems;
+    protected long getmTotalItems() {
+        return this.mTotalItems;
     }
 
-    @Override
-    protected void setTotalItems(long totalItems) {
-        this.totalItems = totalItems;
+    protected void setmTotalItems(long mTotalItems) {
+        this.mTotalItems = mTotalItems;
     }
 }

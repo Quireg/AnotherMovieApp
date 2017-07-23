@@ -10,6 +10,7 @@ public class Constants {
     public static final String POPULAR = "POPULAR";
     public static final String TOP_RATED = "TOP_RATED";
     public static final String FAVOURITES = "FAVOURITES";
+    public static final String REVIEWS = "REVIEWS";
     public static final String MOVIE = "movie_bundle";
 
     public static final String SYNC_MOVIE_UPDATES_FILTER = "ua.in.quireg.anothermovieapp.SYNC_MOVIE_UPDATES_FILTER";
