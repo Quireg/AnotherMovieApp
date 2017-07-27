@@ -15,7 +15,6 @@
         android:layout_height="250dp"
         android:minHeight="?attr/actionBarSize"
         android:background="@android:color/white"
-        android:elevation="40dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 
@@ -65,7 +64,6 @@
 
     <FrameLayout
         android:id="@+id/container"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

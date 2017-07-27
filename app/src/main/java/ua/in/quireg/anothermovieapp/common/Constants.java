@@ -28,6 +28,8 @@ public class Constants {
 
     public static final String IMAGE_SIZE_ORIGINAL = "original";
     public static final String IMAGE_SIZE_W185 = "w185";
+    public static final String IMAGE_SIZE_W300 = "w300";
+    public static final String IMAGE_SIZE_W780 = "w780";
 
     //fragment interaction
     public static final String ADD_TO_FAVOURITES = "add_to_favourites";

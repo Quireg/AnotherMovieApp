@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -40,7 +39,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
     private FloatingActionButton mFloatingActionButton;
     private LinearLayout mMovieTrailerLinearLayout;
     private LinearLayout mMovieNoTrailersLinearLayout;
-    private View mBlackLineUnderTrailerView;
 
     public MovieDetailsActivityFragment() {
     }
@@ -96,7 +94,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
         mMovieTrailerLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout);
         new MovieTrailersProvider().fetchTrailersList(movie, this);
         mMovieNoTrailersLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout_no_trailers);
-        mBlackLineUnderTrailerView = view.findViewById(R.id.black_line3);
 
         //Reviews
         Button reviewsButton = (Button)view.findViewById(R.id.reviews_button);
@@ -186,11 +183,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
         //Remove "no trailers view" and add trailers layout
         mMovieNoTrailersLinearLayout.setVisibility(View.GONE);
         mMovieTrailerLinearLayout.setVisibility(View.VISIBLE);
-
-        //Set layout_below for black line under trailer view to a trailers layout.
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) mBlackLineUnderTrailerView.getLayoutParams();
-        p.addRule(RelativeLayout.BELOW, R.id.movie_trailers_layout);
-        mBlackLineUnderTrailerView.setLayoutParams(p);
 
     }
 }

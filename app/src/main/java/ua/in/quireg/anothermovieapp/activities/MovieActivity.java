@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,8 @@ import ua.in.quireg.anothermovieapp.ui.MovieReviewFragment;
 
 public class MovieActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
+    private AppBarLayout appBarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +41,16 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
 
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(movie.getTitle());
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-               ViewCompat.setElevation(appBarLayout, GeneralUtils.dipToPixels(getApplicationContext(), 6));
+               ViewCompat.setElevation(appBarLayout, GeneralUtils.dipToPixels(getApplicationContext(), 4));
             }
         });
+
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        ViewCompat.setElevation(fab, GeneralUtils.dipToPixels(getApplicationContext(), 6));
 
         ImageView collapsingToolbarImageView = (ImageView) findViewById(R.id.toolbar_imageview);
         Uri imageUri = UriHelper.getImageUri(movie.getBackdropPath(), Constants.IMAGE_SIZE_ORIGINAL);
@@ -79,6 +85,9 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
                 transaction.replace(R.id.container, movieReviewFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+
+                //Expand toolbar for better user experience
+                appBarLayout.setExpanded(true);
                 SyncReviewsService.startActionFetchReviews(this, String.valueOf(item.getId()));
                 break;
         }
