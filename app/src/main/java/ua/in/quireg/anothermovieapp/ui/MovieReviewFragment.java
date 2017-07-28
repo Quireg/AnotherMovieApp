@@ -32,6 +32,10 @@ public class MovieReviewFragment extends Fragment implements LoaderManager.Loade
     private static final int MOVIE_REVIEW_LOADER = 4;
     private final int LOAD_ITEMS_THRESHOLD = 2;
 
+    public static final String FETCH_IN_PROGRESS = "mFetchInProgress";
+    public static final String LAST_LOADED_PAGE = "mLastLoadedPage";
+    public static final String TOTAL_REVIEW_PAGES = "mTotalReviewPages";
+
     private long mMovieId;
     private boolean mFetchInProgress = false;
     private long mLastLoadedPage = 0;
@@ -41,6 +45,14 @@ public class MovieReviewFragment extends Fragment implements LoaderManager.Loade
 
 
     public MovieReviewFragment() {
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putBoolean(FETCH_IN_PROGRESS, mFetchInProgress);
+        bundle.putLong(LAST_LOADED_PAGE, mLastLoadedPage);
+        bundle.putLong(TOTAL_REVIEW_PAGES, mTotalReviewPages);
     }
 
     @SuppressWarnings("unused")
@@ -55,6 +67,12 @@ public class MovieReviewFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            super.onCreate(savedInstanceState);
+            mFetchInProgress = savedInstanceState.getBoolean(FETCH_IN_PROGRESS, false);
+            mLastLoadedPage = savedInstanceState.getLong(LAST_LOADED_PAGE, 0);
+            mTotalReviewPages = savedInstanceState.getLong(TOTAL_REVIEW_PAGES, 1);
+        }
         if (getArguments() != null) {
             mMovieId = getArguments().getLong(Constants.MOVIE);
         }

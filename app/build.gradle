@@ -1,6 +1,17 @@
 apply plugin: 'com.android.application'
+def keystorePropertiesFile = rootProject.file("keystore.secrets");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
@@ -38,8 +49,7 @@ def getYouTubeApiKey() {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
-    testCompile(group: 'org.json', name: 'json', version: '20140107') {
+    testCompile('org.json:json:20140107') {
         force = true
     }
     compile 'com.android.support:support-core-utils:25.4.0'
