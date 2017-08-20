@@ -10,3 +10,4 @@
 .idea
 /.idea
 secrets.properties
+keystore.secrets

@@ -35,6 +35,7 @@ public class MovieDetailsFragment extends Fragment implements FetchTrailersCallb
     private static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
     private View view;
     private MovieItem movie;
+
     private OnFragmentInteractionListener mListener;
     private FloatingActionButton mFloatingActionButton;
     private LinearLayout mMovieTrailerLinearLayout;
@@ -46,8 +47,8 @@ public class MovieDetailsFragment extends Fragment implements FetchTrailersCallb
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        movie = (MovieItem) getArguments().getSerializable(Constants.MOVIE);
+        View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
+        mMovie = (MovieItem) getArguments().getSerializable(Constants.MOVIE);
 
         mFloatingActionButton = (FloatingActionButton) container.getRootView().findViewById(R.id.fab);
         updateFloatingActionBar();
@@ -55,28 +56,28 @@ public class MovieDetailsFragment extends Fragment implements FetchTrailersCallb
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isFavourite(movie)) {
-                    mListener.onFragmentMessage(Constants.ADD_TO_FAVOURITES, movie);
+                if (!isFavourite(mMovie)) {
+                    mListener.onFragmentMessage(Constants.ADD_TO_FAVOURITES, mMovie);
                 } else {
-                    mListener.onFragmentMessage(Constants.REMOVE_FROM_FAVOURITES, movie);
+                    mListener.onFragmentMessage(Constants.REMOVE_FROM_FAVOURITES, mMovie);
                 }
                 updateFloatingActionBar();
             }
         });
 
-        //Set movie description
+        //Set mMovie description
         TextView movie_description_textview = (TextView) view.findViewById(R.id.movie_description);
-        movie_description_textview.setText(movie.getOverview());
+        movie_description_textview.setText(mMovie.getOverview());
 
         //Set rating
-        if (movie.getVote_average() != 0) {
+        if (mMovie.getVote_average() != 0) {
             TextView movie_rating = (TextView) view.findViewById(R.id.movie_rating);
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            String movie_rating_text = String.format(getResources().getString(R.string.ui_details_rating_value), decimalFormat.format(movie.getVote_average()));
+            String movie_rating_text = String.format(getResources().getString(R.string.ui_details_rating_value), decimalFormat.format(mMovie.getVote_average()));
             movie_rating.setText(movie_rating_text);
         }
         ImageView movie_poster = (ImageView) view.findViewById(R.id.movie_poster);
-        Uri uri = UriHelper.getImageUri(movie.getPosterPath(),
+        Uri uri = UriHelper.getImageUri(mMovie.getPosterPath(),
                 Constants.IMAGE_SIZE_W185);
 
         Picasso.with(getContext()).load(uri).into(movie_poster);
@@ -85,21 +86,21 @@ public class MovieDetailsFragment extends Fragment implements FetchTrailersCallb
         TextView movie_original_title_textview = (TextView) view.findViewById(R.id.original_title_textview_text);
         TextView movie_release_date_textview = (TextView) view.findViewById(R.id.movie_year);
         TextView movie_votecount_textview = (TextView) view.findViewById(R.id.movie_vote_count);
-        movie_original_title_textview.setText(movie.getOriginalTitle());
-        movie_release_date_textview.setText(movie.getReleaseDate());
-        movie_votecount_textview.setText(String.valueOf(movie.getVoteCount()));
+        movie_original_title_textview.setText(mMovie.getOriginalTitle());
+        movie_release_date_textview.setText(mMovie.getReleaseDate());
+        movie_votecount_textview.setText(String.valueOf(mMovie.getVoteCount()));
 
         //Trailers
         mMovieTrailerLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout);
-        new MovieTrailersProvider().fetchTrailersList(movie, this);
+        new MovieTrailersProvider().fetchTrailersList(mMovie, this);
         mMovieNoTrailersLinearLayout = (LinearLayout) view.findViewById(R.id.movie_trailers_layout_no_trailers);
 
         //Reviews
-        Button reviewsButton = (Button)view.findViewById(R.id.reviews_button);
+        Button reviewsButton = (Button) view.findViewById(R.id.reviews_button);
         reviewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onFragmentMessage(Constants.OPEN_REVIEWS, movie);
+                mListener.onFragmentMessage(Constants.OPEN_REVIEWS, mMovie);
             }
         });
 
@@ -144,7 +145,7 @@ public class MovieDetailsFragment extends Fragment implements FetchTrailersCallb
     }
 
     private void updateFloatingActionBar() {
-        if (isFavourite(movie)) {
+        if (isFavourite(mMovie)) {
             mFloatingActionButton.setImageResource(android.R.drawable.star_big_on);
         } else {
             mFloatingActionButton.setImageResource(android.R.drawable.star_big_off);
