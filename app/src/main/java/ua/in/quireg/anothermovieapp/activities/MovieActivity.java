@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +34,7 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -60,7 +62,9 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
         MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
         movieDetailsFragment.setArguments(getIntent().getExtras());
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container, movieDetailsFragment, MovieDetailsFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.nested_scroll_frame, movieDetailsFragment, MovieDetailsFragment.class.getSimpleName())
+                .commit();
 
     }
 
@@ -82,10 +86,11 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
                 break;
             case Constants.OPEN_REVIEWS:
                 MovieReviewFragment movieReviewFragment = MovieReviewFragment.newInstance(item.getId());
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, movieReviewFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.nested_scroll_frame, movieReviewFragment)
+                        .addToBackStack(null)
+                        .commit();
 
                 //Expand toolbar for better user experience
                 appBarLayout.setExpanded(true);

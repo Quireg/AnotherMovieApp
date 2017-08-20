@@ -34,7 +34,7 @@ import ua.in.quireg.anothermovieapp.managers.MovieTrailersProvider;
 public class MovieDetailsFragment extends Fragment implements FetchTrailersCallback {
     private static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
     private View view;
-    private MovieItem movie;
+    private MovieItem mMovie;
 
     private OnFragmentInteractionListener mListener;
     private FloatingActionButton mFloatingActionButton;
