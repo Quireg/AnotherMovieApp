@@ -31,8 +31,8 @@ import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.managers.MovieTrailersProvider;
 
 
-public class MovieDetailsActivityFragment extends Fragment implements FetchTrailersCallback {
-    private static final String LOG_TAG = MovieDetailsActivityFragment.class.getSimpleName();
+public class MovieDetailsFragment extends Fragment implements FetchTrailersCallback {
+    private static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
     private View view;
     private MovieItem movie;
     private OnFragmentInteractionListener mListener;
@@ -40,7 +40,7 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
     private LinearLayout mMovieTrailerLinearLayout;
     private LinearLayout mMovieNoTrailersLinearLayout;
 
-    public MovieDetailsActivityFragment() {
+    public MovieDetailsFragment() {
     }
 
     @Override
@@ -63,7 +63,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
                 updateFloatingActionBar();
             }
         });
-        System.out.println(UriHelper.getMovieTrailerUriById(String.valueOf(movie.getId())));
 
         //Set movie description
         TextView movie_description_textview = (TextView) view.findViewById(R.id.movie_description);
@@ -179,7 +178,6 @@ public class MovieDetailsActivityFragment extends Fragment implements FetchTrail
             });
             mMovieTrailerLinearLayout.addView(single_trailer_view);
         }
-
         //Remove "no trailers view" and add trailers layout
         mMovieNoTrailersLinearLayout.setVisibility(View.GONE);
         mMovieTrailerLinearLayout.setVisibility(View.VISIBLE);

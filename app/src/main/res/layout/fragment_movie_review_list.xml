@@ -6,6 +6,8 @@
     android:name="ua.in.quireg.anothermovieapp.ui.MovieReviewFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="vertical"
     app:layoutManager="LinearLayoutManager"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ua.in.quireg.anothermovieapp.ui.MovieReviewFragment"
     tools:listitem="@layout/fragment_movie_review_item" />

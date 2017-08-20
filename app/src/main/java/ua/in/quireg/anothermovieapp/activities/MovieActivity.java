@@ -21,7 +21,7 @@ import ua.in.quireg.anothermovieapp.common.UriHelper;
 import ua.in.quireg.anothermovieapp.interfaces.OnFragmentInteractionListener;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract;
 import ua.in.quireg.anothermovieapp.services.SyncReviewsService;
-import ua.in.quireg.anothermovieapp.ui.MovieDetailsActivityFragment;
+import ua.in.quireg.anothermovieapp.ui.MovieDetailsFragment;
 import ua.in.quireg.anothermovieapp.ui.MovieReviewFragment;
 
 public class MovieActivity extends AppCompatActivity implements OnFragmentInteractionListener {
@@ -42,6 +42,7 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(movie.getTitle());
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        //Fix for elevation of appbar
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -50,16 +51,16 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
         });
 
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        ViewCompat.setElevation(fab, GeneralUtils.dipToPixels(getApplicationContext(), 6));
+        //ViewCompat.setElevation(fab, GeneralUtils.dipToPixels(getApplicationContext(), 6));
 
         ImageView collapsingToolbarImageView = (ImageView) findViewById(R.id.toolbar_imageview);
         Uri imageUri = UriHelper.getImageUri(movie.getBackdropPath(), Constants.IMAGE_SIZE_ORIGINAL);
         Picasso.with(getApplicationContext()).load(imageUri).into(collapsingToolbarImageView);
 
-        MovieDetailsActivityFragment movieDetailsActivityFragment = new MovieDetailsActivityFragment();
-        movieDetailsActivityFragment.setArguments(getIntent().getExtras());
+        MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+        movieDetailsFragment.setArguments(getIntent().getExtras());
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container, movieDetailsActivityFragment, MovieDetailsActivityFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container, movieDetailsFragment, MovieDetailsFragment.class.getSimpleName()).commit();
 
     }
 
