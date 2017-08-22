@@ -48,19 +48,14 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nested_scroll"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
-            android:id="@+id/nested_scroll_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
 
-    </android.support.v4.widget.NestedScrollView>
+    </FrameLayout>
 
 
     <android.support.design.widget.FloatingActionButton

@@ -63,7 +63,7 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
         movieDetailsFragment.setArguments(getIntent().getExtras());
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.nested_scroll_frame, movieDetailsFragment, MovieDetailsFragment.class.getSimpleName())
+                .add(R.id.container, movieDetailsFragment, MovieDetailsFragment.class.getSimpleName())
                 .commit();
 
     }
@@ -88,7 +88,7 @@ public class MovieActivity extends AppCompatActivity implements OnFragmentIntera
                 MovieReviewFragment movieReviewFragment = MovieReviewFragment.newInstance(item.getId());
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.nested_scroll_frame, movieReviewFragment)
+                        .replace(R.id.container, movieReviewFragment)
                         .addToBackStack(null)
                         .commit();
 
