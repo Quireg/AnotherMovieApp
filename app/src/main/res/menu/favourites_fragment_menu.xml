@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/sort_order"
-        android:icon="@mipmap/favourites_filter_icon"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/sort_icon"
+        app:showAsAction="always"
         android:orderInCategory="10"
         android:title="@string/ui_favourites_sort_order">
     </item>

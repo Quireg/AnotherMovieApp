@@ -1,43 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="DetailsTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
 
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
-        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Android built-in styles -->
+        <item name="android:windowBackground">@color/primaryLightColor</item>
+        <item name="android:colorBackground">@color/primaryColor</item>
+
+
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
-
-        <item name="android:textViewStyle">@style/ApplicationBarRobotoTextViewStyle</item>
-        <item name="android:buttonStyle">@style/ApplicationBarRobotoButtonStyle</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-    </style>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-
-    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif-light</item>
-    </style>
-
-    <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">
-        <item name="android:fontFamily">sans-serif-light</item>
-    </style>
-
-
-    <style name="ApplicationBarRobotoTextViewStyle" parent="RobotoTextViewStyle">
-        <item name="android:textColor">@color/colorAppBarText</item>
-    </style>
-
-    <style name="ApplicationBarRobotoButtonStyle" parent="RobotoButtonStyle">
-        <item name="android:textColor">@color/colorAppBarText</item>
+    <style name="ListTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="colorPrimaryDark">#8C000000</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
 </resources>

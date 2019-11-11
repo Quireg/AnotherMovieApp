@@ -7,25 +7,25 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class MovieDatabaseContract {
-    public static final String CONTENT_AUTHORITY = "ua.in.quireg.anothermovieapp.app";
+    static final String CONTENT_AUTHORITY = "ua.in.quireg.anothermovieapp.app";
 
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String PATH_MOVIE_ENTITY = "movie";
-    public static final String PATH_TOP_RATED_MOVIES = "top_rated_movies";
-    public static final String PATH_POPULAR_MOVIES = "popular_movies";
-    public static final String PATH_FAVOURITE_MOVIES = "favourite_movies";
-    public static final String PATH_MOVIE_REVIEWS = "movie_reviews";
+    static final String PATH_MOVIE_ENTITY = "movie";
+    static final String PATH_TOP_RATED_MOVIES = "top_rated_movies";
+    static final String PATH_POPULAR_MOVIES = "popular_movies";
+    static final String PATH_FAVOURITE_MOVIES = "favourite_movies";
+    static final String PATH_MOVIE_REVIEWS = "movie_reviews";
 
     public static final class MovieEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIE_ENTITY).build();
 
-        public static final String CONTENT_ITEM_TYPE =
+        static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE_ENTITY;
 
-        public static final String CONTENT_DIR_TYPE =
+        static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE_ENTITY;
 
         public static final String TABLE_NAME = "movie_entity";

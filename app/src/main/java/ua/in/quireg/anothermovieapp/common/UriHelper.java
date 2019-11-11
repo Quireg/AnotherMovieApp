@@ -49,6 +49,7 @@ public class UriHelper {
                         .appendQueryParameter("api_key", API_KEY)
                         .build();
             case Constants.TOP_RATED:
+            default:
                 return new Uri.Builder()
                         .scheme("https")
                         .authority("api.themoviedb.org")
@@ -59,7 +60,6 @@ public class UriHelper {
                         .appendQueryParameter("api_key", API_KEY)
                         .build();
         }
-        return null;
     }
 
     public static Uri getImageUri(String imagePath, String imageSize){

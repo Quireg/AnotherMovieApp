@@ -212,31 +212,26 @@ public class MovieItem implements Serializable {
         }
         final MovieItem other = (MovieItem) obj;
 
-        if (this.id != other.id ||
-                this.adult != other.adult ||
-                !this.backdropPath.equals(other.backdropPath) ||
-                this.budget != other.budget ||
-                !this.homepage.equals(other.homepage) ||
-                this.imdb_id != other.imdb_id ||
-                !this.originalTitle.equals(other.originalTitle) ||
-                !this.originalLanguage.equals(other.originalLanguage) ||
-                !this.title.equals(other.title) ||
-                !this.overview.equals((other.overview)) ||
-                this.popularity != other.popularity ||
-                !this.posterPath.equals(other.posterPath) ||
-                !this.releaseDate.equals(other.releaseDate) ||
-                this.revenue != other.revenue ||
-                this.runtime != other.runtime ||
-                !this.status.equals(other.status) ||
-                !this.tagline.equals(other.tagline) ||
-                this.video != other.video ||
-                this.vote_average != other.vote_average ||
-                this.voteCount != other.voteCount
-                ){
-            return false;
-        }
-
-        return true;
+        return this.id == other.id &&
+                this.adult == other.adult &&
+                this.backdropPath.equals(other.backdropPath) &&
+                this.budget == other.budget &&
+                this.homepage.equals(other.homepage) &&
+                this.imdb_id == other.imdb_id &&
+                this.originalTitle.equals(other.originalTitle) &&
+                this.originalLanguage.equals(other.originalLanguage) &&
+                this.title.equals(other.title) &&
+                this.overview.equals((other.overview)) &&
+                this.popularity == other.popularity &&
+                this.posterPath.equals(other.posterPath) &&
+                this.releaseDate.equals(other.releaseDate) &&
+                this.revenue == other.revenue &&
+                this.runtime == other.runtime &&
+                this.status.equals(other.status) &&
+                this.tagline.equals(other.tagline) &&
+                this.video == other.video &&
+                this.vote_average == other.vote_average &&
+                this.voteCount == other.voteCount;
     }
 
     public long getId() {

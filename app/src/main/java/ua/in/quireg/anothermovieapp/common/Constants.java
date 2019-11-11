@@ -6,6 +6,8 @@ import ua.in.quireg.anothermovieapp.BuildConfig;
 public class Constants {
 
     public static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
+    public static final String INSET_TOP = "inset_top";
+    public static final String INSET_BOT = "inset_bot";
     public static final String FRAGMENT_TAG = "fragment_tag";
     public static final String POPULAR = "POPULAR";
     public static final String TOP_RATED = "TOP_RATED";
@@ -34,7 +36,6 @@ public class Constants {
     //fragment interaction
     public static final String ADD_TO_FAVOURITES = "add_to_favourites";
     public static final String REMOVE_FROM_FAVOURITES = "remove_from_favourites";
-    public static final String OPEN_REVIEWS = "open_reviews";
 
     //favourites fragment sorting
     public static final String SORT_ORDER = "sort_order";

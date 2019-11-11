@@ -1,17 +1,14 @@
 package ua.in.quireg.anothermovieapp.managers;
 
-
+import android.content.Context;
 import android.net.Uri;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,20 +17,22 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.in.quireg.anothermovieapp.R;
 import ua.in.quireg.anothermovieapp.common.MovieItem;
 import ua.in.quireg.anothermovieapp.common.MovieTrailer;
 import ua.in.quireg.anothermovieapp.common.UriHelper;
-import ua.in.quireg.anothermovieapp.interfaces.FetchTrailersCallback;
-import ua.in.quireg.anothermovieapp.network.VolleyRequestQueueProvider;
+import ua.in.quireg.anothermovieapp.movieDetails.FetchTrailersCallback;
 
-public class MovieTrailersProvider {
+public final class MovieTrailersProvider {
 
-    public void fetchTrailersList(MovieItem movie, final FetchTrailersCallback callback) {
+    private static final String LOG_TAG = MovieTrailersProvider.class.getSimpleName();
 
-        Uri uri = UriHelper.getMovieTrailerUriById(String.valueOf(movie.getId()));
+    public static void fetchTrailersList(MovieItem movie, Context c,
+                                         final FetchTrailersCallback callback) {
 
-        JsonObjectRequest movieTrailersRequest = new JsonObjectRequest(Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
+        final Uri uri = UriHelper.getMovieTrailerUriById(String.valueOf(movie.getId()));
+
+        JsonObjectRequest movieTrailersRequest = new JsonObjectRequest(
+                Request.Method.GET, uri.toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -57,17 +56,17 @@ public class MovieTrailersProvider {
                     }
                     callback.onTrailersFetchCompleted(trailers);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.w(LOG_TAG, e.getMessage());
                 }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.d(LOG_TAG, "Failed: " + uri.toString());
             }
         });
-        VolleyRequestQueueProvider.getInstance(null).addToRequestQueue(movieTrailersRequest);
-
+        Log.d(LOG_TAG, "Fetching: " + uri.toString());
+        Volley.newRequestQueue(c).add(movieTrailersRequest);
     }
 }

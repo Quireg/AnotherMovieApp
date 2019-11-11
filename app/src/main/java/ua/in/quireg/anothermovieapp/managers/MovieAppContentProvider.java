@@ -7,13 +7,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.FavouriteMovies;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieEntry;
+import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieReviews;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.PopularMovies;
 import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.TopRatedMovies;
-import ua.in.quireg.anothermovieapp.managers.MovieDatabaseContract.MovieReviews;
 
 
 public class MovieAppContentProvider extends ContentProvider {

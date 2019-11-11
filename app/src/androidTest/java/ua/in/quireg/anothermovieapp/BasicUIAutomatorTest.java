@@ -3,20 +3,20 @@ package ua.in.quireg.anothermovieapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SdkSuppress;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiCollection;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
-import android.support.test.uiautomator.UiSelector;
-import android.support.test.uiautomator.Until;
 import android.util.Log;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SdkSuppress;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
+import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.Until;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -31,6 +31,7 @@ import static org.junit.Assert.fail;
 @SdkSuppress(minSdkVersion = 18)
 
 public class BasicUIAutomatorTest {
+
     private UiDevice mDevice;
 
     @Before
@@ -44,6 +45,7 @@ public class BasicUIAutomatorTest {
         mDevice.pressHome();
 
     }
+
     @org.junit.Test
     public void test() throws InterruptedException {
         openApp("ua.in.quireg.anothermovieapp");
@@ -56,18 +58,18 @@ public class BasicUIAutomatorTest {
         mDevice.wait(Until.findObject(By.res("ua.in.quireg.anothermovieapp", "movie_list_recycler_view")), 5000);
         Thread.sleep(5000);
         int currentCount = 0;
-        int totalCount  = moviesScrollable.getChildCount(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"));
+        int totalCount = moviesScrollable.getChildCount(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"));
 
-        while (true){
+        while (true) {
             try {
 
-                UiObject movie =  moviesScrollable.getChildByInstance(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"), currentCount);
+                UiObject movie = moviesScrollable.getChildByInstance(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"), currentCount);
                 //UiObject movie =  movies.getChild(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"), count);
                 movie.click();
                 Thread.sleep(1000);
                 mDevice.pressBack();
                 Thread.sleep(1000);
-                if(currentCount == totalCount - 1){
+                if (currentCount == totalCount - 1) {
                     moviesScrollable.scrollForward();
                     moviesScrollable.scrollForward();
                     totalCount = moviesScrollable.getChildCount(new UiSelector().resourceId("ua.in.quireg.anothermovieapp:id/image"));
@@ -78,7 +80,6 @@ public class BasicUIAutomatorTest {
                 currentCount++;
 
             } catch (UiObjectNotFoundException e) {
-                e.printStackTrace();
             }
         }
 //        takeScreenshot("screenshot-1.png");
@@ -98,7 +99,8 @@ public class BasicUIAutomatorTest {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
-    private void closeApp(){
+
+    private void closeApp() {
 
     }
 
