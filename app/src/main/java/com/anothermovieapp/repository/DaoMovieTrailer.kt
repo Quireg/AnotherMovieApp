@@ -1,19 +1,19 @@
 package com.anothermovieapp.repository
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by artur.menchenko@globallogic.com on 29/12/20.
  */
 @Dao
-interface MovieTrailerDao {
+interface DaoMovieTrailer {
     @Query("SELECT * from trailers")
-    fun getMovieTrailers() : LiveData<List<MovieTrailer>>
+    suspend fun get(): List<EntityDBMovieTrailer>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieTrailer(item: MovieTrailer)
+    suspend fun insert(item: EntityDBMovieTrailer)
 }

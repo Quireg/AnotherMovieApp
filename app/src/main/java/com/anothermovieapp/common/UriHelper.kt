@@ -5,7 +5,7 @@ import com.anothermovieapp.BuildConfig
 
 object UriHelper {
     private val LOG_TAG = UriHelper::class.java.simpleName
-    private const val API_KEY = BuildConfig.MOVIE_DATABASE_API_KEY
+    const val API_KEY = BuildConfig.MOVIE_DATABASE_API_KEY
     fun getMoviesListUri(tag: String?): Uri? {
         MovieAppLogger.v(LOG_TAG, "getMoviesListUri()")
         when (tag) {

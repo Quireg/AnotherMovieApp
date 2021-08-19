@@ -1,12 +1,12 @@
 package com.anothermovieapp;
 
 
-import com.anothermovieapp.repository.Movie;
+import com.anothermovieapp.repository.EntityDBMovie;
 
 public class InstrumentedHelpers {
 
-    public static final Movie getTestMovieItem(){
-        return new Movie(
+    public static final EntityDBMovie getTestMovieItem(){
+        return new EntityDBMovie(
                 7777, //id
                 true, //adult
                 "backdrop",

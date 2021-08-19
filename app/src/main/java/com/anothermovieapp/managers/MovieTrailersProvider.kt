@@ -6,8 +6,8 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.anothermovieapp.repository.Movie
-import com.anothermovieapp.repository.MovieTrailer
+import com.anothermovieapp.repository.EntityDBMovie
+import com.anothermovieapp.repository.EntityDBMovieTrailer
 import com.anothermovieapp.common.UriHelper
 import com.anothermovieapp.movieDetails.FetchTrailersCallback
 import org.json.JSONException
@@ -15,16 +15,16 @@ import java.util.*
 
 object MovieTrailersProvider {
     private val LOG_TAG = MovieTrailersProvider::class.java.simpleName
-    fun fetchTrailersList(movie: Movie?, c: Context?, callback: FetchTrailersCallback) {
+    fun fetchTrailersList(movie: EntityDBMovie?, c: Context?, callback: FetchTrailersCallback) {
         val uri = UriHelper.getMovieTrailerUriById(movie?.id.toString())
         val movieTrailersRequest = JsonObjectRequest(
                 Request.Method.GET, uri.toString(), null, Response.Listener { response ->
             try {
                 val arr = response.getJSONArray("results")
-                val trailers: MutableList<MovieTrailer> = ArrayList()
+                val trailers: MutableList<EntityDBMovieTrailer> = ArrayList()
                 for (i in 0 until arr.length()) {
                     val obj = arr.getJSONObject(i)
-                    val movieTrailer = MovieTrailer(
+                    val movieTrailer = EntityDBMovieTrailer(
                             obj.getString("id"),
                             obj.getString("iso_639_1"),
                             obj.getString("iso_3166_1"),

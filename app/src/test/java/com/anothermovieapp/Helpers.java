@@ -1,12 +1,12 @@
 package com.anothermovieapp;
 
 
-import com.anothermovieapp.repository.Movie;
+import com.anothermovieapp.repository.EntityDBMovie;
 
 public class Helpers {
 
-    public static final Movie getTestMovieItem(){
-        return new Movie(
+    public static final EntityDBMovie getTestMovieItem(){
+        return new EntityDBMovie(
                 321612, //id
                 false, //adult
                 "6aUWe0GSl69wMTSWWexsorMIvwU.jpg",

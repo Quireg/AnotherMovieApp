@@ -1,5 +1,7 @@
 package com.anothermovieapp.interfaces
 
-interface OnFragmentInteractionListener {
-    fun onFragmentMessage(TAG: String?, data: Any?)
+import java.io.Serializable
+
+interface OnFragmentInteractionListener : Serializable {
+    fun onFragmentMessage(tag: String?, data: Any?)
 }

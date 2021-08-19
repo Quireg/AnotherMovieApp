@@ -4,22 +4,23 @@ import android.animation.ObjectAnimator
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentContainerView
 import androidx.palette.graphics.Palette
 import com.anothermovieapp.R
 import com.anothermovieapp.common.Constants
-import com.anothermovieapp.repository.Movie
 import com.anothermovieapp.common.UriHelper
 import com.anothermovieapp.interfaces.OnFragmentInteractionListener
 import com.anothermovieapp.managers.MovieDatabaseContract.FavouriteMovies
+import com.anothermovieapp.repository.EntityDBMovie
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -27,14 +28,18 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MovieActivity : AppCompatActivity(), OnFragmentInteractionListener {
+
     private var mDetailsFragment: DetailsFragment? = null
-    private var mMovie: Movie? = null
-    private var mToolbarLayout: CollapsingToolbarLayout? = null
+    private var mMovie: EntityDBMovie? = null
+    private lateinit var mToolbarLayout: CollapsingToolbarLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mMovie = intent.extras.getSerializable(Constants.MOVIE) as Movie
+        mMovie = intent.extras?.getSerializable(Constants.MOVIE) as EntityDBMovie
         setContentView(R.layout.activity_movie_details_mine)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -43,63 +48,64 @@ class MovieActivity : AppCompatActivity(), OnFragmentInteractionListener {
         mToolbarLayout = appBarLayout.findViewById(R.id.collapsing_toolbar)
         mDetailsFragment = DetailsFragment()
         mDetailsFragment!!.arguments = intent.extras
+
         supportFragmentManager.beginTransaction()
-                .replace(R.id.container, mDetailsFragment!!, DetailsFragment.Companion.TAG)
-                .commit()
-        if (mMovie != null) {
-            if (mMovie!!.title != null) {
-                val collapsingTBL = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
-                collapsingTBL.title = mMovie!!.title
-            }
-            if (mMovie!!.backdropPath != null) {
-                loadBackdropImage(mMovie!!.backdropPath)
-            }
+            .replace(R.id.container, mDetailsFragment!!, DetailsFragment.TAG)
+            .commit()
+        if (mMovie?.title != null) {
+            val collapsingTBL = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
+            collapsingTBL.title = mMovie?.title
+        }
+        if (mMovie?.backdropPath != null) {
+            loadBackdropImage(mMovie?.backdropPath)
         }
         appBarLayout.setBackgroundColor(Color.parseColor("#8C000000"))
         appBarLayout.setOnApplyWindowInsetsListener { v, insets ->
             toolbar.setPadding(
-                    v.paddingLeft,
-                    insets.systemWindowInsetTop,
-                    v.paddingRight,
-                    v.paddingBottom)
+                v.paddingLeft,
+                insets.systemWindowInsetTop,
+                v.paddingRight,
+                v.paddingBottom
+            )
             findViewById<View>(R.id.container).setPadding(
-                    v.paddingLeft,
-                    v.paddingTop,
-                    v.paddingRight,
-                    insets.systemWindowInsetBottom)
+                v.paddingLeft,
+                v.paddingTop,
+                v.paddingRight,
+                insets.systemWindowInsetBottom
+            )
             val a = obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))
             val actionBarSize = a.getDimensionPixelSize(0, -1)
             a.recycle()
             mToolbarLayout.setScrimVisibleHeightTrigger(
-                    insets.systemWindowInsetTop + actionBarSize + 1)
+                insets.systemWindowInsetTop + actionBarSize + 1
+            )
             insets
         }
-        SyncReviewsService.Companion.startActionFetchReviews(this, mMovie.getId().toString())
+//        SyncReviewsService.Companion.startActionFetchReviews(this, mMovie.id.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.movie_menu, menu)
-        val d: Drawable
-        d = if (isFavourite(mMovie)) {
+        menu.findItem(R.id.favorite).icon = if (isFavourite(mMovie)) {
             getDrawable(R.drawable.ic_favorite_red_24dp)
         } else {
             getDrawable(R.drawable.ic_favorite_black_24dp)
         }
-        menu.findItem(R.id.favorite).icon = d
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.favorite) {
             onFragmentMessage(
-                    if (isFavourite(mMovie)) Constants.REMOVE_FROM_FAVOURITES else Constants.ADD_TO_FAVOURITES, mMovie)
-            val d: Drawable
-            d = if (isFavourite(mMovie)) {
+                if (isFavourite(mMovie)) Constants.REMOVE_FROM_FAVOURITES
+                else Constants.ADD_TO_FAVOURITES,
+                mMovie
+            )
+            item.icon = if (isFavourite(mMovie)) {
                 getDrawable(R.drawable.ic_favorite_red_24dp)
             } else {
                 getDrawable(R.drawable.ic_favorite_black_24dp)
             }
-            item.icon = d
             return true
         } else if (item.itemId == android.R.id.home) {
             onBackPressed()
@@ -107,65 +113,81 @@ class MovieActivity : AppCompatActivity(), OnFragmentInteractionListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun isFavourite(item: Movie?): Boolean {
+    private fun isFavourite(item: EntityDBMovie?): Boolean {
         contentResolver.query(
-                FavouriteMovies.buildUri(item.getId()),
-                null,
-                null,
-                null,
-                null).use { c -> return c != null && c.moveToFirst() }
+            FavouriteMovies.buildUri(item!!.id),
+            null,
+            null,
+            null,
+            null
+        ).use { c -> return c != null && c.moveToFirst() }
     }
 
     override fun onFragmentMessage(tag: String?, data: Any?) {
-        val item = data as Movie?
+        val item = data as EntityDBMovie?
         when (tag) {
             Constants.ADD_TO_FAVOURITES -> {
                 val contentValues = ContentValues()
-                contentValues.put(FavouriteMovies._ID, item.getId())
+                contentValues.put(FavouriteMovies._ID, item?.id)
                 contentResolver.insert(FavouriteMovies.CONTENT_URI, contentValues)
             }
             Constants.REMOVE_FROM_FAVOURITES -> contentResolver.delete(
-                    FavouriteMovies.buildUri(item.getId()), null, null)
+                FavouriteMovies.buildUri(item!!.id), null, null
+            )
         }
     }
 
     private fun loadBackdropImage(path: String?) {
         val imageUri = UriHelper.getImageUri(path, Constants.IMAGE_SIZE_ORIGINAL)
-        Log.d(LOG_TAG, "Fetching: $imageUri")
+//        Log.d(LOG_TAG, "Fetching: $imageUri")
         val headerImage = findViewById<ImageView>(R.id.toolbar_image)
         Glide.with(this)
-                .asBitmap()
-                .load(imageUri)
-                .addListener(object : RequestListener<Bitmap?> {
-                    override fun onLoadFailed(e: GlideException?, model: Any,
-                                              target: Target<Bitmap?>,
-                                              isFirstResource: Boolean): Boolean {
+            .asBitmap()
+            .load(imageUri)
+            .addListener(object : RequestListener<Bitmap?> {
+                override fun onLoadFailed(
+                    e: GlideException?, model: Any,
+                    target: Target<Bitmap?>,
+                    isFirstResource: Boolean
+                ): Boolean {
+
+                    Handler(Looper.getMainLooper()).post {
                         if (mDetailsFragment != null) {
                             mDetailsFragment!!.readyShowContent()
                         }
-                        return false
                     }
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Bitmap?, model: Any,
-                                                 target: Target<Bitmap?>,
-                                                 dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(
+                    resource: Bitmap?, model: Any,
+                    target: Target<Bitmap?>,
+                    dataSource: DataSource, isFirstResource: Boolean
+                ): Boolean {
+                    Handler(Looper.getMainLooper()).post {
                         if (mDetailsFragment != null) {
                             mDetailsFragment!!.readyShowContent()
                         }
                         headerImage.setImageBitmap(resource)
-                        val animator = ObjectAnimator.ofFloat(headerImage, View.ALPHA,
-                                headerImage.alpha, 1f)
-                        animator.duration = 600
+                        val animator = ObjectAnimator.ofFloat(
+                            headerImage, View.ALPHA,
+                            headerImage.alpha, 1f
+                        )
+                        animator.duration = 300
                         animator.start()
-                        return true
                     }
-                })
-                .submit()
+                    return true
+                }
+            })
+            .submit()
     }
 
-    private fun playWithPalette(resource: Bitmap, collapsingTBL: CollapsingToolbarLayout,
-                                headerImage: ImageView) {
-        Palette.from(Bitmap.createBitmap(resource)).generate { palette -> //                        FloatingActionButton fab = findViewById(R.id.fab);
+    private fun playWithPalette(
+        resource: Bitmap, collapsingTBL: CollapsingToolbarLayout,
+        headerImage: ImageView
+    ) {
+        Palette.from(Bitmap.createBitmap(resource))
+            .generate { palette -> //                        FloatingActionButton fab = findViewById(R.id.fab);
 //                        Drawable drawable = getResources()
 //                                .getDrawable(R.drawable.ic_action_star, getTheme());
 //
@@ -185,31 +207,33 @@ class MovieActivity : AppCompatActivity(), OnFragmentInteractionListener {
 //                                palette.getMutedColor(R.attr.colorSecondary)));
 //                        fab.setRippleColor(ColorStateList.valueOf(
 //                                palette.getDarkMutedColor(R.attr.colorSecondary)));
-            if (palette!!.dominantSwatch != null) {
-                collapsingTBL.setExpandedTitleColor(
-                        palette.dominantSwatch!!.titleTextColor)
-            }
-            if (palette.vibrantSwatch != null) {
-                collapsingTBL.setCollapsedTitleTextColor(
-                        palette.vibrantSwatch!!.titleTextColor)
+                if (palette!!.dominantSwatch != null) {
+                    collapsingTBL.setExpandedTitleColor(
+                        palette.dominantSwatch!!.titleTextColor
+                    )
+                }
+                if (palette.vibrantSwatch != null) {
+                    collapsingTBL.setCollapsedTitleTextColor(
+                        palette.vibrantSwatch!!.titleTextColor
+                    )
+                    collapsingTBL.setContentScrimColor(
+                        palette.vibrantSwatch!!.rgb
+                    )
+                }
+                val toolbar = findViewById<Toolbar>(R.id.toolbar)
+                if (toolbar.navigationIcon != null) {
+                    toolbar.navigationIcon!!.setTint(
+                        palette.getLightVibrantColor(R.attr.editTextColor)
+                    )
+                }
                 collapsingTBL.setContentScrimColor(
-                        palette.vibrantSwatch!!.rgb)
+                    palette.getMutedColor(R.attr.colorPrimary)
+                )
+                collapsingTBL.setStatusBarScrimColor(
+                    palette.getDarkMutedColor(R.attr.colorPrimaryDark)
+                )
+                headerImage.setImageBitmap(resource)
+                headerImage.visibility = View.VISIBLE
             }
-            val toolbar = findViewById<Toolbar>(R.id.toolbar)
-            if (toolbar.navigationIcon != null) {
-                toolbar.navigationIcon!!.setTint(
-                        palette.getLightVibrantColor(R.attr.editTextColor))
-            }
-            collapsingTBL.setContentScrimColor(
-                    palette.getMutedColor(R.attr.colorPrimary))
-            collapsingTBL.setStatusBarScrimColor(
-                    palette.getDarkMutedColor(R.attr.colorPrimaryDark))
-            headerImage.setImageBitmap(resource)
-            headerImage.visibility = View.VISIBLE
-        }
-    }
-
-    companion object {
-        private val LOG_TAG = MovieActivity::class.java.simpleName
     }
 }

@@ -7,17 +7,18 @@ import android.content.Context
 import android.os.Build
 import android.preference.PreferenceManager
 import com.anothermovieapp.common.Constants
-import com.anothermovieapp.repository.MovieDatabaseProvider
-import com.anothermovieapp.repository.MoviesDatabase
+import com.anothermovieapp.repository.ProviderMovieDatabase
+import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
+@HiltAndroidApp
 class AnotherMovieApplication : Application() {
 
-    var dbp : MovieDatabaseProvider? = null;
+    private lateinit var dbp : ProviderMovieDatabase
 
     override fun onCreate() {
         super.onCreate()
-        dbp = MovieDatabaseProvider(applicationContext)
-
+        dbp = ProviderMovieDatabase(applicationContext)
 
         //set sort order for favourites fragment in case it has not been set before
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -31,10 +32,9 @@ class AnotherMovieApplication : Application() {
                     NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(notificationChannel)
         }
-    }
-
-    fun getDatabase() : MoviesDatabase? {
-        return dbp?.getDatabase()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 
     companion object {

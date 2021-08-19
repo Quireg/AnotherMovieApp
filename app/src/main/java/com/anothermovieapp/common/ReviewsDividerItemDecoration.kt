@@ -10,7 +10,6 @@ import com.anothermovieapp.R
 
 /**
  * Created by Arcturus Mengsk on 2/15/2018, 10:41 AM.
- * 2ch-Browser
  */
 class ReviewsDividerItemDecoration(context: Context) : ItemDecoration() {
     private val mDivider: Drawable

@@ -17,4 +17,6 @@
 
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
+<!--    android:background="#8C000000"-->
+
 </resources>

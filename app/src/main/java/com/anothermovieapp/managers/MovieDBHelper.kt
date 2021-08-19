@@ -4,77 +4,78 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.anothermovieapp.common.MovieAppLogger
-import com.anothermovieapp.managers.MovieDatabaseContract.*
+//import com.anothermovieapp.managers.MovieDatabaseContract.*
 
-class MovieDBHelper internal constructor(private val mContext: Context) : SQLiteOpenHelper(mContext, DATABASE_NAME, null, DATABASE_VERSION) {
-    override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
-        MovieAppLogger.d(LOG_TAG, "onCreate()")
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME)
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TopRatedMovies.TABLE_NAME)
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PopularMovies.TABLE_NAME)
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME)
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieReviews.TABLE_NAME)
-        val SQL_CREATE_MOVIE_ENTITY_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
-                MovieEntry._ID + " INTEGER PRIMARY KEY NOT NULL, " +
-                MovieEntry.COLUMN_ADULT + " TEXT, " +
-                MovieEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
-                MovieEntry.COLUMN_BUDGET + " INTEGER," +
-                MovieEntry.COLUMN_HOMEPAGE + " TEXT," +
-                MovieEntry.COLUMN_IMDB_ID + " INTEGER," +
-                MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT," +
-                MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT, " +
-                MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
-                MovieEntry.COLUMN_POPULARITY + " REAL, " +
-                MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
-                MovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
-                MovieEntry.COLUMN_REVENUE + " INTEGER, " +
-                MovieEntry.COLUMN_RUNTIME + " INTEGER, " +
-                MovieEntry.COLUMN_STATUS + " TEXT, " +
-                MovieEntry.COLUMN_TAGLINE + " TEXT, " +
-                MovieEntry.COLUMN_TITLE + " TEXT, " +
-                MovieEntry.COLUMN_VIDEO + " TEXT, " +
-                MovieEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
-                MovieEntry.COLUMN_VOTE_COUNT + " INTEGER " +
-                ");"
-        val SQL_CREATE_MOVIE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedMovies.TABLE_NAME + " (" +
-                TopRatedMovies._ID + " INTEGER UNIQUE NOT NULL, " +
-                TopRatedMovies.COLUMN_PAGE + " INTEGER, " +
-                TopRatedMovies.COLUMN_POSITION + " INTEGER " +
-                ");"
-        val SQL_CREATE_MOVIE_POPULAR_TABLE = "CREATE TABLE " + PopularMovies.TABLE_NAME + " (" +
-                PopularMovies._ID + " INTEGER UNIQUE NOT NULL, " +
-                PopularMovies.COLUMN_PAGE + " INTEGER, " +
-                PopularMovies.COLUMN_POSITION + " INTEGER " +
-                ");"
-        val SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
-                FavouriteMovies._ID + " INTEGER UNIQUE NOT NULL " +
-                ");"
-        val SQL_CREATE_MOVIE_REVIEWS_TABLE = "CREATE TABLE " + MovieReviews.TABLE_NAME + " (" +
-                MovieReviews._ID + " INTEGER, " +
-                MovieReviews.COLUMN_AUTHOR + " TEXT, " +
-                MovieReviews.COLUMN_REVIEW_ID + " TEXT UNIQUE NOT NULL, " +
-                MovieReviews.COLUMN_CONTENT + " TEXT " +
-                ");"
-        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_ENTITY_TABLE)
-        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_ENTITY_TABLE)
-        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_TOP_RATED_TABLE)
-        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TOP_RATED_TABLE)
-        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_POPULAR_TABLE)
-        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_POPULAR_TABLE)
-        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_FAVOURITES_TABLE)
-        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_FAVOURITES_TABLE)
-        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_REVIEWS_TABLE)
-        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_REVIEWS_TABLE)
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onCreate(db)
-    }
-
-    companion object {
-        private val LOG_TAG = MovieDBHelper::class.java.simpleName
-        private const val DATABASE_VERSION = 6
-        const val DATABASE_NAME = "movie.db"
-    }
+class MovieDBHelper /*internal constructor(private val mContext: Context) :
+    SQLiteOpenHelper(mContext, DATABASE_NAME, null, DATABASE_VERSION) */{
+//    override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
+//        MovieAppLogger.d(LOG_TAG, "onCreate()")
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME)
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TopRatedMovies.TABLE_NAME)
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PopularMovies.TABLE_NAME)
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMovies.TABLE_NAME)
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieReviews.TABLE_NAME)
+//        val SQL_CREATE_MOVIE_ENTITY_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
+//                MovieEntry._ID + " INTEGER PRIMARY KEY NOT NULL, " +
+//                MovieEntry.COLUMN_ADULT + " TEXT, " +
+//                MovieEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
+//                MovieEntry.COLUMN_BUDGET + " INTEGER," +
+//                MovieEntry.COLUMN_HOMEPAGE + " TEXT," +
+//                MovieEntry.COLUMN_IMDB_ID + " INTEGER," +
+//                MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT," +
+//                MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT, " +
+//                MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
+//                MovieEntry.COLUMN_POPULARITY + " REAL, " +
+//                MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
+//                MovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
+//                MovieEntry.COLUMN_REVENUE + " INTEGER, " +
+//                MovieEntry.COLUMN_RUNTIME + " INTEGER, " +
+//                MovieEntry.COLUMN_STATUS + " TEXT, " +
+//                MovieEntry.COLUMN_TAGLINE + " TEXT, " +
+//                MovieEntry.COLUMN_TITLE + " TEXT, " +
+//                MovieEntry.COLUMN_VIDEO + " TEXT, " +
+//                MovieEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
+//                MovieEntry.COLUMN_VOTE_COUNT + " INTEGER " +
+//                ");"
+//        val SQL_CREATE_MOVIE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedMovies.TABLE_NAME + " (" +
+//                TopRatedMovies._ID + " INTEGER UNIQUE NOT NULL, " +
+//                TopRatedMovies.COLUMN_PAGE + " INTEGER, " +
+//                TopRatedMovies.COLUMN_POSITION + " INTEGER " +
+//                ");"
+//        val SQL_CREATE_MOVIE_POPULAR_TABLE = "CREATE TABLE " + PopularMovies.TABLE_NAME + " (" +
+//                PopularMovies._ID + " INTEGER UNIQUE NOT NULL, " +
+//                PopularMovies.COLUMN_PAGE + " INTEGER, " +
+//                PopularMovies.COLUMN_POSITION + " INTEGER " +
+//                ");"
+//        val SQL_CREATE_MOVIE_FAVOURITES_TABLE = "CREATE TABLE " + FavouriteMovies.TABLE_NAME + " (" +
+//                FavouriteMovies._ID + " INTEGER UNIQUE NOT NULL " +
+//                ");"
+//        val SQL_CREATE_MOVIE_REVIEWS_TABLE = "CREATE TABLE " + MovieReviews.TABLE_NAME + " (" +
+//                MovieReviews._ID + " INTEGER, " +
+//                MovieReviews.COLUMN_AUTHOR + " TEXT, " +
+//                MovieReviews.COLUMN_REVIEW_ID + " TEXT UNIQUE NOT NULL, " +
+//                MovieReviews.COLUMN_CONTENT + " TEXT " +
+//                ");"
+//        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_ENTITY_TABLE)
+//        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_ENTITY_TABLE)
+//        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_TOP_RATED_TABLE)
+//        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TOP_RATED_TABLE)
+//        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_POPULAR_TABLE)
+//        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_POPULAR_TABLE)
+//        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_FAVOURITES_TABLE)
+//        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_FAVOURITES_TABLE)
+//        MovieAppLogger.d(LOG_TAG, SQL_CREATE_MOVIE_REVIEWS_TABLE)
+//        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_REVIEWS_TABLE)
+//    }
+//
+//    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+//        onCreate(db)
+//    }
+//
+//    companion object {
+//        private val LOG_TAG = MovieDBHelper::class.java.simpleName
+//        private const val DATABASE_VERSION = 6
+//        const val DATABASE_NAME = "movie.db"
+//    }
 
 }

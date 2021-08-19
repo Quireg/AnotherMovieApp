@@ -6,52 +6,36 @@ import androidx.room.PrimaryKey
 import org.json.JSONObject
 import java.io.Serializable
 
-@Entity(primaryKeys = ["id", "imdb_id"], tableName = "movies")
-data class Movie(@PrimaryKey @ColumnInfo(name = "id") var id: Long,
-                 @ColumnInfo(name = "isAdult") var isAdult: Boolean,
-                 @ColumnInfo(name = "backdropPath") private var backdropPath: String,
-                 @ColumnInfo(name = "budget") var budget: Int,
-                 @ColumnInfo(name = "homepage") var homepage: String,
-                 @ColumnInfo(name = "imdb_id") var imdb_id: Long,
-                 @ColumnInfo(name = "originalLanguage") var originalLanguage: String,
-                 @ColumnInfo(name = "originalTitle") var originalTitle: String,
-                 @ColumnInfo(name = "title") private var title: String,
-                 @ColumnInfo(name = "overview") var overview: String,
-                 @ColumnInfo(name = "popularity") var popularity: Double,
-                 @ColumnInfo(name = "posterPath") var posterPath: String,
-                 @ColumnInfo(name = "releaseDate") var releaseDate: String,
-                 @ColumnInfo(name = "revenue") var revenue: Int,
-                 @ColumnInfo(name = "runtime") var runtime: Int,
-                 @ColumnInfo(name = "status") var status: String,
-                 @ColumnInfo(name = "tagline") var tagline: String,
-                 @ColumnInfo(name = "isVideo") var isVideo: Boolean,
-                 @ColumnInfo(name = "vote_average") var vote_average: Double,
-                 @ColumnInfo(name = "voteCount") var voteCount: Int) : Serializable {
+@Entity(primaryKeys = ["id"], tableName = "movies")
+data class EntityDBMovie(@ColumnInfo(name = "id") var id: Long,
+                         @ColumnInfo(name = "isAdult") var isAdult: Boolean,
+                         @ColumnInfo(name = "backdropPath") var backdropPath: String?,
+                         @ColumnInfo(name = "budget") var budget: Int,
+                         @ColumnInfo(name = "homepage") var homepage: String,
+                         @ColumnInfo(name = "imdb_id") var imdb_id: Long,
+                         @ColumnInfo(name = "originalLanguage") var originalLanguage: String,
+                         @ColumnInfo(name = "originalTitle") var originalTitle: String,
+                         @ColumnInfo(name = "title") var title: String?,
+                         @ColumnInfo(name = "overview") var overview: String,
+                         @ColumnInfo(name = "popularity") var popularity: Double,
+                         @ColumnInfo(name = "posterPath") var posterPath: String,
+                         @ColumnInfo(name = "releaseDate") var releaseDate: String,
+                         @ColumnInfo(name = "revenue") var revenue: Int,
+                         @ColumnInfo(name = "runtime") var runtime: Int,
+                         @ColumnInfo(name = "status") var status: String,
+                         @ColumnInfo(name = "tagline") var tagline: String,
+                         @ColumnInfo(name = "isVideo") var isVideo: Boolean,
+                         @ColumnInfo(name = "vote_average") var vote_average: Double,
+                         @ColumnInfo(name = "voteCount") var voteCount: Int) :Serializable {
     override fun equals(obj: Any?): Boolean {
         if (obj == null) {
             return false
         }
-        if (!Movie::class.java.isAssignableFrom(obj.javaClass)) {
+        if (!EntityDBMovie::class.java.isAssignableFrom(obj.javaClass)) {
             return false
         }
-        val other = obj as Movie
+        val other = obj as EntityDBMovie
         return id == other.id && isAdult == other.isAdult && backdropPath == other.backdropPath && budget == other.budget && homepage == other.homepage && imdb_id == other.imdb_id && originalTitle == other.originalTitle && originalLanguage == other.originalLanguage && title == other.title && overview == other.overview && popularity == other.popularity && posterPath == other.posterPath && releaseDate == other.releaseDate && revenue == other.revenue && runtime == other.runtime && status == other.status && tagline == other.tagline && isVideo == other.isVideo && vote_average == other.vote_average && voteCount == other.voteCount
-    }
-
-    fun getBackdropPath(): String? {
-        return backdropPath
-    }
-
-    fun setBackdropPath(backdropPath: String) {
-        this.backdropPath = backdropPath
-    }
-
-    fun getTitle(): String? {
-        return title
-    }
-
-    fun setTitle(title: String) {
-        this.title = title
     }
 
     override fun hashCode(): Int {
@@ -173,8 +157,8 @@ data class Movie(@PrimaryKey @ColumnInfo(name = "id") var id: Long,
 //        }
 
         @kotlin.jvm.JvmStatic
-        fun fromJSON(obj: JSONObject): Movie {
-            return Movie(
+        fun fromJSON(obj: JSONObject): EntityDBMovie {
+            return EntityDBMovie(
                     obj.optLong(JSON_ID),
                     obj.optBoolean(JSON_ADULT),
                     obj.optString(JSON_BACKDROP_PATH).replace("/", "").replace("\\", ""),

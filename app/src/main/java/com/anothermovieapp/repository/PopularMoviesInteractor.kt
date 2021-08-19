@@ -3,7 +3,6 @@ package com.anothermovieapp.repository
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.anothermovieapp.common.Constants
@@ -11,7 +10,7 @@ import com.anothermovieapp.common.UriHelper
 import org.json.JSONException
 
 
-class PopularMoviesInteractor(private val context: Context, private val database: MoviesDatabase) {
+class PopularMoviesInteractor(private val context: Context, private val database: Database) {
     private val LOG_TAG = PopularMoviesInteractor::class.java.simpleName
 
 
@@ -23,7 +22,7 @@ class PopularMoviesInteractor(private val context: Context, private val database
         }
         val uri = UriHelper.getMoviesListPageUri(Constants.POPULAR, pageNumber)
         val movieListRequest = JsonObjectRequest(Request.Method.GET, uri.toString(), null,
-                Response.Listener { response ->
+                { response ->
                     Thread(Runnable {
                         var page: Long = 0
                         var totalResults: Long = 0
@@ -36,16 +35,16 @@ class PopularMoviesInteractor(private val context: Context, private val database
                             val list = ArrayList<Long>()
                             for (i in 0 until arr.length()) {
                                 val movie = arr.getJSONObject(i)
-                                val item: Movie = Movie.fromJSON(movie)
+                                val item: EntityDBMovie = EntityDBMovie.fromJSON(movie)
                                 list.add(item.id)
-                                database.movieDao().insertMovie(item)
+//                                database.movieDao().insert(item)
                             }
                             callback.onComplete(list)
                         } catch (e: JSONException) {
                             Log.w(LOG_TAG, e)
                         }
                     }).start()
-                }, Response.ErrorListener {
+                }, {
         })
         Volley.newRequestQueue(context).add(movieListRequest)
     }

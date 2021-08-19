@@ -1,21 +1,24 @@
 package com.anothermovieapp.movieDetails
 
-import android.database.Cursor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.anothermovieapp.R
-import com.anothermovieapp.common.CursorRecyclerViewAdapter
-import com.anothermovieapp.repository.MovieReview
+import com.anothermovieapp.repository.EntityDBMovieReview
 
-class ReviewsRecyclerViewAdapter : CursorRecyclerViewAdapter<RecyclerView.ViewHolder>(null) {
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, cursor: Cursor?) {
-        val movieHolder = viewHolder as MovieReviewViewHolder
-        val movie_review: MovieReview = MovieReview.Companion.fromCursor(cursor)
-        movieHolder.reviewAuthor.text = movie_review.author
-        movieHolder.reviewContent.text = movie_review.content
+class ReviewsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    protected var innerData = mutableListOf<EntityDBMovieReview>()
+
+    fun setData(newData: List<EntityDBMovieReview>?) {
+        newData?.let {
+            val prevSize = innerData.size
+            val newSize = newData.size
+            innerData.clear()
+            innerData.addAll(newData)
+            notifyItemRangeInserted(prevSize, newSize)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -41,4 +44,16 @@ class ReviewsRecyclerViewAdapter : CursorRecyclerViewAdapter<RecyclerView.ViewHo
     companion object {
         private val LOG_TAG = ReviewsRecyclerViewAdapter::class.java.simpleName
     }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val movieHolder = holder as MovieReviewViewHolder
+        val movie_review: EntityDBMovieReview = innerData[position]
+        movieHolder.reviewAuthor.text = movie_review.author
+        movieHolder.reviewContent.text = movie_review.content
+    }
+
+    override fun getItemCount(): Int {
+        return innerData.size
+    }
+
 }
