@@ -1,3 +1,8 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.repository
 
 import kotlinx.coroutines.Dispatchers
@@ -91,9 +96,6 @@ class RepositoryTopRatedListImpl @Inject constructor(
                             db.movieTopRatedDao().getFetchState()?.let {
                                 pageToFetch = it.currentPage.toInt() + 1
                             }
-                        }
-                        if (pageToFetch >= 5) {
-                            pageToFetch  = 5
                         }
                         moviesWebService.getMoviesListTopRated(pageToFetch)
                     },

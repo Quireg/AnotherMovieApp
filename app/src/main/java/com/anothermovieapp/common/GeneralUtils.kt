@@ -1,3 +1,8 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.common
 
 import android.content.Context
@@ -10,10 +15,5 @@ object GeneralUtils {
         toast_short?.cancel()
         toast_short = Toast.makeText(context, msg, Toast.LENGTH_LONG)
         toast_short?.show()
-    }
-
-    fun dipToPixels(context: Context, dipValue: Float): Float {
-        val metrics = context.resources.displayMetrics
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics)
     }
 }

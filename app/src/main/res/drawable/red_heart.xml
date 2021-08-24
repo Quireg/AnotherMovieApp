@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:drawable="@drawable/heart">
-    <color android:color="@android:color/holo_red_dark">
-    </color>
-    <bitmap android:src="@android:color/holo_red_dark">
-    </bitmap>
-</item>
-</layer-list>

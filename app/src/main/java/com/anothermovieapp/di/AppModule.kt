@@ -1,9 +1,15 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.anothermovieapp.movieList.ViewModelMovieDetails
-import com.anothermovieapp.movieList.ViewModelPopularMovies
+import com.anothermovieapp.viewmodel.ViewModelFavoriteMovies
+import com.anothermovieapp.viewmodel.ViewModelMovieDetails
+import com.anothermovieapp.viewmodel.ViewModelPopularMovies
 import com.anothermovieapp.repository.*
 import dagger.Module
 import dagger.Provides
@@ -15,13 +21,29 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import javax.inject.Singleton
-import com.anothermovieapp.movieList.ViewModelTopRatedMovies
+import com.anothermovieapp.viewmodel.ViewModelTopRatedMovies
 import okhttp3.Cache
 import java.io.File
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
+    @Singleton
+    @Provides
+    fun provideViewModelFavoriteMovies(
+        r: RepositoryFavoritesList
+    ): ViewModelFavoriteMovies {
+        return ViewModelFavoriteMovies(r)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRepositoryFavoritesList(
+        db: Database
+    ): RepositoryFavoritesList {
+        return RepositoryFavoritesListImpl(db)
+    }
 
     @Singleton
     @Provides
@@ -82,16 +104,6 @@ class AppModule {
             .client(okHttpClient)
             .build()
         return retrofit.create(WebserviceMovieDatabase::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun provideWebServiceTrailers(okHttpClient: OkHttpClient): WebserviceTrailers {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org")
-            .client(okHttpClient)
-            .build()
-        return retrofit.create(WebserviceTrailers::class.java)
     }
 
     @Singleton

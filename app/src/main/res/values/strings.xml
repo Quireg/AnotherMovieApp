@@ -7,7 +7,6 @@
     <string name="top_rated_tab_name">Top Rated</string>
     <string name="favourites_tab_name">Favourites</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
-    <string name="loading">Loading…</string>
     <string name="error_fetch_failed">Error occurred while fetching new movies</string>
     <string name="favourites_no_movies">There are no movies added to favourites yet.\n
     Try adding one!</string>
@@ -21,7 +20,6 @@
     <string name="ui_details_description_name">It\'s all about: </string>
     <string name="ui_details_trailer_card_title">Trailers and teasers:</string>
     <string name="ui_details_trailer_no_trailers">No trailers</string>
-    <string name="ui_details_reviews_button_title">Show user reviews</string>
     <string name="ui_review_author_title">Who:</string>
 
     <string name="ui_favourites_sort_order">Sort by</string>

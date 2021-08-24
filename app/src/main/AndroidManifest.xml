@@ -4,49 +4,31 @@
     package="com.anothermovieapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:usesCleartextTraffic="true"
         android:name=".AnotherMovieApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_glasses"
         android:label="@string/app_name"
         android:supportsRtl="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".movieList.MainActivity"
+            android:name=".view.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/ListTheme">
+            android:theme="@style/ListTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".movieDetails.MovieActivity"
+            android:name=".view.DetailsActivity"
             android:label="@string/title_activity_movie_details"
             android:theme="@style/DetailsTheme">
         </activity>
-
-<!--        <provider-->
-<!--            android:name="com.anothermovieapp.managers.MovieAppContentProvider"-->
-<!--            android:authorities="com.anothermovieapp.app"-->
-<!--            android:exported="false"-->
-<!--            android:multiprocess="true">-->
-<!--        </provider>-->
-
-<!--        <service-->
-<!--            android:name=".movieList.SyncMovieService"-->
-<!--            android:permission="android.permission.BIND_JOB_SERVICE"-->
-<!--            android:exported="false">-->
-<!--        </service>-->
-<!--        <service-->
-<!--            android:name=".movieDetails.SyncReviewsService"-->
-<!--            android:exported="false">-->
-<!--        </service>-->
-
     </application>
 
 </manifest>

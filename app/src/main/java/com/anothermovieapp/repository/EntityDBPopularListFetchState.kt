@@ -1,3 +1,8 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.repository
 
 import androidx.room.ColumnInfo

@@ -2,18 +2,9 @@
 <resources>
 
     <color name="colorPrimary">@color/primaryLightColor</color>
-    <color name="colorPrimaryDark">@color/primaryColor</color>
 
-    <color name="colorSecondary">@color/secondaryColor</color>
-    <color name="colorSecondaryDark">@color/secondaryDarkColor</color>
-    <color name="red">#D50000</color>
-    <color name="black">#000000</color>
     <color name="primaryColor">#ffffff</color>
     <color name="primaryLightColor">#ffffff</color>
-    <color name="primaryDarkColor">#cccccc</color>
-    <color name="secondaryColor">#b2ebf2</color>
-    <color name="secondaryLightColor">#e5ffff</color>
-    <color name="secondaryDarkColor">#81b9bf</color>
 
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>

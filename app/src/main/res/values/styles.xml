@@ -17,8 +17,10 @@
 
     <style name="ListTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <item name="colorPrimaryDark">#8C000000</item>
+        <item name="android:background">#FF2C2C2C</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:navigationBarColor">#FF2C2C2C</item>
     </style>
 
 </resources>

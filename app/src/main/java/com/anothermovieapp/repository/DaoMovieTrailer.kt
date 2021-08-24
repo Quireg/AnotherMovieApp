@@ -1,3 +1,8 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.repository
 
 import androidx.room.Dao
@@ -6,13 +11,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Created by artur.menchenko@globallogic.com on 29/12/20.
- */
 @Dao
 interface DaoMovieTrailer {
-    @Query("SELECT * from trailers")
-    suspend fun get(): List<EntityDBMovieTrailer>
+    @Query("SELECT * from trailers WHERE movie_id = :idd")
+    suspend fun get(idd : String): List<EntityDBMovieTrailer>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: EntityDBMovieTrailer)

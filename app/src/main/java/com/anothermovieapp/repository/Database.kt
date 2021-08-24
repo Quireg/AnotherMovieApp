@@ -1,15 +1,19 @@
+/*
+ * Created by Arcturus Mengsk
+ *   2021.
+ */
+
 package com.anothermovieapp.repository
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-
 @Database(
     entities = [EntityDBMovie::class, EntityDBMovieTrailer::class, EntityDBMovieReview::class,
-        EntityDBPopularList::class, EntityDBFavoriteList::class, EntityDBTopRatedList::class,
+        EntityDBPopularList::class, EntityDBFavoriteMovie::class, EntityDBTopRatedList::class,
         EntityDBPopularListFetchState::class, EntityDBTopRatedListFetchState::class,
         EntityDBReviewsListFetchState::class],
-    version = 5, exportSchema = false
+    version = 10, exportSchema = false
 )
 abstract class Database : RoomDatabase() {
     abstract fun movieDao(): DaoMovie
